@@ -48,6 +48,16 @@
       let videoData = await this.$http.post('/wx/itrade/common/landingpage')
       this.videoBackground = videoData.bmini_landingpage_cover_img
       this.video = videoData.bmini_landingpage_video
+      // 数据统计
+      this.$auth.dataBuryPoint({
+        eventName: 'landing_page:init:visit',
+        eventDataId: this.product_id,
+        source: this.$root.$mp.query.source,
+        utmSource: this.$root.$mp.query.utm_source,
+        introduceCode: this.introduce_code,
+        shareInvestorId: '',
+        prePage: wx.getStorageSync('from')
+      })
     },
     methods: {
       ...mapMutations(['setFromLandingPage']),
