@@ -1,0 +1,3 @@
+<view class="checkbox-group class-name">
+  <slot></slot>
+</view>

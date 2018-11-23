@@ -1,0 +1,13 @@
+<view
+  class="class-name checkbox {{ isInGroup ? 'checkbox__item' : ''}} {{ type === 'list' ? 'checkbox__list-item' : ''}}"
+  bindtap="{{ labelDisabled ? '' : 'handleClick' }}"
+  >
+  <view
+    type="{{ checked ? 'checked' : 'check'}}"
+    class="checkbox-icon {{isRadio ? 'radio-icon' : ''}} {{ disabled ? 'checkbox-icon--disabled' : '' }} {{ checked ? 'checkbox-icon--checked' : '' }}"
+    bindtap="{{ labelDisabled ? 'handleClick': '' }}"
+  ></view>
+  <text class="checkbox__label">
+    <slot></slot>
+  </text>
+</view>

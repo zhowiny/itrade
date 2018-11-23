@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "mx-checkbox": "/components/checkbox/index",
+    "mx-checkbox-group": "/components/checkbox-group/index"
+  }
+}

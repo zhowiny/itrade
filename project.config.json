@@ -1,0 +1,73 @@
+{
+	"description": "项目配置文件。",
+	"setting": {
+		"urlCheck": false,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true
+	},
+	"miniprogramRoot": "dist/",
+	"compileType": "miniprogram",
+	"appid": "wxfaab93f8bf9fff2d",
+	"projectname": "wx-itrade-advisor",
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"currentL": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": 5,
+			"list": [
+				{
+					"id": 0,
+					"name": "保单服务",
+					"pathName": "pages/product_list_page/main",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "注册",
+					"pathName": "pages/register_invite_code/main",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "邀请",
+					"pathName": "pages/qrcode/main",
+					"query": ""
+				},
+				{
+					"id": 3,
+					"name": "landing_page",
+					"pathName": "pages/landing_page/main",
+					"query": "introduce_code=22222&source=qwer"
+				},
+				{
+					"id": -1,
+					"name": "房屋托管",
+					"pathName": "pages/house_trust/main",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "文章",
+					"pathName": "pages/article/main",
+					"query": "article_id=4070734&introduce_code=3458448"
+				}
+			]
+		}
+	}
+}
