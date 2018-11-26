@@ -7,6 +7,7 @@ module.exports = {
     'pages/landing_page/main', // landingpage
     'pages/article_details_page/main',
     'pages/legalize_info_page/main',
+    'pages/legalize_page/main',     // 认证改造新
     'pages/product_list_page/main',
     'pages/logs/main',
     'pages/counter/main',
