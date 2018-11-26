@@ -78,7 +78,7 @@
         } else if (tag === 1) {
           this.toPage({url: '/pages/index/main', type: 'switchTab'})
         } else {
-          this.toPage({url: '/pages/register_invite_code/main', data: {introduce_code: this.introduce_code}})
+          this.toPage('/pages/register_invite_code/main?introduce_code=' + this.introduce_code)
         }
       },
     },

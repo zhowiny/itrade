@@ -98,13 +98,14 @@
         }
       },
       async init () {
-        let advisorId = this.introduce_code = await this.$common.getAdvisorId()
+        let advisorId = await this.$common.getAdvisorId()
         if (advisorId !== '' && advisorId !== 0) {
           this.loginStatus = true
         } else {
           this.loginStatus = false
         }
         let status = await this.$http.post('/wx/itrade/channel/advisor_info', {})
+        this.introduce_code = status.code
         this.img = status.head_img
         this.name = status.name
         this.class_name = status.class_name

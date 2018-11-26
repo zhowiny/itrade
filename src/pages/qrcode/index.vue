@@ -43,8 +43,9 @@
       }
     },
     async onLoad () {
-      this.introduce_code = this.$common.getAdvisorId()
       try {
+        let status = await this.$http.post('/wx/itrade/channel/advisor_info', {})
+        this.introduce_code = status.code
         this.qrcode = await this.$http.get('/wx/advisor/mini/get/qrcode', {
           // path: '/pages/register_invite_code/main?introduce_code=' + this.introduce_code,
           path: '/pages/landing_page/main?introduce_code=' + this.introduce_code,
