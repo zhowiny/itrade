@@ -78,7 +78,11 @@
         } else if (tag === 1) {
           this.toPage({url: '/pages/index/main', type: 'switchTab'})
         } else {
-          this.toPage('/pages/register_invite_code/main?introduce_code=' + this.introduce_code)
+          if (this.introduce_code) {
+            this.toPage('/pages/register_invite_code/main?introduce_code=' + this.introduce_code)
+          } else {
+            this.toPage('/pages/register_invite_code/main')
+          }
         }
       },
     },

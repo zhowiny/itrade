@@ -71,7 +71,8 @@ export default {
   },
   async onLoad (params) {
     this.type = parseInt(params.type)
-    this.introduce_code = await this.$common.getAdvisorId()
+    let status = await this.$http.post('/wx/itrade/channel/advisor_info', {})
+    this.introduce_code = status.code
     let type = '6'
     if (this.type === 1) {
       type = '9'
