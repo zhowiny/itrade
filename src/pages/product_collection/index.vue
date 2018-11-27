@@ -107,7 +107,20 @@
         try {
           let status = await this.$http.get('/wx/itrade/product/favor/list', {page_num: 1, page_size: 10000})
           status.list.forEach(item => {
-            item.path = `/pages/finance_details_page/main?product_id=${item.id}&product_type=${item.product_type}&introduce_code=${this.introduceCode}&source=itrade_wx`
+            switch (item.product_type) {
+              case 1:
+              case 4:
+                item.path = `/pages/finance_details_page/main?product_id=${item.id}&product_type=${item.product_type}&introduce_code=${this.introduceCode}&source=itrade_wx`
+                break
+              case 2:
+                item.path = `/pages/estate/product/product_detail/main?product_id=${item.id}&product_type=${item.product_type}&introduce_code=${this.introduceCode}&source=itrade_wx`
+                break
+              case 3:
+                item.path = `/pages/product_details/main?product_id=${item.id}&product_type=${item.product_type}&introduce_code=${this.introduceCode}&source=itrade_wx`
+                break
+              default:
+                break
+            }
             item.extraData = {
               product_id: item.id,
               product_type: item.product_type,
