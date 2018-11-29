@@ -7,7 +7,7 @@ module.exports = {
     'pages/landing_page/main', // landingpage
     'pages/article_details_page/main',
     'pages/legalize_info_page/main',
-    'pages/legalize_page/main',     // 认证改造新
+    'pages/legalize_page/main',     // 认证改造新(开发中。。。。)
     'pages/product_list_page/main',
     'pages/logs/main',
     'pages/counter/main',
@@ -46,6 +46,7 @@ module.exports = {
     'pages/plan/main', // 我的计划书
     'pages/share_file/main', // 分享文件页
     'pages/house_trust/main', // 房屋托管
+    'pages/insurance_landing_page/main',  // 保单分享页
   ],
   'window': {
     'backgroundTextStyle': 'light',
