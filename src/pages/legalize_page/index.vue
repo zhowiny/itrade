@@ -22,6 +22,14 @@
             <img src="/images/icon_arrow_product.png" alt="" class="fields_arrow_icon"/>
           </div>
           <p class="fields_tips">*中国公民，请上传身份证：其它国家公民，请上传护照。</p>
+          <div class="fields_section fields_form_none" v-if="cardTypeString === '身份证'">
+            <p class="fields_label"> 身份证号 </p>
+            <input v-model="legalizeInfo.card_number" placeholder="请输入您的身份证号"  placeholder-style="color: #ccc;" />
+          </div>
+          <div class="fields_section fields_form_none" v-if="cardTypeString === '护照'">
+            <p class="fields_label"> 护照号 </p>
+            <input v-model="legalizeInfo.passport_number" placeholder="请输入您的护照号"  placeholder-style="color: #ccc;" />
+          </div>
         </div>
         <div class="fields_id_card" v-if="cardTypeString === '身份证'">
           <div class="fields_pic">
@@ -35,7 +43,7 @@
         </div>
         <div class="fields_passport" v-if="cardTypeString === '护照'">
           <div class="fields_pic">
-            <img class="picture passportDard" @click="upLoadIdCardFront" :src="legalizeInfo.card_front_url" alt="">
+            <img class="picture passportDard" @click="upLoadIdCardPassport" :src="legalizeInfo.passport_url" alt="">
             <p class="explain"> 护照信息页照片或扫描文件 </p>
           </div>
         </div>
@@ -106,6 +114,8 @@ export default {
         industry_years: '',
         carte_url: '',
         favor_asset_type: [],
+        passport_url: '',
+        passport_number: ''
       },
       industryList: [],
       yearList: [],
@@ -163,6 +173,26 @@ export default {
         }
       })
     },
+    upLoadIdCardPassport () {
+      wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ['original', 'compressed'],
+        sourceType: ['album', 'camera'],
+        success: res => {
+          let tempFilePaths = res.tempFilePaths
+          wx.uploadFile({
+            url: 'https://upload.meixinglobal.com/web/upload/public',
+            filePath: tempFilePaths[0],
+            name: 'file',
+            formData: {},
+            success: res => {
+              var data = JSON.parse(res.data)
+              this.legalizeInfo.passport_url = data.body
+            }
+          })
+        }
+      })
+    },
     upLoadCarte () {
       wx.chooseImage({
         count: 1, // 默认9
@@ -211,6 +241,13 @@ export default {
       this.legalizeInfo.industry_years = data.industry_years
       this.legalizeInfo.carte_url = data.carte_url
       this.legalizeInfo.favor_asset_type = data.favor_asset_type
+      this.legalizeInfo.passport_number = data.passport_number
+      this.legalizeInfo.passport_url = data.passport_url
+      if (data.passport_url === '') {
+        this.cardTypeString = '身份证'
+      } else {
+        this.cardTypeString = '护照'
+      }
       if (data.status === -1 || data.status === 0) {
         this.legalizeStatus = '未认证'
       }
@@ -327,10 +364,14 @@ export default {
         margin-left: 22px;
       }
     }
+    .fields_form_none{
+      border: none;
+    }
     .fields_tips{
       color: #969696;
       font-size: 22px;
       line-height: 68px;
+      border-bottom: 1px solid $borderColor;
     }
   }
   .fields_id_card{
@@ -371,7 +412,7 @@ export default {
         height: 380px;
       }
       .passportDard{
-        background-image: url(https://filehw.meixinglobal.com/media/20181126/a297369b-34d2-46b1-a0a6-fb56658cc320.png);
+        background-image: url(https://filehz.meixinglobal.com/20181129/16c9d641-b9d5-4aa9-9b71-ff8091df7642.png);
         background-size: cover;
         background-repeat: no-repeat;
       }
