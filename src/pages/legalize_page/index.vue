@@ -125,7 +125,7 @@ export default {
         {name: '身份证', value: 1},
         {name: '护照', value: 2},
       ],
-      cardTypeString: '请选择'
+      cardTypeString: '请选择',
     }
   },
 
@@ -243,7 +243,7 @@ export default {
       this.legalizeInfo.favor_asset_type = data.favor_asset_type
       this.legalizeInfo.passport_number = data.passport_number
       this.legalizeInfo.passport_url = data.passport_url
-      if (data.passport_url === '') {
+      if (data.legalize_type === 1) {
         this.cardTypeString = '身份证'
       } else {
         this.cardTypeString = '护照'
@@ -265,6 +265,7 @@ export default {
       console.log(event)
       let index = event.mp.detail.value
       this.cardTypeString = this.cardTypeList[index].name
+      this.legalizeInfo.legalize_type = this.cardTypeList[index].value
     },
     confirm () {
       console.log(this.legalizeInfo)
