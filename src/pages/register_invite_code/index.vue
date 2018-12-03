@@ -28,7 +28,7 @@
     <button class="next_btn" @click="nextPage">下一步</button>
     <p class="login" @click="toPage('/pages/login_vcode/main')">已有账号，去登录</p>
     <footer>
-      注册即代表您已同意<span class="main_color" @click="openFile('https://file.meixinglobal.com/media/20180914/ee7a9a6f-ebfb-496d-9f6b-12fac896c86f.pdf')">iTrade使用条款</span>与<span class="main_color" @click="openFile('https://doc.meixinglobal.com/docs/20170725/80af03af-6870-44ad-aa60-06b1b05892be.pdf')">信息保密协议</span>
+      注册即代表您已同意<span class="main_color" @click="openFile('https://filehz.meixinglobal.com/20181203/298400af-787c-42de-a6ed-8490aad9e598.pdf')">iTrade使用条款</span>与<span class="main_color" @click="openFile('https://doc.meixinglobal.com/docs/20170725/80af03af-6870-44ad-aa60-06b1b05892be.pdf')">信息保密协议</span>
     </footer>
   </div>
 </template>
