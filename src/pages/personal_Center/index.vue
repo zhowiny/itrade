@@ -51,11 +51,17 @@
         </div>
         <p>邀请理财师</p>
       </li>
-      <li @click="goPage({url: '/pages/house_trust/main'})">
+      <!--<li @click="goPage({url: '/pages/house_trust/main'})">
         <div class="invitation_img">
           <img src="/images/icon_house.png" mode="aspectFit" style="width:120rpx;height:120rpx;">
         </div>
         <p>房产托管</p>
+      </li>-->
+      <li @click="goPage({url: '/pages/trusteeship/main'})">
+        <div class="invitation_img">
+          <img src="/images/icon_trusteeship.png" mode="aspectFit" style="width:120rpx;height:120rpx;">
+        </div>
+        <p>服务托管</p>
       </li>
     </ul>
   </div>

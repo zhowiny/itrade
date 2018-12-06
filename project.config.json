@@ -29,7 +29,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 5,
+			"current": 6,
 			"list": [
 				{
 					"id": 0,
@@ -62,10 +62,16 @@
 					"query": ""
 				},
 				{
-					"id": -1,
+					"id": 5,
 					"name": "文章",
 					"pathName": "pages/article/main",
-					"query": "article_id=4070734&introduce_code=3458448"
+					"query": "article_id=3916750&introduce_code=3458448"
+				},
+				{
+					"id": -1,
+					"name": "托管服务",
+					"pathName": "pages/trusteeship/main",
+					"query": "article_id=3916750&introduce_code=3458448"
 				}
 			]
 		}
