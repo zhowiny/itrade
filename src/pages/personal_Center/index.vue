@@ -61,7 +61,7 @@
         <div class="invitation_img">
           <img src="/images/icon_trusteeship.png" mode="aspectFit" style="width:120rpx;height:120rpx;">
         </div>
-        <p>服务托管</p>
+        <p>托管服务</p>
       </li>
     </ul>
   </div>
