@@ -49,6 +49,15 @@ module.exports = {
     'pages/house_trust/main', // 房屋托管
     'pages/insurance_landing_page/main',  // 保单分享页
   ],
+  'subpackages': [
+    {
+      'root': 'pages/package',
+      'name': 'package1',
+      'pages': [
+        'insurance_landing_page/main', // 保单分享页
+      ]
+    },
+  ],
   'window': {
     'backgroundTextStyle': 'light',
     'navigationBarBackgroundColor': '#fff',
