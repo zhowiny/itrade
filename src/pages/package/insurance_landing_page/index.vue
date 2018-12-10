@@ -124,7 +124,11 @@
         </div>
       </div>
     </div>
-    <div class="land_footer">发送给客户</div>
+    <navigator class="land_footer" 
+      open-type="navigate" app-id="wxcd7c5762adbd3cf5" 
+      :url="path + introduce_code" :path="path + introduce_code" target="miniProgram"
+      :extra-data="deliverData" version="trial"
+      >发送给客户</navigator>
   </div>
 </template>
 
@@ -134,13 +138,18 @@
       return {
         title: '保单托管',
         introduce_code: '',
+        path: `pages/after_service/insurance_landing_page/main?source=itrade_wx&introduce_code=`,
+        deliverData: {
+          introduce_code: '',
+          source: 'itrade_wx',
+        },
       }
     },
     computed: {
     },
     async onLoad (option) {
       console.log(option)
-      this.introduce_code = this.$root.$mp.query.introduce_code || ''
+      this.deliverData.introduce_code = this.introduce_code = await this.$common.getAdvisorId()
       // await this.$auth.login()
       // 数据统计
       this.$auth.dataBuryPoint({
@@ -155,13 +164,13 @@
     },
     methods: {
     },
-    onShareAppMessage (res) {
-      return {
-        title: 'iTrade全球房屋托管业务',
-        path: `/pages/house_trust/trust_landing_page/main?source=share&introduce_code=${this.introduce_code}`,
-        imageUrl: 'https://file.meixinglobal.com/media/20181108/609c0964-91ff-4f40-817d-9ebc8c1090ec.png',
-      }
-    },
+    // onShareAppMessage (res) {
+    //   return {
+    //     title: 'iTrade全球房屋托管业务',
+    //     path: `/pages/house_trust/trust_landing_page/main?source=share&introduce_code=${this.introduce_code}`,
+    //     imageUrl: 'https://file.meixinglobal.com/media/20181108/609c0964-91ff-4f40-817d-9ebc8c1090ec.png',
+    //   }
+    // },
   }
 </script>
 
@@ -272,7 +281,7 @@
         }
         .land_tips_option_icon_three{
           width: 70px;
-          height: 62px;
+          height: 64px;
           background: url('https://filehz.meixinglobal.com/20181129/9b390fa2-feed-4d51-b3fb-0dd34b60b5f0.png') no-repeat;
           background-size: 750px 2575px;
           background-position: -347px -564px;
@@ -400,11 +409,11 @@
             margin: 0 auto 22px;
           }
           .land_service_option_icon_four{
-            width: 64px;
+            width: 68px;
             height: 68px;
             background: url('https://filehz.meixinglobal.com/20181129/9b390fa2-feed-4d51-b3fb-0dd34b60b5f0.png') no-repeat;
             background-size: 750px 2575px;
-            background-position: -343px -1564px;
+            background-position: -340px -1565px;
             margin: 0 auto 22px;
           }
           .land_service_option_icon_five{
@@ -416,8 +425,8 @@
             margin: 0 auto 22px;
           }
           .land_service_option_icon_six{
-            width: 66px;
-            height: 66px;
+            width: 68px;
+            height: 67px;
             background: url('https://filehz.meixinglobal.com/20181129/9b390fa2-feed-4d51-b3fb-0dd34b60b5f0.png') no-repeat;
             background-size: 750px 2575px;
             background-position: -340px -1816px;
@@ -428,7 +437,7 @@
             height: 61px;
             background: url('https://filehz.meixinglobal.com/20181129/9b390fa2-feed-4d51-b3fb-0dd34b60b5f0.png') no-repeat;
             background-size: 750px 2575px;
-            background-position: -343px -1946px;
+            background-position: -343px -1944px;
             margin: 0 auto 22px;
           }
           .land_service_option_icon_eight{
@@ -440,7 +449,7 @@
             margin: 0 auto 22px;
           }
           .land_service_option_icon_nine{
-            width: 64px;
+            width: 66px;
             height: 64px;
             background: url('https://filehz.meixinglobal.com/20181129/9b390fa2-feed-4d51-b3fb-0dd34b60b5f0.png') no-repeat;
             background-size: 750px 2575px;
@@ -457,6 +466,9 @@
       }
     }
     .land_footer{
+      position: fixed;
+      bottom: 20px;
+      left: 8%;
       width: 630px;
       height: 100px;
       color: #fff;
@@ -466,7 +478,6 @@
       font-weight: bold;
       background: $mainColor;
       border-radius: 52px;
-      margin: 130px auto 0;
     }
   }
 </style>

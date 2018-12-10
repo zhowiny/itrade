@@ -47,7 +47,6 @@ module.exports = {
     'pages/share_file/main', // 分享文件页
     'pages/trusteeship/main', // 托管服务
     'pages/house_trust/main', // 房屋托管
-    'pages/insurance_landing_page/main',  // 保单分享页
   ],
   'subpackages': [
     {
