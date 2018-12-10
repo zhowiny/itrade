@@ -467,17 +467,13 @@
     }
     .land_footer{
       position: fixed;
-      bottom: 20px;
-      left: 8%;
-      width: 630px;
-      height: 100px;
-      color: #fff;
-      font-size: 34px;
-      line-height: 100px;
-      text-align: center;
-      font-weight: bold;
+      left: 10vw;
+      bottom: 25px;
+      @include flex();
+      @include size(80vw, 80px);
       background: $mainColor;
-      border-radius: 52px;
+      color: #fff;
+      border-radius: 40px;
     }
   }
 </style>
