@@ -26,7 +26,7 @@
           <span @click="openFile" class="btn">查看</span>
           <navigator class="btn" hover-class="none" v-if="detail.product_book_documents.length > 0"
                      open-type="navigate" app-id="wxcd7c5762adbd3cf5"
-                     :path="'/pages/investment_report_file/main?fileType=pdf&source=itrade_wx&title=' + detail.product_book_documents[0].document_name + '&filePath=' + detail.product_book_documents[0].document_url"
+                     :path="'/pages/investment_report_file/main?fileType='+ detail.product_book_documents[0].document_type +'&source=itrade_wx&title=' + detail.product_book_documents[0].document_name + '&filePath=' + detail.product_book_documents[0].document_url"
                      target="miniProgram"
                      version="trial"
           >分享</navigator><!--develop-->
@@ -91,7 +91,7 @@
             <span @click="$common.previewFile(item.document_url, 'pdf')">{{item.document_name}}</span>
             <navigator class="file" hover-class="none"
                        open-type="navigate" app-id="wxcd7c5762adbd3cf5"
-                       :path="'/pages/investment_report_file/main?fileType=pdf&source=itrade_wx&title=' + item.document_name + '&filePath=' + item.document_url"
+                       :path="'/pages/investment_report_file/main?fileType='+ item.document_type +'&source=itrade_wx&title=' + item.document_name + '&filePath=' + item.document_url"
                        target="miniProgram"
                        version="trial"
             >
@@ -231,7 +231,14 @@
       },
       async getProductDetail () {
         try {
-          this.detail = await this.$http.post(`/wx/itrade/finance/detail?finance_id=${this.productId}&product_type=${this.productType}`, {})
+          let result = await this.$http.post(`/wx/itrade/finance/detail?finance_id=${this.productId}&product_type=${this.productType}`, {})
+          result.product_book_documents.forEach(item => {
+            item.document_type = item.document_type.split('/') || 'pdf'
+          })
+          result.introduction_documents.forEach(item => {
+            item.document_type = item.document_type.split('/') || 'pdf'
+          })
+          this.detail = result
           console.log(this.detail)
         } catch (e) {
           throw new Error(e)
