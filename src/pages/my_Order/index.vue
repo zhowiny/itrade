@@ -48,7 +48,7 @@
               </li>
               <li>
                 <span class="my_order_list_text_span1">下单时间: {{item.created_at}}</span>
-                <span v-if="item.order_status_desc !== '已入金' && item.order_status_desc !== '保单生效'" class="my_order_list_text_span" @click="cancelOrder(item)">取消订单</span>
+                <span v-if="item.order_status_desc !== '已取消' && item.order_status_desc !== '已入金' && item.order_status_desc !== '保单生效'" class="my_order_list_text_span" @click="cancelOrder(item)">取消订单</span>
               </li>
             </ul>
           </div>

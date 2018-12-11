@@ -262,9 +262,14 @@
           }
           &_right{
             width: 50%;
+            >p {
+              @include flex();
+            }
             &_value{
               color: $lightColor;
               font-size: 22rpx;
+              flex: 1;
+              @include text-truncate();
             }
             .commission{
               color: $mainColor;

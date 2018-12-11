@@ -88,14 +88,14 @@
       <div class="detail_introduction" v-if="estateDetail.project_intro">{{estateDetail.project_intro}}</div>
       <ul class="detail_option">
         <li>
-          <p>产权年限：<span>{{estateDetail.property_years}}</span></p>
-          <p>物业类型：<span>{{estateDetail.property_type}}</span></p>
-          <p>规划面积：<span>{{estateDetail.project_area}}</span></p>
+          <p><b>产权年限：</b><span>{{estateDetail.property_years}}</span></p>
+          <p><b>物业类型：</b><span>{{estateDetail.property_type}}</span></p>
+          <p><b>规划面积：</b><span>{{estateDetail.project_area}}</span></p>
         </li>
         <li>
-          <p>交房日期：<span>{{estateDetail.delivery_date}}</span></p>
-          <p>项目户数：<span>{{estateDetail.house_num}}</span></p>
-          <p>能否贷款：<span>{{estateDetail.support_loans ? '是' : '否'}}</span></p>
+          <p><b>交房日期：</b><span>{{estateDetail.delivery_date}}</span></p>
+          <p><b>项目户数：</b><span>{{estateDetail.house_num}}</span></p>
+          <p><b>能否贷款：</b><span>{{estateDetail.support_loans ? '是' : '否'}}</span></p>
         </li>
       </ul>
     </div>
@@ -981,6 +981,10 @@ export default {
     color: #999;
     font-size: 26rpx;
     margin-bottom: 20rpx;
+    @include flex(flex-start, flex-start);
+  }
+  .detail_option b{
+    flex: 0 0 5em;
   }
   .detail_option span{
     color: #666;
@@ -1265,6 +1269,7 @@ export default {
     }
     &_right {
       flex: 2;
+      font-size: 30px;
     }
     &_icon {
       flex: 1;

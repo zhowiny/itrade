@@ -4,7 +4,7 @@
       <div class="file_list">
         <h3>投资文件</h3>
         <ul v-if="orderType !== 3">
-          <li v-for="(item, index) in detail.document_list" :key="index" @click="$common.previewFile(item.document_url)">
+          <li v-if="item.document_type === 'legal'" v-for="(item, index) in detail.document_list" :key="index" @click="$common.previewFile(item.document_url)">
             <p>{{item.document_name}}</p>
             <img mode="aspectFit" src="/images/icon_download.png" style="width: 50rpx;height:44rpx"/>
           </li>

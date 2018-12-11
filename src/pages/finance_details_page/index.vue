@@ -873,6 +873,7 @@ export default {
                   color: $lightColor;
                   padding-bottom: 28rpx;
                   position: relative;
+                  width:100%;
                   &_time {
                     position: absolute;
                     right: 0;

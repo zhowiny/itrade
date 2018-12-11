@@ -1,15 +1,25 @@
 <template>
   <div class="container">
-    <div class="none" v-if="!report || report.length < 1">
-      <img src="/images/icon_none_2.png" mode="aspectFit" style="">
-      <p>暂无投资报告</p>
+    <div class="file_list" v-if="orderType !== 3">
+      <h3>投资报告文件</h3>
+      <ul>
+        <li v-if="item.document_type === 'inform'" v-for="(item, index) in detail.document_list" :key="index" @click="$common.previewFile(item.document_url, 'pdf')">
+          <p>{{item.document_name}}</p>
+          <img mode="aspectFit" src="/images/icon_download.png" style="width: 50rpx;height:44rpx"/>
+        </li>
+      </ul>
     </div>
-    <ul class="report">
-      <li :class="{unread: item.unread}" v-for="(item, index) in report" :key="index">
-        <h4>{{item.title}} {{item.desc}}</h4>
-        <p>上传时间: {{item.updated_at}}</p>
-      </li>
-    </ul>
+    <!--<div v-else>
+      <div class="file_list">
+        <h3>投资报告文件</h3>
+        <ul>
+          <li v-for="(item, index) in detail.orderFiles" :key="index" @click="$common.previewFile(item.url, 'png')">
+            <p>{{item.fileName}}</p>
+            <img mode="aspectFit" src="/images/icon_download.png" style="width: 50rpx;height:44rpx"/>
+          </li>
+        </ul>
+      </div>
+    </div>-->
   </div>
 </template>
 
@@ -18,12 +28,47 @@
     data () {
       return {
         title: '投资报告',
-        report: [],
+        files: [],
+        detail: {
+          document_list: [],
+          orderFiles: [],
+        },
+        orderType: 0,
       }
     },
-    created () {
+    onLoad (params) {
+      console.log(params)
+      this.orderType = parseInt(params.orderType)
+      this.getDetail()
     },
     methods: {
+      async getDetail () {
+        try {
+          let url = '/wx/itrade/order/detail_of_advisor'
+          if (this.orderType === 3) {
+            url = '/wx/itrade/order/detail_of_insurance'
+          }
+          this.detail = await this.$http.get(url, {
+            order_number: this.$mp.query.order_number
+          })
+        } catch (e) {
+          throw new Error(e)
+        }
+      },
+      preview (url, type = 'pdf') {
+        if (type === 'img') {
+          let images = []
+          this.fileList.forEach(item => {
+            images.push(item.file_url)
+          })
+          this.$common.previewFile({
+            current: url,
+            urls: images
+          })
+        } else {
+          this.$common.previewFile(url, type)
+        }
+      }
     },
     components: {
     },
@@ -31,32 +76,22 @@
 </script>
 
 <style lang="scss" scoped>
-  .container {
-    @include size(100vw, 100vh);
-  }
-  .none {
-    text-align: center;
-    color: $lightColor;
+  .file_list {
     font-size: 30px;
-  }
-  .report {
-    li {
-      @include size(100%, 158px);
-      @include flex(space-around, flex-start);
-      flex-direction: column;
+    padding: 0 $middle-space;
+    background: #fff;
+    &:not(:first-child) {
       margin-top: $small-space;
-      padding: $middle-space;
-      background: #fff;
-      color: $lightColor;
-      h4 {
-        font-size: 30px;
-      }
-      p {
-        font-size: 26px;
-      }
-      &.unread h4{
-        color: $deepColor;
-      }
+    }
+    h3, li {
+      @include size(100%, 100px);
+      @include flex(space-between);
+      border-bottom: 1px solid $borderColor;
+      color: $mainColor;
+    }
+    h3 {
+      border-top: 1px solid $borderColor;
+      color: $deepColor;
     }
   }
 </style>

@@ -8,7 +8,7 @@
       <span>我的佣金</span>
       <h2>¥{{detail.orderCommissions.periodAmountSum[0]}}</h2>
     </div>
-    <wx-steps v-if="orderType !== 3 && step !== 4" :active="step" :steps="steps"/>
+    <wx-steps v-if="orderType !== 3 && step !== 4 && detail.order_status_desc !== '已取消'" :active="step" :steps="steps"/>
     <wx-steps v-if="orderType === 3 && step !== 4 && showInsuranceProgress" :active="step" :steps="insurance_steps"></wx-steps>
 
     <div class="pending" v-if="detail.order_status_desc === '待入金'">
@@ -240,7 +240,7 @@
     </ul>-->
 
     <ul class="other">
-      <li @click="toPage('/pages/order_investment_report/main')">
+      <li @click="toPage('/pages/order_investment_report/main?orderType=' + orderType + '&order_number=' + (detail.order_number || detail.orderNumber))">
         <span>投资报告</span>
         <img src="/images/icon_arrow_product.png" mode="aspectFit" style="width: 15rpx;height:28rpx;">
       </li>
@@ -315,7 +315,7 @@
       </div>
     </div>
 
-    <div class="btn_cancel" @click="cancel">取消订单</div>
+    <div class="btn_cancel" v-if="detail.order_status_desc !== '已取消'" @click="cancel">取消订单</div>
   </div>
 </template>
 
@@ -448,6 +448,9 @@
   }
 </script>
 <style scoped lang="scss">
+  .order_detail_container {
+    padding-bottom: 100px;
+  }
   .commission {
     background: #fff;
     @include flex();

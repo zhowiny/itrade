@@ -173,8 +173,9 @@ function showToast (params, callback) {
 function previewFile (fileObject, fileType) {
   if (typeof fileObject === 'string') {
     let ext = fileObject.substr(fileObject.lastIndexOf('.') + 1)
+    let type = (fileType && fileType.includes('.')) ? fileType.substr(fileType.lastIndexOf('.') + 1) : fileType
     let img = ['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff']
-    let isImg = img.indexOf(ext.toLowerCase()) !== -1 || (fileType && img.indexOf(fileType) !== -1)
+    let isImg = img.indexOf(ext.toLowerCase()) !== -1 || (img.indexOf(type) !== -1)
     if (isImg) {
       wx.previewImage({
         urls: [fileObject]
@@ -193,7 +194,7 @@ function previewFile (fileObject, fileType) {
               wx.hideLoading()
               wx.openDocument({
                 filePath: filePath,
-                fileType: fileType || 'pdf',
+                fileType: type || 'pdf',
                 success: function (res) {
                   console.log('打开文档成功', res)
                 },

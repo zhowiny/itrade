@@ -26,7 +26,7 @@
           <span @click="openFile" class="btn">查看</span>
           <navigator class="btn" hover-class="none" v-if="detail.product_book_documents.length > 0"
                      open-type="navigate" app-id="wxcd7c5762adbd3cf5"
-                     :path="'/pages/investment_report_file/main?fileType='+ detail.product_book_documents[0].document_type +'&source=itrade_wx&title=' + detail.product_book_documents[0].document_name + '&filePath=' + detail.product_book_documents[0].document_url"
+                     :path="'/pages/investment_report_file/main?fileType='+ detail.product_book_documents[0].document_name +'&source=itrade_wx&title=' + detail.product_book_documents[0].document_name + '&filePath=' + detail.product_book_documents[0].document_url"
                      target="miniProgram"
                      version="trial"
           >分享</navigator><!--develop-->
@@ -88,10 +88,10 @@
         <h3>产品介绍文件</h3>
         <ul class="product_files_file">
           <li v-for="(item, index) in detail.introduction_documents" :key="index" >
-            <span @click="$common.previewFile(item.document_url, 'pdf')">{{item.document_name}}</span>
+            <span @click="$common.previewFile(item.document_url, item.document_name)">{{item.document_name}}</span>
             <navigator class="file" hover-class="none"
                        open-type="navigate" app-id="wxcd7c5762adbd3cf5"
-                       :path="'/pages/investment_report_file/main?fileType='+ item.document_type +'&source=itrade_wx&title=' + item.document_name + '&filePath=' + item.document_url"
+                       :path="'/pages/investment_report_file/main?fileType='+ item.document_name +'&source=itrade_wx&title=' + item.document_name + '&filePath=' + item.document_url"
                        target="miniProgram"
                        version="trial"
             >
@@ -267,23 +267,20 @@
         })
       },
       openFile () {
-        // 数据统计
-        this.$auth.dataBuryPoint({
-          eventName: 'product_detail:load_product_book:click',
-          eventDataId: this.productId,
-          source: this.$root.$mp.query.source,
-          utmSource: this.$root.$mp.query.utm_source,
-          introduceCode: this.introduceCode,
-          shareInvestorId: '',
-          prePage: wx.getStorageSync('from')
-        })
         if (this.detail.product_book_documents.length > 0) {
-          this.$common.previewFile(this.detail.product_book_documents[0].document_url, 'pdf')
-        } else {
-          wx.showToast({
-            title: '暂无文件',
-            icon: 'none'
+          this.$common.previewFile(this.detail.product_book_documents[0].document_url, this.detail.product_book_documents[0].document_name)
+          // 数据统计
+          this.$auth.dataBuryPoint({
+            eventName: 'product_detail:load_product_book:click',
+            eventDataId: this.productId,
+            source: this.$root.$mp.query.source,
+            utmSource: this.$root.$mp.query.utm_source,
+            introduceCode: this.introduceCode,
+            shareInvestorId: '',
+            prePage: wx.getStorageSync('from')
           })
+        } else {
+          this.showToast('暂无文件')
         }
       },
       openDoc (url) {
@@ -535,9 +532,10 @@
           border-bottom: 2px solid $borderColor;
         }
         div {
-          font-size: 22rpx !important;
+          font-size: 24px!important;
           padding: $middle-space $big-space;
-          @include text-truncate();
+          word-break:break-all;
+          //@include text-truncate();
         }
       }
     }
@@ -552,7 +550,7 @@
       &_file {
         padding: $small-space $big-space;
         color: $mainColor;
-        font-size: 28px;
+        font-size: 26px;
         li {
           padding: 5px 0;
           @include flex(space-between);
