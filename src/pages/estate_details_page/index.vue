@@ -1269,7 +1269,7 @@ export default {
     }
     &_right {
       flex: 2;
-      font-size: 30px;
+      font-size: 28px;
     }
     &_icon {
       flex: 1;

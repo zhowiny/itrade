@@ -187,8 +187,9 @@
                   </div>
                   <div class="finance_other_content_problem_item_answer">
                     <p class="finance_other_content_problem_item_answer_icon"> <img class="finance_other_content_problem_item_answer_icon" mode="scaleToFill" src="/images/icon_answer.png" alt=""> </p>
-                    <p class="finance_other_content_problem_item_answer_text"> {{item.answer}}
-                      <time class="finance_other_content_problem_item_answer_text_time"> {{item.create_at}} </time>
+                    <p class="finance_other_content_problem_item_answer_text">
+                      <text>{{item.answer}}</text>
+                      <span class="finance_other_content_problem_item_answer_text_time"> {{item.create_at}} </span>
                     </p>
                   </div>
                 </div>
