@@ -124,7 +124,7 @@
         </div>
       </div>
     </div>
-    <navigator class="land_footer" 
+    <navigator class="land_footer" hover-class="none"
       open-type="navigate" app-id="wxcd7c5762adbd3cf5" 
       :url="path + introduce_code" :path="path + introduce_code" target="miniProgram"
       :extra-data="deliverData" version="trial"
