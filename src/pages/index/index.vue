@@ -27,7 +27,7 @@
             <img class="legalize_status_pic" v-if="legalizedStatus==3" src="/images/legalize_fail.png" alt="">
           </div>
           <div class="legalize_btn">
-            <mx-button text="立即认证" v-if="loginStatus" @click="toPage({url: '/pages/legalize_info_page/main', type: 'reLaunch'})" round type="primary"/>
+            <mx-button text="立即认证" v-if="loginStatus" @click="toPage({url: '/pages/legalize_page/main', type: 'reLaunch'})" round type="primary"/>
             <mx-button text="登录/注册" v-else  @click="toPage({url: '/pages/login_vcode/main', type: 'reLaunch'})" round type="primary"/>
           </div>
           <p class="legalize_explain"> - 完成身份认证，享受更多特权 - </p>
