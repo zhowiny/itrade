@@ -56,7 +56,7 @@ export default {
         appId: 'wxcd7c5762adbd3cf5',
         path: `/pages/open_account/open_account/main?source=itrade_wx&introduce_code=${this.introduce_code}`,
         extraData: {},
-        envVersion: 'develop',
+        envVersion: 'trial',
         success (res) {
           console.log('成功', res)
         },
