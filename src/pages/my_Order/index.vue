@@ -34,7 +34,11 @@
                 <span class="my_order_list_text_span1">产品</span>
                 <span class="my_order_list_text_span">{{item.finance_name}}</span>
               </li>
-              <li>
+              <li v-if="item.order_type === 3">
+                <span class="my_order_list_text_span1">首期总保费</span>
+                <span class="my_order_list_text_span">{{item.first_sum_premium }}</span>
+              </li>
+              <li v-else>
                 <span class="my_order_list_text_span1">金额</span>
                 <span class="my_order_list_text_span">{{item.invest_amount }}</span>
               </li>
@@ -44,7 +48,8 @@
               </li>
               <li>
                 <span class="my_order_list_text_span1">联系方式</span>
-                <span class="my_order_list_text_span">{{item.phone}}</span>
+                <span v-if="item.order_type === 3" class="my_order_list_text_span">{{item.applicant_customer_phone}}</span>
+                <span v-else class="my_order_list_text_span">{{item.phone}}</span>
               </li>
               <li>
                 <span class="my_order_list_text_span1">下单时间: {{item.created_at}}</span>

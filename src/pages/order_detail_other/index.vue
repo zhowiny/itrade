@@ -150,7 +150,7 @@
         </div>
         <div class="order_field">
           <span>联系方式</span>
-          <span>{{detail.applicantCustomerChineseName}}</span>
+          <span>{{detail.applicantCustomerPhone}}</span>
         </div>
         <div class="order_field">
           <span>预约签单时间</span>
