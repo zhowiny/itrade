@@ -51,9 +51,17 @@
                 <span v-if="item.order_type === 3" class="my_order_list_text_span">{{item.applicant_customer_phone}}</span>
                 <span v-else class="my_order_list_text_span">{{item.phone}}</span>
               </li>
-              <li>
+              <li v-if="item.order_type === 3">
                 <span class="my_order_list_text_span1">下单时间: {{item.created_at}}</span>
-                <span v-if="item.order_status_desc !== '已取消' && item.order_status_desc !== '已入金' && item.order_status_desc !== '保单生效'" class="my_order_list_text_span" @click="cancelOrder(item)">取消订单</span>
+                <span v-if="item.order_status_desc === '预审中' || item.order_status_desc === '资料审核通过' || item.order_status_desc === '预审成功' || item.order_status_desc === '资料审核中' || item.order_status_desc === '需复查' || item.order_status_desc === '预约中' || item.order_status_desc === '预约失败' || item.order_status_desc === '预约成功'"
+                  class="my_order_list_text_span" @click="cancelOrder(item)"
+                >取消订单</span>
+              </li>
+              <li v-else>
+                <span class="my_order_list_text_span1">下单时间: {{item.created_at}}</span>
+                <span v-if="item.order_status_desc !== '已取消' && item.order_status_desc !== '已入金'"
+                      class="my_order_list_text_span" @click="cancelOrder(item)"
+                >取消订单</span>
               </li>
             </ul>
           </div>

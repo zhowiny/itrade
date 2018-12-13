@@ -314,8 +314,17 @@
         </div>
       </div>
     </div>
-
-    <div class="btn_cancel" v-if="detail.order_status_desc !== '已取消'" @click="cancel">取消订单</div>
+    <div v-if="orderType === 3">
+      <div class="btn_cancel" @click="cancel"
+           v-if="showCancel"
+      >取消订单</div>
+    </div>
+    <div v-else>
+      <div class="btn_cancel"
+           v-if="detail.order_status_desc !== '已取消' && detail.order_status_desc !== '已入金'"
+           @click="cancel"
+      >取消订单</div>
+    </div>
   </div>
 </template>
 
@@ -351,6 +360,10 @@
     computed: {
       shareLink () {
         return `https://invest.meixincn.com/white_label/invest_success.html?product_id=${this.detail.product_id}&investor_type=${this.detail.investor_type}&payment_method=${this.detail.payment_method}`
+      },
+      showCancel () {
+        let statusList = ['预审中', '资料审核通过', '预审成功', '资料审核中', '需复查', '预约失败', '预约成功']
+        return statusList.indexOf(this.detail.order_status_desc) >= 0
       },
     },
     async onLoad (params) {
