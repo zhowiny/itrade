@@ -51,7 +51,7 @@
       // 数据统计
       this.$auth.dataBuryPoint({
         eventName: 'landing_page:init:visit',
-        eventDataId: this.product_id,
+        eventDataId: '',
         source: this.$root.$mp.query.source,
         utmSource: this.$root.$mp.query.utm_source,
         introduceCode: this.introduce_code,
@@ -62,6 +62,16 @@
     methods: {
       ...mapMutations(['setFromLandingPage']),
       concat (phone) {
+        // 数据统计
+        this.$auth.dataBuryPoint({
+          eventName: 'landing_page:cooperate_consul:click',
+          eventDataId: '',
+          source: this.$root.$mp.query.source,
+          utmSource: this.$root.$mp.query.utm_source,
+          introduceCode: this.introduce_code,
+          shareInvestorId: '',
+          prePage: wx.getStorageSync('from')
+        })
         wx.makePhoneCall({
           phoneNumber: phone
         })
@@ -71,6 +81,29 @@
         this.toPage('/pages/web_view_page/main')
       },
       checkUser (tag) {
+        if (tag === 1) {
+          // 数据统计
+          this.$auth.dataBuryPoint({
+            eventName: 'landing_page:go_for_a_look:click',
+            eventDataId: '',
+            source: this.$root.$mp.query.source,
+            utmSource: this.$root.$mp.query.utm_source,
+            introduceCode: this.introduce_code,
+            shareInvestorId: '',
+            prePage: wx.getStorageSync('from')
+          })
+        } else {
+          // 数据统计
+          this.$auth.dataBuryPoint({
+            eventName: 'landing_page:register_at_once:click',
+            eventDataId: '',
+            source: this.$root.$mp.query.source,
+            utmSource: this.$root.$mp.query.utm_source,
+            introduceCode: this.introduce_code,
+            shareInvestorId: '',
+            prePage: wx.getStorageSync('from')
+          })
+        }
         if (this.$common.getHasBindPhone()) {
           this.showToast('您已是我们的理财师，可直接进入', () => {
             this.toPage({url: '/pages/index/main', type: 'switchTab'})
