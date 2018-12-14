@@ -385,7 +385,7 @@ export default {
   // 上拉加载
   async onReachBottom () {
     if (this.isLastPage) {
-      this.$common.showToast('没有跟多数据啦～')
+      this.$common.showToast('没有更多数据啦～')
     } else {
       await this.pageNum++
       this.getList('', this.productType, this.tagId, this.pageNum)
