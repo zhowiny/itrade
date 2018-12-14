@@ -162,7 +162,7 @@
         </div>
         <div class="order_field">
           <span>首期保费</span>
-          <span>{{detail.renewalPremium}}</span>
+          <span>{{detail.yearPayAmount}}</span>
         </div>
         <div class="order_field">
           <span>佣金比例</span>
@@ -363,7 +363,7 @@
       },
       showCancel () {
         let statusList = ['预审中', '资料审核通过', '预审成功', '资料审核中', '需复查', '预约失败', '预约成功']
-        return statusList.indexOf(this.detail.order_status_desc) >= 0
+        return statusList.indexOf(this.detail.statusName) >= 0
       },
     },
     async onLoad (params) {
