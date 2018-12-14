@@ -40,7 +40,8 @@
   background: #306FF4;
 }
 .checkbox-icon.checkbox-icon--disabled:before {
-  background: #ccc;
+  /* background: #ccc; */
+  opacity: 0.3;
 }
 .radio-icon, .radio-icon:before {
   border-radius: 50%;

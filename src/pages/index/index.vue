@@ -357,6 +357,9 @@ export default {
       this.bannerList = info.carousel_list
 
       await this.getList('', this.productType, this.tagId, 1)
+      let status = await this.$http.get('/wx/itrade/channel/getAdvisorByLogin', {})
+      await this.$common.setIsLegalize(status.is_legalize)
+      this.legalizedStatus = status.legalize_status
     },
   },
   async onLoad () {

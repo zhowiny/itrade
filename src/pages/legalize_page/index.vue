@@ -12,11 +12,11 @@
         <div class="fields_form">
           <div class="fields_section">
             <p class="fields_label"> 真实姓名 </p>
-            <input v-model="legalizeInfo.name" placeholder="请输入您的身份证姓名"  placeholder-style="color: #ccc;" />
+            <input v-model="legalizeInfo.name" placeholder="请输入您的身份证姓名"  placeholder-style="color: #ccc;" :disabled="disabledInfo" />
           </div>
           <div class="fields_section">
             <p class="fields_label"> 证件类型 </p>
-            <picker :range="cardTypeList" range-key="name" @change="bindCardTypeChange">
+            <picker :range="cardTypeList" range-key="name" @change="bindCardTypeChange" :disabled="disabledInfo">
               <view class="picker" :style="cardTypeString == '请选择' ? 'color: #ccc;' : ''"> {{cardTypeString}} </view>
             </picker>
             <img src="/images/icon_arrow_product.png" alt="" class="fields_arrow_icon"/>
@@ -24,11 +24,11 @@
           <p class="fields_tips">*中国公民，请上传身份证：其它国家公民，请上传护照。</p>
           <div class="fields_section fields_form_none" v-if="cardTypeString === '身份证'">
             <p class="fields_label"> 身份证号 </p>
-            <input v-model="legalizeInfo.card_number" placeholder="请输入您的身份证号"  placeholder-style="color: #ccc;" />
+            <input v-model="legalizeInfo.card_number" placeholder="请输入您的身份证号" :disabled="disabledInfo" placeholder-style="color: #ccc;" />
           </div>
           <div class="fields_section fields_form_none" v-if="cardTypeString === '护照'">
             <p class="fields_label"> 护照号 </p>
-            <input v-model="legalizeInfo.passport_number" placeholder="请输入您的护照号"  placeholder-style="color: #ccc;" />
+            <input v-model="legalizeInfo.passport_number" placeholder="请输入您的护照号" :disabled="disabledInfo" placeholder-style="color: #ccc;" />
           </div>
         </div>
         <div class="fields_id_card" v-if="cardTypeString === '身份证'">
@@ -50,7 +50,7 @@
         <div class="fields_form">
           <div class="fields_section">
             <p class="fields_label"> 所在地区 </p>
-            <picker mode="region" @change="bindRegionChange" :value="region">
+            <picker mode="region" @change="bindRegionChange" :value="region" :disabled="disabledInfo">
               <view class="picker" v-if="legalizeInfo.province == '' && legalizeInfo.city == ''" style="color: #ccc;"> 请选择 </view>
               <view class="picker"> {{legalizeInfo.province}} {{legalizeInfo.city}} </view>
             </picker>
@@ -58,7 +58,7 @@
           </div>
           <div class="fields_section">
             <p class="fields_label"> 所属行业 </p>
-            <picker @change="bindProfessionChange" :value="legalizeInfo.profession" :range="industryList">
+            <picker @change="bindProfessionChange" :value="legalizeInfo.profession" :range="industryList" :disabled="disabledInfo">
               <view class="picker" v-if="legalizeInfo.profession===''" style="color: #ccc;"> 请选择 </view>
               <view class="picker" v-else> {{legalizeInfo.profession}} </view>
             </picker>
@@ -66,32 +66,39 @@
           </div>
           <div class="fields_section">
             <p class="fields_label"> 从业年限 </p>
-            <picker @change="bindIndustryYearsChange" :value="legalizeInfo.industry_years" :range="yearList">
+            <picker @change="bindIndustryYearsChange" :value="legalizeInfo.industry_years" :range="yearList" range-key="name" :disabled="disabledInfo">
               <view class="picker" v-if="legalizeInfo.industry_years===''" style="color: #ccc;"> 请选择 </view>
-              <view class="picker" v-else> {{legalizeInfo.industry_years}} </view>
+              <view class="picker" v-else> {{yearString}} </view>
             </picker>
             <img src="/images/icon_arrow_product.png" alt="" class="fields_arrow_icon"/>
           </div>
         </div>
         <div class="assetType">
           <p class="assetType_title"> “ 请勾选您感兴趣的资产类型（可多选） ” </p>
-          <mx-checkbox-group class-name="group" @change="handleCheckboxChange" >
+          <!-- <mx-checkbox-group class-name="group" @change="handleCheckboxChange">
             <div style="display: flex; padding-left: 80rpx; margin-top: 20rpx; color:">
-              <p style="width: 50%;"> <mx-checkbox class-name="item" key="股权基金" :checked="false" >股权基金</mx-checkbox> </p>
-              <p style="width: 50%; margin-left: 80rpx;"> <mx-checkbox class-name="item" key="非股权基金" :checked="false" >非股权基金</mx-checkbox> </p>
+              <p style="width: 50%;"> <mx-checkbox class-name="item" key="01" :checked="false" :disabled="disabledInfo">股权基金</mx-checkbox> </p>
+              <p style="width: 50%; margin-left: 80rpx;"> <mx-checkbox class-name="item" key="02" :checked="false" :disabled="disabledInfo">非股权基金</mx-checkbox> </p>
             </div>
             <div style="display: flex; padding-left: 80rpx; margin-top: 20rpx;">
-              <p style="width: 50%;"> <mx-checkbox class-name="item" key="海外房产" :checked="false" >海外房产</mx-checkbox> </p>
-              <p style="width: 50%; margin-left: 80rpx;"> <mx-checkbox class-name="item" key="境外保险" :checked="false" >保险</mx-checkbox> </p>
+              <p style="width: 50%;"> <mx-checkbox class-name="item" key="03" :checked="false" :disabled="disabledInfo" >海外房产</mx-checkbox> </p>
+              <p style="width: 50%; margin-left: 80rpx;"> <mx-checkbox class-name="item" key="04" :checked="false" :disabled="disabledInfo">保险</mx-checkbox> </p>
             </div>
             <div style="display: flex; padding-left: 80rpx; margin-top: 20rpx;">
-              <p style="width: 50%;"> <mx-checkbox class-name="item" key="债券" :checked="false" >债券</mx-checkbox> </p>
-              <p style="width: 50%; margin-left: 80rpx;"> <mx-checkbox class-name="item" key="护照" :checked="false" >移民护照</mx-checkbox> </p>
+              <p style="width: 50%;"> <mx-checkbox class-name="item" key="05" :checked="false" :disabled="disabledInfo">债券</mx-checkbox> </p>
+              <p style="width: 50%; margin-left: 80rpx;"> <mx-checkbox class-name="item" key="06" :checked="false" :disabled="disabledInfo">护照</mx-checkbox> </p>
+            </div>
+          </mx-checkbox-group> -->
+          <mx-checkbox-group class-name="group" @change="handleCheckboxChange">
+            <div class="assetType_checkbox">
+              <div class="assetType_checkbox_item" v-for="(item, index) in productList" :key="index">
+                <mx-checkbox class-name="item" :key="item.value" :checked="item.checked" :disabled="disabledInfo">{{item.name}}</mx-checkbox>
+              </div>
             </div>
           </mx-checkbox-group>
         </div>
-        <div class="legalizeFooter" @click="confirm" v-if="legalizeStatus=='未认证'"> 提交认证信息 </div>
-        <div class="legalizeFooter" @click="confirm" v-else style="background: #dddddd;"> {{legalizeStatus}} </div>
+        <div class="legalizeFooter" @click="confirm" v-if="!disabledInfo"> 保存并提交 </div>
+        <div class="legalizeFooter" v-else style="background: #dddddd;"> {{legalizeStatus}} </div>
       </div>
     </div>
   </div>
@@ -118,7 +125,13 @@ export default {
         passport_number: ''
       },
       industryList: [],
-      yearList: [],
+      yearList: [
+        {name: '刚入行', value: 0},
+        {name: '1-3年', value: 1},
+        {name: '3-5年', value: 2},
+        {name: '5年以上', value: 3},
+      ],
+      yearString: '',
       region: [],
 
       cardTypeList: [
@@ -126,6 +139,15 @@ export default {
         {name: '护照', value: 2},
       ],
       cardTypeString: '请选择',
+      disabledInfo: true,
+      productList: [
+        {name: '股权基金', value: '01', checked: false},
+        {name: '非股权基金', value: '02', checked: false},
+        {name: '海外房产', value: '03', checked: false},
+        {name: '保险', value: '04', checked: false},
+        {name: '债券', value: '05', checked: false},
+        {name: '护照', value: '06', checked: false},
+      ]
     }
   },
 
@@ -134,64 +156,70 @@ export default {
 
   methods: {
     upLoadIdCardFront () {
-      wx.chooseImage({
-        count: 1, // 默认9
-        sizeType: ['original', 'compressed'],
-        sourceType: ['album', 'camera'],
-        success: res => {
-          let tempFilePaths = res.tempFilePaths
-          wx.uploadFile({
-            url: 'https://upload.meixinglobal.com/web/upload/public',
-            filePath: tempFilePaths[0],
-            name: 'file',
-            formData: {},
-            success: res => {
-              var data = JSON.parse(res.data)
-              this.legalizeInfo.card_front_url = data.body
-            }
-          })
-        }
-      })
+      if (!this.disabledInfo) {
+        wx.chooseImage({
+          count: 1, // 默认9
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album', 'camera'],
+          success: res => {
+            let tempFilePaths = res.tempFilePaths
+            wx.uploadFile({
+              url: 'https://upload.meixinglobal.com/web/upload/public',
+              filePath: tempFilePaths[0],
+              name: 'file',
+              formData: {},
+              success: res => {
+                var data = JSON.parse(res.data)
+                this.legalizeInfo.card_front_url = data.body
+              }
+            })
+          }
+        })
+      }
     },
     upLoadIdCardBack () {
-      wx.chooseImage({
-        count: 1, // 默认9
-        sizeType: ['original', 'compressed'],
-        sourceType: ['album', 'camera'],
-        success: res => {
-          let tempFilePaths = res.tempFilePaths
-          wx.uploadFile({
-            url: 'https://upload.meixinglobal.com/web/upload/public',
-            filePath: tempFilePaths[0],
-            name: 'file',
-            formData: {},
-            success: res => {
-              var data = JSON.parse(res.data)
-              this.legalizeInfo.card_back_url = data.body
-            }
-          })
-        }
-      })
+      if (!this.disabledInfo) {
+        wx.chooseImage({
+          count: 1, // 默认9
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album', 'camera'],
+          success: res => {
+            let tempFilePaths = res.tempFilePaths
+            wx.uploadFile({
+              url: 'https://upload.meixinglobal.com/web/upload/public',
+              filePath: tempFilePaths[0],
+              name: 'file',
+              formData: {},
+              success: res => {
+                var data = JSON.parse(res.data)
+                this.legalizeInfo.card_back_url = data.body
+              }
+            })
+          }
+        })
+      }
     },
     upLoadIdCardPassport () {
-      wx.chooseImage({
-        count: 1, // 默认9
-        sizeType: ['original', 'compressed'],
-        sourceType: ['album', 'camera'],
-        success: res => {
-          let tempFilePaths = res.tempFilePaths
-          wx.uploadFile({
-            url: 'https://upload.meixinglobal.com/web/upload/public',
-            filePath: tempFilePaths[0],
-            name: 'file',
-            formData: {},
-            success: res => {
-              var data = JSON.parse(res.data)
-              this.legalizeInfo.passport_url = data.body
-            }
-          })
-        }
-      })
+      if (!this.disabledInfo) {
+        wx.chooseImage({
+          count: 1, // 默认9
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album', 'camera'],
+          success: res => {
+            let tempFilePaths = res.tempFilePaths
+            wx.uploadFile({
+              url: 'https://upload.meixinglobal.com/web/upload/public',
+              filePath: tempFilePaths[0],
+              name: 'file',
+              formData: {},
+              success: res => {
+                var data = JSON.parse(res.data)
+                this.legalizeInfo.passport_url = data.body
+              }
+            })
+          }
+        })
+      }
     },
     upLoadCarte () {
       wx.chooseImage({
@@ -219,7 +247,8 @@ export default {
     },
     bindIndustryYearsChange (e) {
       let index = e.mp.detail.value
-      this.legalizeInfo.industry_years = this.yearList[index]
+      this.legalizeInfo.industry_years = this.yearList[index].value
+      this.yearString = this.yearList[index].name
     },
     bindRegionChange: function (e) {
       let address = e.mp.detail.value
@@ -227,7 +256,15 @@ export default {
       this.legalizeInfo.city = address[1]
     },
     handleCheckboxChange (e) {
+      console.log(e)
       this.legalizeInfo.favor_asset_type = e.mp.detail
+      this.legalizeInfo.favor_asset_type.forEach(item => {
+        this.productList.forEach(type => {
+          if (item === type.value) {
+            type.checked = true
+          }
+        })
+      })
     },
     async getLegalizeInfo () {
       let data = await this.$http.post('/wx/itrade/channel/getLegalizeByLogin', {})
@@ -243,6 +280,7 @@ export default {
       this.legalizeInfo.favor_asset_type = data.favor_asset_type
       this.legalizeInfo.passport_number = data.passport_number
       this.legalizeInfo.passport_url = data.passport_url
+      this.legalizeInfo.legalize_type = data.legalize_type
       if (data.legalize_type === 1) {
         this.cardTypeString = '身份证'
       } else {
@@ -250,16 +288,32 @@ export default {
       }
       if (data.status === -1 || data.status === 0) {
         this.legalizeStatus = '未认证'
+        this.disabledInfo = false
       }
       if (data.status === 1) {
         this.legalizeStatus = '审核中'
+        this.disabledInfo = true
       }
       if (data.status === 2) {
         this.legalizeStatus = '认证成功'
+        this.disabledInfo = true
       }
       if (data.status === 3) {
         this.legalizeStatus = '认证失败'
+        this.disabledInfo = false
       }
+      this.yearList.forEach(item => {
+        if (item.value === data.industry_years) {
+          this.yearString = item.name
+        }
+      })
+      data.favor_asset_type.forEach(item => {
+        this.productList.forEach(type => {
+          if (item === type.value) {
+            type.checked = true
+          }
+        })
+      })
     },
     bindCardTypeChange (event) {
       console.log(event)
@@ -269,15 +323,63 @@ export default {
     },
     confirm () {
       console.log(this.legalizeInfo)
+      if (!this.legalizeInfo.name) {
+        this.$common.showToast('请输入姓名')
+        return
+      }
+      if (!this.legalizeInfo.legalize_type) {
+        this.$common.showToast('请选择证件类型')
+        return
+      }
+      if (this.legalizeInfo.legalize_type === 2) {
+        if (!this.legalizeInfo.passport_number) {
+          this.$common.showToast('请输入护照号')
+          return
+        }
+        if (!this.legalizeInfo.passport_url) {
+          this.$common.showToast('护照信息页照片或扫描文件')
+          return
+        }
+      } else {
+        if (this.legalizeInfo.card_number && this.legalizeInfo.card_number.length === 18) {
+          let reg = /^[0-9a-zA-Z]+$/
+          let value = reg.test(this.legalizeInfo.card_number)
+          if (!value) {
+            this.$common.showToast('请填写正确格式的身份证号')
+            return
+          }
+          if (!this.legalizeInfo.card_front_url) {
+            this.$common.showToast('请上传身份证正面')
+            return
+          }
+          if (!this.legalizeInfo.card_back_url) {
+            this.$common.showToast('请上传身份证反面')
+            return
+          }
+        } else {
+          this.$common.showToast('请填写正确格式的身份证号')
+          return
+        }
+      }
+      if (!this.legalizeInfo.province) {
+        this.$common.showToast('请选择地区')
+        return
+      }
+      if (!this.legalizeInfo.profession) {
+        this.$common.showToast('请选择行业')
+        return
+      }
+      if (this.legalizeInfo.industry_years === '') {
+        this.$common.showToast('请选择从业年限')
+        return
+      }
       this.$http.post('/wx/itrade/channel/addLegalize', this.legalizeInfo).then(res => {
         console.log(res)
         this.getLegalizeInfo()
       })
     }
   },
-
   async mounted () {
-    this.yearList = await Array.apply(null, {length: 40}).map((v, i) => { return i })
     let arr = await this.$http.post('/big_bend/common/access_careers', { industry: '' })
     this.industryList = await arr.map((v, i) => { return v.name_cn })
     this.getLegalizeInfo()
@@ -326,6 +428,15 @@ export default {
       font-size: 32rpx;
       color: #646464;
       margin-bottom: 40px;
+    }
+    &_checkbox{
+      @include flex(flex-start);
+      flex-wrap: wrap;
+      &_item{
+        width: 50%;
+        padding-left: 55px;
+        margin-bottom: 20px;
+      }
     }
   }
 
