@@ -67,7 +67,7 @@
           <div class="fields_section">
             <p class="fields_label"> 从业年限 </p>
             <picker @change="bindIndustryYearsChange" :value="legalizeInfo.industry_years" :range="yearList" range-key="name" :disabled="disabledInfo">
-              <view class="picker" v-if="legalizeInfo.industry_years===''" style="color: #ccc;"> 请选择 </view>
+              <view class="picker" v-if="yearString===''" style="color: #ccc;"> 请选择 </view>
               <view class="picker" v-else> {{yearString}} </view>
             </picker>
             <img src="/images/icon_arrow_product.png" alt="" class="fields_arrow_icon"/>
@@ -117,7 +117,7 @@ export default {
         {name: '3-5年', value: 2},
         {name: '5年以上', value: 3},
       ],
-      yearString: '请选择',
+      yearString: '',
       region: [],
 
       cardTypeList: [
