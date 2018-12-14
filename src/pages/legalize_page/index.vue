@@ -33,17 +33,20 @@
         </div>
         <div class="fields_id_card" v-if="cardTypeString === '身份证'">
           <div class="fields_pic">
-            <img class="picture idDard" @click="upLoadIdCardFront" :src="legalizeInfo.card_front_url" alt="">
+            <img class="idDard" v-if="!legalizeInfo.card_front_url" @click="upLoadIdCardFront" src="https://file.meixinglobal.com/media/20180823/23394cf4-6547-4dae-8e26-340afcb5fa63.png" alt="" mode="aspectFit">
+            <div class="picture_shadow" v-else><img class="picture" @click="upLoadIdCardFront" :src="legalizeInfo.card_front_url" alt="" mode="aspectFit"></div>
             <p class="explain"> 身份证正面 </p>
           </div>
           <div class="fields_pic">
-            <img class="picture idDardSide" @click="upLoadIdCardBack" :src="legalizeInfo.card_back_url" alt="">
+            <img class="idDard" v-if="!legalizeInfo.card_back_url" @click="upLoadIdCardBack" src="https://file.meixinglobal.com/media/20180910/cb585c03-a6ba-42fa-a092-3f4af6cd2d47.png" alt="" mode="aspectFit">
+            <div class="picture_shadow" v-else><img class="picture" @click="upLoadIdCardBack" :src="legalizeInfo.card_back_url" alt="" mode="aspectFit"></div>
             <p class="explain"> 身份证反面 </p>
           </div>
         </div>
         <div class="fields_passport" v-if="cardTypeString === '护照'">
           <div class="fields_pic">
-            <img class="picture passportDard" @click="upLoadIdCardPassport" :src="legalizeInfo.passport_url" alt="">
+            <img class="idDard" v-if="!legalizeInfo.passport_url" @click="upLoadIdCardPassport" src="https://filehz.meixinglobal.com/20181129/16c9d641-b9d5-4aa9-9b71-ff8091df7642.png" alt="" mode="aspectFit">
+            <div class="picture_shadow" v-else><img class="picture" @click="upLoadIdCardPassport" :src="legalizeInfo.passport_url" alt="" mode="aspectFit"></div>
             <p class="explain"> 护照信息页照片或扫描文件 </p>
           </div>
         </div>
@@ -489,16 +492,22 @@ export default {
     padding: 0px 75px 40px;
     .fields_pic{
       padding-top: 50px;
+      .picture_shadow{
+        width: 600px;
+        height: 380px;
+        box-shadow: 0 0 10px 0 #D3DBEB;
+      }
       .picture{
+        max-width: 600px;
+        max-height: 380px;
+      }
+      .idDard{
         width: 600px;
         height: 380px;
       }
-      .idDard{
-        background-image: url(https://file.meixinglobal.com/media/20180823/23394cf4-6547-4dae-8e26-340afcb5fa63.png);
-        background-size: cover;
-        background-repeat: no-repeat;
-      }
       .idDardSide{
+        width: 600px;
+        height: 380px;
         background-image: url(https://file.meixinglobal.com/media/20180910/cb585c03-a6ba-42fa-a092-3f4af6cd2d47.png);
         background-size: cover;
         background-repeat: no-repeat;
@@ -516,11 +525,18 @@ export default {
     margin-top: 33px;
     padding: 87px 75px 69px;
     .fields_pic{
-      .picture{
+      .picture_shadow{
         width: 600px;
         height: 380px;
+        box-shadow: 0 0 10px 0 #D3DBEB;
+      }
+      .picture{
+        max-width: 600px;
+        max-height: 380px;
       }
       .passportDard{
+        max-width: 600px;
+        height: 380px;
         background-image: url(https://filehz.meixinglobal.com/20181129/16c9d641-b9d5-4aa9-9b71-ff8091df7642.png);
         background-size: cover;
         background-repeat: no-repeat;
