@@ -75,20 +75,6 @@
         </div>
         <div class="assetType">
           <p class="assetType_title"> “ 请勾选您感兴趣的资产类型（可多选） ” </p>
-          <!-- <mx-checkbox-group class-name="group" @change="handleCheckboxChange">
-            <div style="display: flex; padding-left: 80rpx; margin-top: 20rpx; color:">
-              <p style="width: 50%;"> <mx-checkbox class-name="item" key="01" :checked="false" :disabled="disabledInfo">股权基金</mx-checkbox> </p>
-              <p style="width: 50%; margin-left: 80rpx;"> <mx-checkbox class-name="item" key="02" :checked="false" :disabled="disabledInfo">非股权基金</mx-checkbox> </p>
-            </div>
-            <div style="display: flex; padding-left: 80rpx; margin-top: 20rpx;">
-              <p style="width: 50%;"> <mx-checkbox class-name="item" key="03" :checked="false" :disabled="disabledInfo" >海外房产</mx-checkbox> </p>
-              <p style="width: 50%; margin-left: 80rpx;"> <mx-checkbox class-name="item" key="04" :checked="false" :disabled="disabledInfo">保险</mx-checkbox> </p>
-            </div>
-            <div style="display: flex; padding-left: 80rpx; margin-top: 20rpx;">
-              <p style="width: 50%;"> <mx-checkbox class-name="item" key="05" :checked="false" :disabled="disabledInfo">债券</mx-checkbox> </p>
-              <p style="width: 50%; margin-left: 80rpx;"> <mx-checkbox class-name="item" key="06" :checked="false" :disabled="disabledInfo">护照</mx-checkbox> </p>
-            </div>
-          </mx-checkbox-group> -->
           <mx-checkbox-group class-name="group" @change="handleCheckboxChange">
             <div class="assetType_checkbox">
               <div class="assetType_checkbox_item" v-for="(item, index) in productList" :key="index">
@@ -131,7 +117,7 @@ export default {
         {name: '3-5年', value: 2},
         {name: '5年以上', value: 3},
       ],
-      yearString: '',
+      yearString: '请选择',
       region: [],
 
       cardTypeList: [
@@ -258,6 +244,9 @@ export default {
     handleCheckboxChange (e) {
       console.log(e)
       this.legalizeInfo.favor_asset_type = e.mp.detail
+      this.productList.forEach(val => {
+        val.checked = false
+      })
       this.legalizeInfo.favor_asset_type.forEach(item => {
         this.productList.forEach(type => {
           if (item === type.value) {
@@ -371,6 +360,10 @@ export default {
       }
       if (this.legalizeInfo.industry_years === '') {
         this.$common.showToast('请选择从业年限')
+        return
+      }
+      if (this.legalizeInfo.favor_asset_type.length < 1) {
+        this.$common.showToast('请选择资产类型')
         return
       }
       this.$http.post('/wx/itrade/channel/addLegalize', this.legalizeInfo).then(res => {
