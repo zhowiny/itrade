@@ -256,6 +256,8 @@ export default {
       })
     },
     async getLegalizeInfo () {
+      this.cardTypeString = ''
+      this.yearString = ''
       let data = await this.$http.post('/wx/itrade/channel/getLegalizeByLogin', {})
       this.legalizeInfo.province = data.province
       this.legalizeInfo.city = data.city
@@ -272,8 +274,10 @@ export default {
       this.legalizeInfo.legalize_type = data.legalize_type
       if (data.legalize_type === 1) {
         this.cardTypeString = '身份证'
-      } else {
+      } else if (data.legalize_type === 2) {
         this.cardTypeString = '护照'
+      } else {
+        this.cardTypeString = ''
       }
       if (data.status === -1 || data.status === 0) {
         this.legalizeStatus = '未认证'
