@@ -53,15 +53,15 @@
         <div class="fields_form">
           <div class="fields_section">
             <p class="fields_label"> 所在地区 </p>
-            <picker mode="region" @change="bindRegionChange" :value="region" :disabled="disabledInfo">
-              <view class="picker" v-if="legalizeInfo.province == '' && legalizeInfo.city == ''" style="color: #ccc;"> 请选择 </view>
-              <view class="picker"> {{legalizeInfo.province}} {{legalizeInfo.city}} </view>
+            <picker @change="bindRegionChange" :value="region" :disabled="disabledInfo" :range="provinceList" range-key="name">
+              <view class="picker" v-if="legalizeInfo.province == ''" style="color: #ccc;"> 请选择 </view>
+              <view class="picker"> {{legalizeInfo.province}} </view>
             </picker>
             <img src="/images/icon_arrow_product.png" alt="" class="fields_arrow_icon"/>
           </div>
           <div class="fields_section">
             <p class="fields_label"> 所属行业 </p>
-            <picker @change="bindProfessionChange" :value="legalizeInfo.profession" :range="industryList" :disabled="disabledInfo">
+            <picker @change="bindProfessionChange" :value="legalizeInfo.profession" :range="industryList" :disabled="disabledInfo" range-key="industry_cn">
               <view class="picker" v-if="legalizeInfo.profession===''" style="color: #ccc;"> 请选择 </view>
               <view class="picker" v-else> {{legalizeInfo.profession}} </view>
             </picker>
@@ -114,6 +114,7 @@ export default {
         passport_number: ''
       },
       industryList: [],
+      provinceList: [],
       yearList: [
         {name: '刚入行', value: 0},
         {name: '1-3年', value: 1},
@@ -232,7 +233,7 @@ export default {
     },
     bindProfessionChange (e) {
       let index = e.mp.detail.value
-      this.legalizeInfo.profession = this.industryList[index]
+      this.legalizeInfo.profession = this.industryList[index].industry_cn
     },
     bindIndustryYearsChange (e) {
       let index = e.mp.detail.value
@@ -240,9 +241,10 @@ export default {
       this.yearString = this.yearList[index].name
     },
     bindRegionChange: function (e) {
+      console.log(e)
       let address = e.mp.detail.value
-      this.legalizeInfo.province = address[0]
-      this.legalizeInfo.city = address[1]
+      this.legalizeInfo.province = this.provinceList[address].name
+      // this.legalizeInfo.province = address[0]
     },
     handleCheckboxChange (e) {
       console.log(e)
@@ -377,11 +379,26 @@ export default {
         console.log(res)
         this.getLegalizeInfo()
       })
+    },
+    fetchDate () {
+      // 获取行业
+      this.$http.get('/big_bend/common/cms_content/info', {content_key: 'industry'}).then((res) => {
+        this.industryList = JSON.parse(res.content)
+        console.log(this.industryList, 'industryList')
+      })
+      // 获取省市
+      this.$http.post('/big_bend/common/access_district', {
+        city: '',
+        country: '中国',
+        region: ''
+      }).then((res) => {
+        console.log(res)
+        this.provinceList = res
+      })
     }
   },
   async mounted () {
-    let arr = await this.$http.post('/big_bend/common/access_careers', { industry: '' })
-    this.industryList = await arr.map((v, i) => { return v.name_cn })
+    this.fetchDate()
     this.getLegalizeInfo()
   },
 
