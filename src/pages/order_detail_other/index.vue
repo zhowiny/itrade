@@ -2,11 +2,11 @@
   <div class="order_detail_container">
     <div class="commission" v-if="orderType !== 3 && step === 4">
       <span>我的佣金</span>
-      <h2>¥{{detail.commission_amount}}</h2>
+      <h2>{{detail.commission_amount}}</h2>
     </div>
     <div class="commission" v-if="orderType === 3 && step === 4">
       <span>我的佣金</span>
-      <h2>¥{{detail.orderCommissions.periodAmountSum[0]}}</h2>
+      <h2>{{detail.orderCommissions.periodAmountSum[0]}}</h2>
     </div>
     <wx-steps v-if="orderType !== 3 && step !== 4 && detail.order_status_desc !== '已取消'" :active="step" :steps="steps"/>
     <wx-steps v-if="orderType === 3 && step !== 4 && showInsuranceProgress" :active="step" :steps="insurance_steps"></wx-steps>
@@ -389,8 +389,8 @@
               this.showInsuranceProgress = false
             }
           }
-          this.detail.commission = (this.detail.commission % 100).toFixed(2)
-          console.log(this.detail)
+          this.detail.commission = (this.detail.commission * 100).toFixed(2)
+          // console.log(this.detail)
         } catch (e) {
           throw new Error(e)
         }
