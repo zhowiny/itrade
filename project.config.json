@@ -29,7 +29,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 6,
+			"current": 7,
 			"list": [
 				{
 					"id": 0,
@@ -72,6 +72,11 @@
 					"name": "托管服务",
 					"pathName": "pages/trusteeship/main",
 					"query": "article_id=3916750&introduce_code=3458448"
+				},
+				{
+					"id": -1,
+					"name": "qrcode",
+					"pathName": "pages/qrcode/main"
 				}
 			]
 		}

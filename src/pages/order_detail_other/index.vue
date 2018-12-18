@@ -66,7 +66,7 @@
         </div>
         <div class="order_field">
           <span>佣金金额</span>
-          <span>¥{{detail.commission_amount}}</span>
+          <span>{{detail.commission_amount}}</span>
         </div>
         <div class="order_field">
           <span>投资顾问</span>
@@ -116,7 +116,7 @@
         </div>
         <div class="order_field">
           <span>佣金金额</span>
-          <span>¥{{detail.commission_amount}}</span>
+          <span>{{detail.commission_amount}}</span>
         </div>
         <div class="order_field">
           <span>投资顾问</span>

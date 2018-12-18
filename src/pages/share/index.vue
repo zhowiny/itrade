@@ -121,6 +121,13 @@ export default {
       this.img = res[0].img
     })
   },
+  onShareAppMessage (res) {
+    return {
+      title: 'iTrade邀你立刻成为国际化理财师！',
+      imageUrl: '/images/share.png',
+      path: '/pages/landing_page/main?introduce_code=' + this.introduce_code
+    }
+  },
 }
 </script>
 <style scoped lang="scss">
