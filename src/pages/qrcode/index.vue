@@ -67,15 +67,9 @@
       try {
         let status = await this.$http.post('/wx/itrade/channel/advisor_info', {})
         this.introduce_code = status.code
-        // todo 差一个二维码链接
         this.qrcode = await this.$http.get('/basic/qrcode/create', {
-          content: 'https://www.baidu.com/'
+          content: `https://${wx.mx_dev ? 'bd.meixincn' : 'badlands.meixinglobal'}.com/share/introduce?introduce_code=${this.introduce_code}&source=itrade_mini_share_h5_register`
         })
-        // this.qrcode = await this.$http.get('/wx/advisor/mini/get/qrcode', {
-        //   // path: '/pages/register_invite_code/main?introduce_code=' + this.introduce_code,
-        //   path: '/pages/landing_page/main?introduce_code=' + this.introduce_code,
-        //   type: 2, // 1 活动 2 B端 3 C端
-        // })
         let result = await this.$http.post('/wx/itrade/common/carousel_list', {
           size: '1',
           type: '3'
