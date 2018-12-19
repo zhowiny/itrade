@@ -43,7 +43,7 @@
       wx.getSystemInfo({
         success (e) {
           width = e.windowWidth - 40
-          height = e.windowHeight - 80
+          height = e.windowHeight - 40
         }
       })
       return {
