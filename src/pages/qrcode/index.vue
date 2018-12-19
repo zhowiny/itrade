@@ -67,11 +67,15 @@
       try {
         let status = await this.$http.post('/wx/itrade/channel/advisor_info', {})
         this.introduce_code = status.code
-        this.qrcode = await this.$http.get('/wx/advisor/mini/get/qrcode', {
-          // path: '/pages/register_invite_code/main?introduce_code=' + this.introduce_code,
-          path: '/pages/landing_page/main?introduce_code=' + this.introduce_code,
-          type: 2, // 1 活动 2 B端 3 C端
+        // todo 差一个二维码链接
+        this.qrcode = await this.$http.get('/basic/qrcode/create', {
+          content: 'https://www.baidu.com/'
         })
+        // this.qrcode = await this.$http.get('/wx/advisor/mini/get/qrcode', {
+        //   // path: '/pages/register_invite_code/main?introduce_code=' + this.introduce_code,
+        //   path: '/pages/landing_page/main?introduce_code=' + this.introduce_code,
+        //   type: 2, // 1 活动 2 B端 3 C端
+        // })
         let result = await this.$http.post('/wx/itrade/common/carousel_list', {
           size: '1',
           type: '3'
@@ -147,12 +151,12 @@
           success: (res) => {
             if (res.confirm) {
               wx.canvasToTempFilePath({
-                x: 0,
-                y: 0,
-                width: this.canvas.width,
-                height: this.canvas.height,
-                destWidth: this.canvas.width,
-                destHeight: this.canvas.height,
+                // x: 0,
+                // y: 0,
+                // width: this.canvas.width,
+                // height: this.canvas.height,
+                // destWidth: this.canvas.width,
+                // destHeight: this.canvas.height,
                 canvasId: 'invest',
                 success: (res) => {
                   console.log(res.tempFilePath)
@@ -210,7 +214,7 @@
 <style scoped lang='scss'>
   .invest-container {
     .save {
-      margin: $big-space * 2 auto 0;
+      margin: $big-space auto 0;
       @include size(443px, 70px);
       font-size: 32px;
       color: #fff;
@@ -261,6 +265,8 @@
         @include flex();
         background: transparentize($mainColor, .8);
         font-size: 32px;
+        line-height: 100px;
+        text-align: center;
       }
     }
   }
