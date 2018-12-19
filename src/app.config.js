@@ -56,6 +56,18 @@ module.exports = {
         'insurance_landing_page/main', // 保单分享页
       ]
     },
+    {
+      'root': 'pages/package_plan', // 计划书模块
+      'name': 'package_plan',
+      'pages': [
+        'create_plan/main', // 创建计划书 选择产品
+        'create_info/main', // 创建计划书 被保人信息
+        'create_success/main', // 创建计划书成功
+        'my_plan/main', // 我的计划书
+        'plan_detail/main', // 计划书详情
+        'plan_search/main', // 计划书搜索
+      ],
+    }
   ],
   'window': {
     'backgroundTextStyle': 'light',
