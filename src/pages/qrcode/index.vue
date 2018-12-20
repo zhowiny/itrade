@@ -68,7 +68,7 @@
         let status = await this.$http.post('/wx/itrade/channel/advisor_info', {})
         this.introduce_code = status.code
         this.qrcode = await this.$http.get('/basic/qrcode/create', {
-          content: `https://${wx.mx_dev ? 'bd.meixincn' : 'badlands.meixinglobal'}.com/share/introduce?introduce_code=${this.introduce_code}&source=itrade_mini_share_h5_register`
+          content: `https://${wx.mx_dev ? 'bd.meixincn' : 'badlands.meixinglobal'}.com/shareRegister/introduce?introduce_code=${this.introduce_code}&source=itrade_mini_share_h5_register`
         })
         let result = await this.$http.post('/wx/itrade/common/carousel_list', {
           size: '1',
