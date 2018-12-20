@@ -29,8 +29,15 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
-			"list": []
+			"current": 0,
+			"list": [
+				{
+					"id": 0,
+					"name": "创建计划书",
+					"pathName": "pages/plan_module/create_plan/main",
+					"query": ""
+				}
+			]
 		}
 	}
 }

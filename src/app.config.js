@@ -57,8 +57,8 @@ module.exports = {
       ]
     },
     {
-      'root': 'pages/package_plan', // 计划书模块
-      'name': 'package_plan',
+      'root': 'pages/plan_module', // 计划书模块
+      'name': 'plan_module',
       'pages': [
         'create_plan/main', // 创建计划书 选择产品
         'create_info/main', // 创建计划书 被保人信息
