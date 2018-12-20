@@ -151,6 +151,15 @@ export default {
     await this.$auth.login()
     this.getPhoneCode()
     this.getPicCode()
+    this.$auth.dataBuryPoint({
+      eventName: 'advisor_login_sms:init:visit',
+      eventDataId: '',
+      source: '',
+      utmSource: '',
+      introduceCode: '',
+      shareInvestorId: '',
+      prePage: wx.getStorageSync('from')
+    })
   },
 }
 </script>

@@ -156,6 +156,15 @@ export default {
       this.tagId = -1
     }
     await this.getList(this.search, this.productType, this.tagId)
+    this.$auth.dataBuryPoint({
+      eventName: 'product_list:init:visit',
+      eventDataId: this.$root.$mp.query.product_type,
+      source: '',
+      utmSource: '',
+      introduceCode: '',
+      shareInvestorId: '',
+      prePage: wx.getStorageSync('from')
+    })
   },
 
   created () {

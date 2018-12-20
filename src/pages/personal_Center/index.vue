@@ -124,6 +124,15 @@
     },
     async mounted (opsid) {
       this.init()
+      this.$auth.dataBuryPoint({
+        eventName: 'my_account:init:visit',
+        eventDataId: '',
+        source: '',
+        utmSource: '',
+        introduceCode: '',
+        shareInvestorId: '',
+        prePage: wx.getStorageSync('from')
+      })
     },
     async onPullDownRefresh () {
       // to doing..
