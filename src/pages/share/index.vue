@@ -1,12 +1,26 @@
 <template>
   <div class="share">
     <img :src="img" alt="">
-    <div v-if="type === 2" class="open_account" @click="toPage({url: '/pages/qrcode/main'})">立即邀请</div>
+    <div v-if="type === 2" class="open_account" @click="showTool = true">立即邀请</div>
     <div v-if="type === 1" class="open_account" @click="toMiniProgram"> 邀请客户开户 </div>
     <!-- <navigator v-if="type === 1" hover-class="none" class="open_account"
                open-type="navigate" app-id="wxcd7c5762adbd3cf5" :url="path + introduce_code"
                :path="path + introduce_code" target="miniProgram"
                :extra-data="deliverData" version="trial">邀请客户开户</navigator> -->
+    <div class="tool" :class="{actived: showTool}">
+      <div class="btn_group">
+        <button hover-class="none" open-type="share" :data-path="'/pages/landing_page/main?introduce_code=' + introduce_code" >
+          <img src="/images/icon_wechat.png" mode="aspectFit" style="width: 67rpx;height: 55rpx;">
+          <span>分享给微信好友</span>
+        </button>
+        <button hover-class="none" @click="toPage({url: '/pages/qrcode/main'})">
+          <img src="/images/icon_friend_circle.png" mode="aspectFit" style="width: 62rpx;height: 62rpx;">
+          <span>分享至朋友圈</span>
+        </button>
+      </div>
+      <div class="btn_cancel" @click="showTool = false">取消</div>
+    </div>
+    <div class="mask" v-if="showTool" @click="showTool = false"></div>
   </div>
 </template>
 
@@ -23,6 +37,7 @@ export default {
       },
       path: `/pages/open_account/open_account/main?source=itrade_wx&introduce_code=`,
       introduce_code: '',
+      showTool: false,
     }
   },
 
@@ -106,12 +121,19 @@ export default {
       this.img = res[0].img
     })
   },
+  onShareAppMessage (res) {
+    return {
+      title: 'iTrade邀你立刻成为国际化理财师！',
+      imageUrl: '/images/share.png',
+      path: '/pages/landing_page/main?introduce_code=' + this.introduce_code
+    }
+  },
 }
 </script>
 <style scoped lang="scss">
  .share {
    height: 120%;
-   img {
+   >img {
      height: 100%;
      width: 100%;
    }
@@ -125,5 +147,56 @@ export default {
       color: #fff;
       background: #3774f6;
     }
+   .tool {
+     position: fixed;
+     z-index: 10;
+     bottom: 0;
+     left: 0;
+     width: 100vw;
+     transform: translateY(100%);
+     transition: transform .3s;
+     &.actived {
+       transform: translateY(0);
+     }
+     .btn_group {
+       background: $backgroundColor;
+       height: 180px;
+       @include flex();
+       padding: $big-space 0;
+       button {
+         flex: 1;
+         @include flex();
+         flex-direction: column;
+         color: #555;
+         font-size: 22px;
+         border-radius:0;
+         background:transparent;
+
+         &:after, &:before {
+           content: none;
+         }
+         &:last-child {
+           border-left: 1px solid #ddd;
+         }
+         span {
+           margin-top: $small-space;
+         }
+       }
+     }
+     .btn_cancel {
+       @include size(100vw, 100px);
+       @include flex();
+       background: #fff;
+       color: $lightColor;
+     }
+   }
+   .mask {
+     position: fixed;
+     top: 0;
+     left: 0;
+     z-index: 9;
+     @include size(100vw, 100vh);
+     background: rgba(0,0,0,.3);
+   }
  }
 </style>
