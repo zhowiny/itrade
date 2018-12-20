@@ -157,6 +157,7 @@
                   wx.saveImageToPhotosAlbum({
                     filePath: res.tempFilePath,
                     success: (res) => {
+                      this.buryPoint('invite_advisor:send_to_wx_zone:click')
                       console.log(res)
                       // wx.showToast({title: '保存成功'})
                       this.showTip = true
@@ -192,6 +193,17 @@
               this.saveImg()
             }
           }
+        })
+      },
+      buryPoint (event) {
+        this.$auth.dataBuryPoint({
+          eventName: event,
+          eventDataId: '',
+          source: this.$root.$mp.query.source,
+          utmSource: this.$root.$mp.query.utm_source,
+          introduceCode: this.introduce_code,
+          shareInvestorId: '',
+          prePage: wx.getStorageSync('from')
         })
       },
     },

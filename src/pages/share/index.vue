@@ -1,7 +1,7 @@
 <template>
   <div class="share">
     <img :src="img" alt="">
-    <div v-if="type === 2" class="open_account" @click="showTool = true">立即邀请</div>
+    <div v-if="type === 2" class="open_account" @click="buryPoint('invite_consumer:invite_button:click'); showTool = true">立即邀请</div>
     <div v-if="type === 1" class="open_account" @click="toMiniProgram"> 邀请客户开户 </div>
     <!-- <navigator v-if="type === 1" hover-class="none" class="open_account"
                open-type="navigate" app-id="wxcd7c5762adbd3cf5" :url="path + introduce_code"
@@ -13,7 +13,7 @@
           <img src="/images/icon_wechat.png" mode="aspectFit" style="width: 67rpx;height: 55rpx;">
           <span>分享给微信好友</span>
         </button>
-        <button hover-class="none" @click="toPage({url: '/pages/qrcode/main'})">
+        <button hover-class="none" @click="buryPoint('invite_advisor:send_to_wx_zone:click');toPage({url: '/pages/qrcode/main'})">
           <img src="/images/icon_friend_circle.png" mode="aspectFit" style="width: 62rpx;height: 62rpx;">
           <span>分享至朋友圈</span>
         </button>
@@ -83,6 +83,17 @@ export default {
         },
       })
     },
+    buryPoint (event) {
+      this.$auth.dataBuryPoint({
+        eventName: event,
+        eventDataId: '',
+        source: this.$root.$mp.query.source,
+        utmSource: this.$root.$mp.query.utm_source,
+        introduceCode: this.introduce_code,
+        shareInvestorId: '',
+        prePage: wx.getStorageSync('from')
+      })
+    }
   },
   async onLoad (params) {
     this.type = parseInt(params.type)
@@ -122,6 +133,15 @@ export default {
     })
   },
   onShareAppMessage (res) {
+    this.$auth.dataBuryPoint({
+      eventName: 'invite_advisor:send_to_wx_friends:click',
+      eventDataId: '',
+      source: this.$root.$mp.query.source,
+      utmSource: this.$root.$mp.query.utm_source,
+      introduceCode: this.introduce_code,
+      shareInvestorId: '',
+      prePage: wx.getStorageSync('from')
+    })
     return {
       title: 'iTrade邀你立刻成为国际化理财师！',
       imageUrl: '/images/share.png',
