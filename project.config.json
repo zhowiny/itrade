@@ -29,12 +29,24 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 2,
 			"list": [
 				{
 					"id": 0,
 					"name": "创建计划书",
 					"pathName": "pages/plan_module/create_plan/main",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "投保人信息",
+					"pathName": "pages/plan_module/create_info/main",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "landingpage",
+					"pathName": "pages/landing_page/main",
 					"query": ""
 				}
 			]

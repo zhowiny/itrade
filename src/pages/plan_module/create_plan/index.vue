@@ -190,9 +190,10 @@
       </div>
     </div>
 
-    <div class="btn_next">
+    <div class="btn_next" @click="toPage('/pages/plan_module/create_info/main')">
       <span>下一步</span>
     </div>
+
   </div>
 </template>
 
@@ -242,6 +243,12 @@
           flex: 1;
           margin-left: $mid-space;
           font-size: 32px;
+          font-weight: bold;
+          i {
+            font-weight: normal;
+            font-size: 26px;
+            display: inline;
+          }
         }
       }
       .item {
