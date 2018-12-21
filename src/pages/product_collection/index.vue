@@ -101,15 +101,15 @@
     methods: {
       toMiniProgram (id) {
         // console.log(event)
-        this.$auth.dataBuryPoint({
-          eventName: 'collect_product_list:item_share:click',
-          eventDataId: id,
-          source: '',
-          utmSource: '',
-          introduceCode: this.introduceCode,
-          shareInvestorId: this.introduceCode,
-          prePage: wx.getStorageSync('from')
-        })
+        // this.$auth.dataBuryPoint({
+        //   eventName: 'collect_product_list:item_share:click',
+        //   eventDataId: id,
+        //   source: '',
+        //   utmSource: '',
+        //   introduceCode: this.introduceCode,
+        //   shareInvestorId: this.introduceCode,
+        //   prePage: wx.getStorageSync('from')
+        // })
       },
       async cancel (id, type) {
         let params = {

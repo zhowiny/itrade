@@ -83,6 +83,15 @@ export default {
   async onLoad () {
     this.getParams()
     await this.getPlanList()
+    this.$auth.dataBuryPoint({
+      eventName: 'my_plan_list:init:visit',
+      eventDataId: this.$mp.query.product_id || '',
+      source: this.$root.$mp.query.source,
+      utmSource: this.$root.$mp.query.utm_source,
+      introduceCode: this.introduce_code,
+      shareInvestorId: '',
+      prePage: wx.getStorageSync('from')
+    })
   },
   async mounted () {
   },
@@ -121,6 +130,15 @@ export default {
       // let url = `https://weixin.fortunefed.com/prod/#/operatePlan?sessionId=${this.planParams.session_id}&token=${this.planParams.access_token}&channelId=${this.planParams.related_party_id}&planId=${item.planId}`
       let url = `https://weixin.fortunefed.com/#/normalPlan?sessionId=${this.planParams.session_id}&token=${this.planParams.access_token}&channelId=${this.planParams.related_party_id}` + (this.$mp.query.product_id ? `&itemId=${this.$mp.query.product_id}` : '')
       this.goWebView(url)
+      this.$auth.dataBuryPoint({
+        eventName: 'my_plan_list:item:click',
+        eventDataId: this.$mp.query.product_id || '',
+        source: this.$root.$mp.query.source,
+        utmSource: this.$root.$mp.query.utm_source,
+        introduceCode: this.introduce_code,
+        shareInvestorId: '',
+        prePage: wx.getStorageSync('from')
+      })
     },
     async goWebView (url) {
       await wx.setStorageSync('webViewUrl', url)

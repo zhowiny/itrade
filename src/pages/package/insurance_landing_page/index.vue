@@ -153,7 +153,7 @@
       // await this.$auth.login()
       // 数据统计
       this.$auth.dataBuryPoint({
-        eventName: 'estate_house_trusteeship:init:visit',
+        eventName: 'insurance_trusteeship_page:init:visit',
         eventDataId: '',
         source: this.$root.$mp.query.source,
         utmSource: this.$root.$mp.query.utm_source,
