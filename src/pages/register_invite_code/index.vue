@@ -4,7 +4,7 @@
       <img class="login_logo_icon" src="/images/login_logo.png"/>
     </div>
     <p class="title">iTrade为邀请注册制，您可以：</p>
-    <p class="notice">-通过iTrade注册理财是获得邀请码</p>
+    <p class="notice">-通过iTrade注册理财师获得邀请码</p>
     <p class="notice">-联系客服热线：<span class="main_color">4000941580</span></p>
     <div class="lr_phone">
       <div class="phone_label">
@@ -136,8 +136,10 @@ export default {
   }
   .notice{
     color: $lightColor;
-    text-align: center;
+    text-align: left;
     line-height: 50px;
+    width:64vw;
+    margin:0 auto;
   }
   .lr_phone{
     color: $fontSizeColor;
