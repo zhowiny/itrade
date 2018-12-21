@@ -62,7 +62,8 @@
     text-align: center;
     white-space: nowrap;
     letter-spacing: 1px;
-    font-weight: 100;
+    /*width:30px;*/
+    font-weight:bold;
     /*border: 1px solid #fff;*/
   }
 

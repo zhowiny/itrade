@@ -146,13 +146,13 @@
       <span>提交</span>
     </div>
 
-    <div class="mask" v-if="showConfirm"></div>
+    <div class="mask" v-if="showConfirm"  @click="showConfirm = false"></div>
     <div class="confirm" v-if="showConfirm">
       <p>根据您所填写的计划书内容，自动计算出保费预算值，可作为参考</p>
       <h3>保费：1000000港币</h3>
       <div class="btn_group">
         <div class="cancel" @click="showConfirm = false">返回修改</div>
-        <div class="submit" @click="showConfirm = false">继续提交</div>
+        <div class="submit" @click="showConfirm = false;toPage('/pages/plan_module/create_success/main')">继续提交</div>
       </div>
     </div>
   </div>
@@ -282,6 +282,7 @@
       position: fixed;
       bottom: 0;
       left: 0;
+      z-index: 2;
       background: #fff;
       @include size(100vw, 100px);
       padding: $mid-space / 2 $mid-space;

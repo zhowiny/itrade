@@ -29,7 +29,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 2,
+			"current": 3,
 			"list": [
 				{
 					"id": 0,
@@ -45,8 +45,14 @@
 				},
 				{
 					"id": -1,
-					"name": "landingpage",
-					"pathName": "pages/landing_page/main",
+					"name": "create_success",
+					"pathName": "pages/plan_module/create_success/main",
+					"query": ""
+				},
+				{
+					"id": 3,
+					"name": "my_plan",
+					"pathName": "pages/plan_module/my_plan/main",
 					"query": ""
 				}
 			]
