@@ -131,6 +131,7 @@ export default {
         this.$common.setAdvisorId(d.advisor_id)
         this.$common.setUserInfo(d.has_info)
         console.log(this.$common.getIsLegalize())
+        wx.refresh = true
         this.toPage({
           url: '/pages/index/main',
           type: 'switchTab'
