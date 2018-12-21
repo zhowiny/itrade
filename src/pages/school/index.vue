@@ -111,6 +111,15 @@ export default {
     //   appId: 'wx5621a217daf101a6'
     // })
     this.init()
+    this.$auth.dataBuryPoint({
+      eventName: 'discover_page:init:visit',
+      eventDataId: '',
+      source: '',
+      utmSource: '',
+      introduceCode: '',
+      shareInvestorId: '',
+      prePage: wx.getStorageSync('from')
+    })
   },
   onShareAppMessage (res) {
     return {

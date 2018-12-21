@@ -227,6 +227,15 @@
     },
     async mounted () {
       this.productfun(this.product, this.order, this.time)
+      this.$auth.dataBuryPoint({
+        eventName: 'order_list:init:visit',
+        eventDataId: '',
+        source: '',
+        utmSource: '',
+        introduceCode: '',
+        shareInvestorId: '',
+        prePage: wx.getStorageSync('from')
+      })
     }
   }
 </script>

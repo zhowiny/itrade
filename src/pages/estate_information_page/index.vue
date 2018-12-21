@@ -90,6 +90,16 @@ export default {
     this.product_id = option.product_id
     this.getEstateDetail(option.product_id)
     // this.getApratmentList(id)
+
+    this.$auth.dataBuryPoint({
+      eventName: 'estate_project_info:init:visit',
+      eventDataId: option.product_id,
+      source: '',
+      utmSource: '',
+      introduceCode: '',
+      shareInvestorId: '',
+      prePage: wx.getStorageSync('from')
+    })
   },
 }
 </script>

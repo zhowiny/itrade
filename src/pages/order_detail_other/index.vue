@@ -371,6 +371,15 @@
       this.orderType = parseInt(params.order_type)
       await this.getDetail()
       this.orderType === 3 ? this.insuranceTranserStatus() : this.transferStatus()
+      this.$auth.dataBuryPoint({
+        eventName: 'order_detail:init:visit',
+        eventDataId: this.$mp.query.order_number,
+        source: '',
+        utmSource: '',
+        introduceCode: '',
+        shareInvestorId: '',
+        prePage: wx.getStorageSync('from')
+      })
     },
     methods: {
       tips () {
@@ -453,6 +462,15 @@
         } catch (e) {
           throw new Error(e)
         }
+        this.$auth.dataBuryPoint({
+          eventName: 'order_detail:cancle_button:click',
+          eventDataId: this.detail.order_number || this.detail.orderNumber,
+          source: '',
+          utmSource: '',
+          introduceCode: '',
+          shareInvestorId: '',
+          prePage: wx.getStorageSync('from')
+        })
       },
     },
     components: {

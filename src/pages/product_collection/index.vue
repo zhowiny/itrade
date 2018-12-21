@@ -58,7 +58,7 @@
           <navigator hover-class="none" open-type="navigate"
                      app-id="wxcd7c5762adbd3cf5"  target="miniProgram"
                      :path='item.path' :extra-data="item.extraData"
-                     version="trial">
+                     version="trial" @complete="toMiniProgram(item.id)">
             <img src="/images/fenx.png" mode="aspectFit" style="width: 30rpx;height: 30rpx;">
             <span>分享产品</span>
           </navigator>
@@ -88,8 +88,29 @@
       let status = await this.$http.get('/wx/itrade/channel/getAdvisorByLogin', {})
       this.introduceCode = status.code
       await this.getProductList()
+      this.$auth.dataBuryPoint({
+        eventName: 'collect_product_list:init:visit',
+        eventDataId: '',
+        source: '',
+        utmSource: '',
+        introduceCode: '',
+        shareInvestorId: '',
+        prePage: wx.getStorageSync('from')
+      })
     },
     methods: {
+      toMiniProgram (id) {
+        // console.log(event)
+        // this.$auth.dataBuryPoint({
+        //   eventName: 'collect_product_list:item_share:click',
+        //   eventDataId: id,
+        //   source: '',
+        //   utmSource: '',
+        //   introduceCode: this.introduceCode,
+        //   shareInvestorId: this.introduceCode,
+        //   prePage: wx.getStorageSync('from')
+        // })
+      },
       async cancel (id, type) {
         let params = {
           product_id: id,
@@ -102,6 +123,15 @@
         } catch (e) {
           throw new Error(e)
         }
+        this.$auth.dataBuryPoint({
+          eventName: 'collect_product_list:item_cancle_collect:click',
+          eventDataId: id,
+          source: '',
+          utmSource: '',
+          introduceCode: '',
+          shareInvestorId: '',
+          prePage: wx.getStorageSync('from')
+        })
       },
       async getProductList () {
         try {

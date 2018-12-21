@@ -89,6 +89,15 @@ export default {
   onLoad () {
     this.$auth.login()
     this.getPhoneCode()
+    this.$auth.dataBuryPoint({
+      eventName: 'advisor_login_pwd:init:visit',
+      eventDataId: '',
+      source: '',
+      utmSource: '',
+      introduceCode: '',
+      shareInvestorId: '',
+      prePage: wx.getStorageSync('from')
+    })
   },
 }
 </script>

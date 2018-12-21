@@ -75,6 +75,15 @@
 
     async mounted () {
       this.takepartin(this.current)
+      this.$auth.dataBuryPoint({
+        eventName: 'my_joined_activity_list:init:visit',
+        eventDataId: '',
+        source: '',
+        utmSource: '',
+        introduceCode: '',
+        shareInvestorId: '',
+        prePage: wx.getStorageSync('from')
+      })
     }
   }
 </script>
