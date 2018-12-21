@@ -216,7 +216,7 @@
               </div>
             </div>
             <div class="finance_other_content_file_item">
-              <div class="finance_other_content_file_item_title"> <p>产品介绍文件</p> </div>
+              <div class="finance_other_content_file_item_title"> <p>投资者认购文件</p> </div>
               <div class="finance_other_content_file_item_content">
                 <p class="finance_other_content_file_item_content_title"> 仅供阅读 </p>
                 <div class="finance_other_content_file_item_content_item" v-for="(item, index) in readDocuments" :key="index">
