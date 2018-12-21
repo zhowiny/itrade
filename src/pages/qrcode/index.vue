@@ -68,7 +68,7 @@
         let status = await this.$http.post('/wx/itrade/channel/advisor_info', {})
         this.introduce_code = status.code
         this.qrcode = await this.$http.get('/basic/qrcode/create', {
-          content: `https://${wx.mx_dev ? 'bd.meixincn' : 'badlands.meixinglobal'}.com/share/introduce?introduce_code=${this.introduce_code}&source=itrade_mini_share_h5_register`
+          content: `https://${wx.mx_dev ? 'bd.meixincn' : 'badlands.meixinglobal'}.com/shareRegister/introduce?introduce_code=${this.introduce_code}&source=itrade_mini_share_h5_register`
         })
         let result = await this.$http.post('/wx/itrade/common/carousel_list', {
           size: '1',
@@ -157,6 +157,7 @@
                   wx.saveImageToPhotosAlbum({
                     filePath: res.tempFilePath,
                     success: (res) => {
+                      this.buryPoint('invite_advisor:send_to_wx_zone:click')
                       console.log(res)
                       // wx.showToast({title: '保存成功'})
                       this.showTip = true
@@ -192,6 +193,17 @@
               this.saveImg()
             }
           }
+        })
+      },
+      buryPoint (event) {
+        this.$auth.dataBuryPoint({
+          eventName: event,
+          eventDataId: '',
+          source: this.$root.$mp.query.source,
+          utmSource: this.$root.$mp.query.utm_source,
+          introduceCode: this.introduce_code,
+          shareInvestorId: '',
+          prePage: wx.getStorageSync('from')
         })
       },
     },
