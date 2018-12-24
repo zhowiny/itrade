@@ -22,7 +22,10 @@
     </div>
 
     <div class="plan_list">
-      <div class="plan_item" v-for="(item, index) in [1, 2, 3, 4, 5]" :key="index">
+      <div class="plan_item"
+           v-for="(item, index) in [1, 2, 3, 4, 5]"
+           :key="index" @click="toPage('/pages/plan_module/plan_detail/main')"
+      >
         <div class="title">
           <h3>金钻非凡储蓄寿险计划</h3>
           <span class="status">处理中</span>
@@ -52,9 +55,9 @@
       <span>+ 新建计划书</span>
     </div>
 
-    <div class="choose_insurance">
-      <img src="/images/icon_close.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
-      <div>
+    <div class="choose_insurance" :class="{show: showInsuranceType}">
+      <img class='close' @click="showInsuranceType = false" src="/images/icon_close.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
+      <div class="type">
         <div>
           <img src="/images/icon_hk.png" mode="aspectFit" style="width: 120rpx;height:120rpx;">
           <p>港险</p>
@@ -65,7 +68,7 @@
         </div>
       </div>
     </div>
-    <div class="mask"></div>
+    <div class="mask" v-if="showInsuranceType" @click="showInsuranceType = false"></div>
   </div>
 </template>
 
@@ -75,7 +78,8 @@
     data () {
       return {
         title: '我的计划书',
-        activeIndex: 0,
+        activeIndex: 0, // status_bar index
+        showInsuranceType: false,
       }
     },
 
@@ -211,8 +215,27 @@
   .choose_insurance {
     position: fixed;
     z-index: 10;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%)scale(0);
+    transition: transform .3s;
+    border-radius: 8px;
+    padding: $big-space $big-space * 2;
     background: #fff;
-    @include size();
+    width: 543px;
+    .type {
+      @include flex(space-between);
+      text-align: center;
+      margin-top: $big-space * 2;
+    }
+    .close {
+      position: absolute;
+      top: $middle-space;
+      right: $mid-space;
+    }
+    &.show {
+      transform: translate(-50%)scale(1);
+    }
   }
 
   .mask {
