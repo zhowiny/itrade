@@ -99,7 +99,7 @@ export default {
   async showNotice () {
     try {
       let result = await fly.get('/channel/list/launchNotice', {
-        app : 'iTrade'
+        app : 'itrade_wx'
       })
       // console.log(result.list[0])
       if (result.list && result.list[0] && showNotice) {
