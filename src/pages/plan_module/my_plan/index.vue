@@ -22,7 +22,7 @@
     </div>
 
     <div class="plan_list">
-      <div class="plan_item" v-for="(item, index) in [1, 2, 3]" :key="index">
+      <div class="plan_item" v-for="(item, index) in [1, 2, 3, 4, 5]" :key="index">
         <div class="title">
           <h3>金钻非凡储蓄寿险计划</h3>
           <span class="status">处理中</span>
@@ -48,6 +48,24 @@
         <div class="time">提交时间: 2018-12-21 12:00</div>
       </div>
     </div>
+    <div class="btn_new" @click="showInsuranceType = true">
+      <span>+ 新建计划书</span>
+    </div>
+
+    <div class="choose_insurance">
+      <img src="/images/icon_close.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
+      <div>
+        <div>
+          <img src="/images/icon_hk.png" mode="aspectFit" style="width: 120rpx;height:120rpx;">
+          <p>港险</p>
+        </div>
+        <div>
+          <img src="/images/icon_usa.png" mode="aspectFit" style="width: 120rpx;height:120rpx;">
+          <p>美险</p>
+        </div>
+      </div>
+    </div>
+    <div class="mask"></div>
   </div>
 </template>
 
@@ -75,6 +93,7 @@
   $mid-space: $small-space * 3;
   .container {
     border-top: 1px solid transparent;
+    padding-bottom: 120px;
   }
   .search_bar {
     margin: $middle-space $big-space * 2;
@@ -95,7 +114,11 @@
     @include flex(center, stretch);
     @include size(100vw, 88px);
     background: #fff;
-    position: relative;
+    position: sticky;
+    top: 0;
+    border-top: 1px solid $backgroundColor;
+    border-bottom: 1px solid $backgroundColor;
+    font-size: 30px;
     >div {
       flex: 1;
       @include flex();
@@ -130,6 +153,7 @@
       border-radius: 8px;
       margin-top: $middle-space;
       padding: $mid-space 0;
+      font-size: 28px;
       >div {
         padding: 0 $middle-space;
       }
@@ -144,6 +168,11 @@
         text-align: center;
         >div {
           flex: 1;
+          p:first-child {
+            font-size: 26px;
+            color: $lightColor;
+            margin-bottom: $small-space;
+          }
           &:first-child {
             text-align: left;
           }
@@ -152,12 +181,53 @@
           }
         }
       }
+      .time {
+        color: $lightColor;
+        font-size: 24px;
+      }
+      .status {
+        color: $mainColor;
+      }
     }
+  }
+  .btn_new {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    background: #fff;
+    @include size(100vw, 100px);
+    padding: $mid-space / 2 $mid-space;
+    span {
+      display: block;
+      border-radius: 15px;
+      background: $mainColor;
+      color: #fff;
+      height: 100%;
+      @include flex();
+      font-size: 32px;
+    }
+  }
+  .choose_insurance {
+    position: fixed;
+    z-index: 10;
+    background: #fff;
+    @include size();
+  }
+
+  .mask {
+    @include size(100vw, 100vh);
+    position: fixed;
+    z-index: 9;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, .4);
   }
 
 </style>
-<style>
+<style lang="scss">
   .placeholder {
-    color: red;
+    color: $lightColor;
+    font-size: 24px;
   }
 </style>
