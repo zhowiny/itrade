@@ -14,7 +14,7 @@
           <div class="content">
             <h4>{{item.advisor_name}}</h4>
             <p>{{item.comments}}</p>
-            <div class="article" @click="goPage({url: '/pages/article/main', data: {article_id: item.id, introduce_code: this.introduce_code}})">
+            <div class="article" @click="goPage({url: '/pages/article/main', data: {article_id: item.id, introduce_code: introduce_code}})">
               <img :src="item.head_img || '/images/icon_placeholder.png'" mode="aspectFit" style="width: 80rpx;height:80rpx">
               <p>{{item.title}}</p>
             </div>
@@ -58,6 +58,7 @@ export default {
       article_title: '',
       article_id: '',
       loginStatus: false,
+      introduce_code: '',
     }
   },
 
