@@ -14,7 +14,7 @@
           <div class="content">
             <h4>{{item.advisor_name}}</h4>
             <p>{{item.comments}}</p>
-            <div class="article" @click="goPage({url: '/pages/article/main', data: {article_id: item.id, introduce_code: item.advisor_id}})">
+            <div class="article" @click="goPage({url: '/pages/article/main', data: {article_id: item.id, introduce_code: this.introduce_code}})">
               <img :src="item.head_img || '/images/icon_placeholder.png'" mode="aspectFit" style="width: 80rpx;height:80rpx">
               <p>{{item.title}}</p>
             </div>
@@ -96,6 +96,8 @@ export default {
       }
     },
     async init () {
+      let advisorInfo = await this.$http.post('/wx/itrade/channel/advisor_info', {})
+      this.introduce_code = advisorInfo.code
       let advisorId = await this.$common.getAdvisorId()
       if (advisorId !== '' && advisorId !== 0) {
         this.loginStatus = true
