@@ -58,7 +58,7 @@
           <navigator hover-class="none" open-type="navigate"
                      app-id="wxcd7c5762adbd3cf5"  target="miniProgram"
                      :path='item.path' :extra-data="item.extraData"
-                     version="trial" @complete="toMiniProgram(item.id)">
+                     version="trial" @success="toMiniProgram(item.id)">
             <img src="/images/fenx.png" mode="aspectFit" style="width: 30rpx;height: 30rpx;">
             <span>分享产品</span>
           </navigator>
@@ -100,16 +100,16 @@
     },
     methods: {
       toMiniProgram (id) {
-        // console.log(event)
-        // this.$auth.dataBuryPoint({
-        //   eventName: 'collect_product_list:item_share:click',
-        //   eventDataId: id,
-        //   source: '',
-        //   utmSource: '',
-        //   introduceCode: this.introduceCode,
-        //   shareInvestorId: this.introduceCode,
-        //   prePage: wx.getStorageSync('from')
-        // })
+        console.log(id, 'toMiniProgram')
+        this.$auth.dataBuryPoint({
+          eventName: 'collect_product_list:item_share:click',
+          eventDataId: id,
+          source: '',
+          utmSource: '',
+          introduceCode: this.introduceCode,
+          shareInvestorId: this.introduceCode,
+          prePage: wx.getStorageSync('from')
+        })
       },
       async cancel (id, type) {
         let params = {
