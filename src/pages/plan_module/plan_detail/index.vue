@@ -11,9 +11,10 @@
       <img v-if="false" src="/images/icon_plan_detail_4.png" mode="aspectFit" style="width: 99rpx;height: 99rpx;">
 
       <div class="status">
-        <span>处理中</span>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-        <i>提交时间: 2018-12-25 12:00</i>
+        <span>{{detail.plan_hk.plan_status}}</span>
+        <p>{{detail.plan_hk.description}}</p>
+        <i v-if="detail.plan_hk.plan_status === 'REVIEW'">提交时间: {{detail.plan_hk.review_date}}</i>
+        <i v-if="detail.plan_hk.plan_status === 'PROCESS'">提交时间: {{detail.plan_hk.request_date}}</i>
       </div>
       <!--成功才显示-->
       <div class="preview" v-if="false">
@@ -522,24 +523,34 @@
     },
     methods: {
       async getDetail () {
-        this.detail = await this.$http.get('/wx/itrade/product/plan/detail', {
-          planId: this.planId,
-        })
-        this.type = this.detail.insurance_type
-        this.form = JSON.parse(JSON.stringify(this.detail.plan_hk))
+        try {
+          this.detail = await this.$http.get('/wx/itrade/product/plan/detail', {
+            planId: this.planId,
+          })
+          let result = JSON.parse(JSON.stringify(this.detail.plan_hk))
+          result.policy_birth = result.policy_birth.split(' ')[0]
+          result.insurant_birth = result.insurant_birth.split(' ')[0]
+          this.type = this.detail.insurance_type
+          this.form = result
+        } catch (e) {
+          console.error(e)
+        }
       },
       async getTemplate () {
-        let result = await this.$http.get('/wx/itrade/product/plan/template', {
-          insurance_type: this.detail.insurance_type,
-          item_id: this.detail.plan_hk.item_id,
-          management_id: this.detail.plan_hk.management_id,
-        })
-        result.yesno = [
-          {value: 'Y', description: '是'},
-          {value: 'N', description: '否'},
-        ]
-        this.template = result
-        console.log(this.template)
+        try {
+          let result = await this.$http.get('/wx/itrade/product/plan/template', {
+            insurance_type: this.detail.insurance_type,
+            item_id: this.detail.plan_hk.item_id,
+            management_id: this.detail.plan_hk.management_id,
+          })
+          result.yesno = [
+            {value: 'Y', description: '是'},
+            {value: 'N', description: '否'},
+          ]
+          this.template = result
+        } catch (e) {
+          console.error(e)
+        }
       },
       change (e) {
         console.log(e, this.value, this.detail, 'change---')
