@@ -11,6 +11,7 @@
 	"compileType": "miniprogram",
 	"appid": "wxfaab93f8bf9fff2d",
 	"projectname": "wx-itrade-advisor",
+	"libVersion": "2.4.3",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -29,7 +30,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 3,
+			"current": 4,
 			"list": [
 				{
 					"id": 0,
@@ -54,6 +55,12 @@
 					"name": "my_plan",
 					"pathName": "pages/plan_module/my_plan/main",
 					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "plan_detail",
+					"pathName": "pages/plan_module/plan_detail/main",
+					"query": "planId=1844"
 				}
 			]
 		}
