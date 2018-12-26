@@ -2,20 +2,24 @@
   <div class="container">
     <div class="search_bar">
       <img src="/images/search.png" mode="aspectFit" style="width: 28rpx;height:29rpx;">
-      <input placeholder-class="placeholder" type="text" placeholder="请输入产品名、被保人、投保人进行搜索">
+      <input placeholder-class="placeholder"
+             v-model="search.params" type="text"
+             placeholder="请输入产品名、被保人、投保人进行搜索"
+             @input="searchPlan"
+      >
 
     </div>
     <div class="status_bar">
-      <div :class="{active: activeIndex === 0}" @click="activeIndex = 0">
+      <div :class="{active: activeIndex === 0}" @click="filter('全部', 0)">
         <wx-badge :isHidden="true" :value="2">全部</wx-badge>
       </div>
-      <div :class="{active: activeIndex === 1}" @click="activeIndex = 1">
+      <div :class="{active: activeIndex === 1}" @click="filter('处理中', 1)">
         <wx-badge :isHidden="true" :value="2">处理中</wx-badge>
       </div>
-      <div :class="{active: activeIndex === 2}" @click="activeIndex = 2">
+      <div :class="{active: activeIndex === 2}" @click="filter('需复查', 2)">
         <wx-badge :isHidden="false" :value="planCount.review">需复查</wx-badge>
       </div>
-      <div :class="{active: activeIndex === 3}" @click="activeIndex = 3">
+      <div :class="{active: activeIndex === 3}" @click="filter('已完成', 3)">
         <wx-badge :isHidden="false" :value="planCount.completed">已完成</wx-badge>
       </div>
       <div class="line" :class="'p' + activeIndex"></div>
@@ -23,32 +27,32 @@
 
     <div class="plan_list">
       <div class="plan_item"
-           v-for="(item, index) in [1, 2, 3, 4, 5]"
-           :key="index" @click="toPage('/pages/plan_module/plan_detail/main')"
+           v-for="(item, index) in planList"
+           :key="index" @click="toPage({url: '/pages/plan_module/plan_detail/main', data: {planId: item.plan_id}})"
       >
         <div class="title">
-          <h3>金钻非凡储蓄寿险计划</h3>
-          <span class="status">处理中</span>
+          <h3>{{item.item_name}}</h3>
+          <span class="status">{{item.status}}</span>
         </div>
         <div class="content">
           <div>
             <p>被保人</p>
-            <p>张三</p>
+            <p>{{item.insurant_name}}</p>
           </div>
           <div>
             <p>性别</p>
-            <p>男</p>
+            <p>{{item.gender}}</p>
           </div>
           <div>
             <p>是否吸烟</p>
-            <p>是</p>
+            <p>{{item.smoke_flag}}</p>
           </div>
           <div>
             <p>保费</p>
-            <p>$10000</p>
+            <p>{{item.amount}}</p>
           </div>
         </div>
-        <div class="time">提交时间: 2018-12-21 12:00</div>
+        <div class="time">提交时间: {{item.request_date}}</div>
       </div>
     </div>
     <div class="btn_new" @click="showInsuranceType = true">
@@ -80,18 +84,66 @@
         title: '我的计划书',
         activeIndex: 0, // status_bar index
         showInsuranceType: false,
-        planCount: {}
+        planCount: {},
+        isLastPage: false,
+        planList: [],
+        search: {
+          page_num: 1,
+          page_size: 10,
+          params: '',
+          policy_insurant_name: '',
+          product_id: '',
+          status: '',
+        },
+        timer: null,
       }
     },
 
     async onLoad () {
       this.queryCount()
+      this.getPlanList()
     },
     methods: {
       async queryCount () {
         this.planCount = await this.$http.get('/wx/itrade/product/plan/count')
-        console.log(this.planCount)
       },
+      async getPlanList () {
+        let result = await this.$http.get('/wx/itrade/product/plan/list', this.search)
+        this.planList = this.planList.concat(result.list)
+        this.isLastPage = result.is_last_page
+        if (result.list.length === 0) {
+          this.showToast('没有更多数据了~')
+        }
+      },
+      filter (status, index) {
+        this.activeIndex = index
+        if (index === 0) {
+          this.search.status = ''
+        } else {
+          this.search.status = status
+        }
+        this.search.page_num = 1
+        this.planList = []
+        this.getPlanList()
+      },
+      searchPlan () {
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          this.search.status = ''
+          this.activeIndex = 0
+          this.search.page_num = 1
+          this.planList = []
+          this.getPlanList()
+        }, 500)
+      },
+    },
+    onReachBottom () {
+      if (this.isLastPage) {
+        this.showToast('已经到底了!')
+        return
+      }
+      this.search.page_num++
+      this.getPlanList()
     },
     components: {
       wxBadge,
