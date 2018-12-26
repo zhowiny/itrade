@@ -1,7 +1,7 @@
 <template>
   <div class="mx-picker_container" :class="className">
-    <picker class="mx-picker" :range="data" :range-key="label" :value="dataIndex" @change="change">
-      <div class="mx-picker_none" v-if="!dataIndex && dataIndex !== 0 || dataIndex === -1">{{placeholder}}</div>
+    <picker class="mx-picker" :disabled="disabled" :range="data" :range-key="label" :value="dataIndex" @change="change">
+      <div class="mx-picker_none" v-if="(!dataIndex && dataIndex !== 0) || dataIndex === -1">{{placeholder}}</div>
       <div class="mx-picker_text" v-else>{{label ? current[label] : valueKey ? current[valueKey] : current}}</div>
     </picker>
   </div>
@@ -32,6 +32,7 @@ export default {
     valueKey: String,
     label: String,
     value: null,
+    disabled: Boolean,
   },
   data () {
     return {
@@ -100,6 +101,7 @@ export default {
       font-weight: 600;
       .mx-picker_text {
         min-width: 50vw;
+        min-height:28px;
         color: $deepColor;
       }
       .mx-picker_none {

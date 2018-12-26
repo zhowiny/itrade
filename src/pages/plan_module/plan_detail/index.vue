@@ -12,85 +12,92 @@
 
       <div class="status">
         <span>处理中</span>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ducimus et eum eveniet exercitationem, explicabo fuga fugit harum necessitatibus neque possimus provident, quaerat quidem, quisquam recusandae suscipit vitae voluptate voluptates!</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
         <i>提交时间: 2018-12-25 12:00</i>
       </div>
       <!--成功才显示-->
-      <div class="preview"></div>
+      <div class="preview" v-if="false">
+        <img src="/images/icon_preview.png" mode="aspectFit" style="width:33rpx;height:25rpx;">
+        <span>点击预览</span>
+      </div>
     </div>
-    <div class="module">
+    <div class="module" :class="{edit: edit}">
       <div class="title">
         <img class="title_icon" src="/images/icon_product_info.png" mode="aspectFit" style="width:41rpx;height:37rpx;">
         <span class="title_text">产品信息</span>
-        <!--<img class="arrow" src="/images/icon_arrow_product.png">-->
+        <div class="operate" v-if="edit">
+          <span @click="edit = false">取消</span>
+          <span @click="edit = false">保存</span>
+        </div>
+        <img  @click="edit = true" v-else src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
       </div>
       <div class="item">
         <span class="label">产品公司</span>
         <div class="value">
-          <mx-picker @change="" :data="test" v-model="testVal"/>
+          <mx-picker :disabled="!edit" @change="" :data="test" v-model="testVal"/>
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">产品名称</span>
         <div class="value">
-          <mx-picker @change="change" valueKey="id" label="name" :data="product" v-model="value"/>
+          <mx-picker :disabled="!edit" @change="change" valueKey="id" label="name" :data="product" v-model="value"/>
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item none">
         <span class="label">年期</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker :disabled="!edit" />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">缴费方式</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker :disabled="!edit" />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">金额类型</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker :disabled="!edit" />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">缴费币种</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker :disabled="!edit" />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">金额</span>
         <div class="value">
-          <input type="text" placeholder-class="placeholder" placeholder="请输入">
+          <input :disabled="!edit" type="text" placeholder-class="placeholder" placeholder="请输入">
         </div>
         <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">附加险</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker :disabled="!edit" />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">是否提取</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker :disabled="!edit" />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">高端医疗</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker :disabled="!edit" />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
@@ -200,81 +207,92 @@
         </div>
       </div>
     </div>
-    <div class="module">
-      <div class="title">
+    <div class="module" :class="{edit: edit}">
+      <div class="title" @click="!expand && (expand = true)">
         <img class="title_icon" src="/images/icon_plan_4.png" mode="aspectFit" style="width:32rpx;height:32rpx;">
-        <span class="title_text">被保人信息<i>（若被保人未成年，请填写投保人信息）</i></span>
-        <!--<img class="arrow" src="/images/icon_arrow_product.png">-->
-      </div>
-      <div class="item">
-        <span class="label">被保人是投保人</span>
-        <div class="value">
-          <mx-picker @change="" :data="test" v-model="testVal"/>
+        <span class="title_text">被保人信息</span>
+        <img class="arrow expand" v-if="!expand" src="/images/icon_arrow_product.png">
+        <div class="operate" v-if="expand && edit">
+          <span @click="edit = false">取消</span>
+          <span @click="edit = false">保存</span>
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
+        <img  @click="edit = true" v-if="expand && !edit" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
       </div>
-      <div class="item">
-        <span class="label">被保人姓名</span>
-        <div class="value">
-          <input type="text" placeholder-class="placeholder" placeholder="请输入">
+      <div class="item_container" v-if="expand"><!-- :style="{height: expand ? '990rpx' : 0}"-->
+        <div class="item">
+          <span class="label">被保人是投保人</span>
+          <div class="value">
+            <mx-picker @change="" :data="test" v-model="testVal"/>
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">性别</span>
-        <div class="value">
-          <mx-picker @change="change" valueKey="id" label="name" :data="product" v-model="value"/>
+        <div class="item">
+          <span class="label">被保人姓名</span>
+          <div class="value">
+            <input type="text" placeholder-class="placeholder" placeholder="请输入">
+          </div>
+          <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item none">
-        <span class="label">出生日期</span>
-        <div class="value">
-          <mx-picker />
+        <div class="item">
+          <span class="label">性别</span>
+          <div class="value">
+            <mx-picker @change="change" valueKey="id" label="name" :data="product" v-model="value"/>
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">国籍</span>
-        <div class="value">
-          <mx-picker />
+        <div class="item none">
+          <span class="label">出生日期</span>
+          <div class="value">
+            <mx-picker />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">居住地</span>
-        <div class="value">
-          <mx-picker />
+        <div class="item">
+          <span class="label">国籍</span>
+          <div class="value">
+            <mx-picker />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">居住省</span>
-        <div class="value">
-          <mx-picker />
+        <div class="item">
+          <span class="label">居住地</span>
+          <div class="value">
+            <mx-picker />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">居住市</span>
-        <div class="value">
-          <mx-picker />
+        <div class="item">
+          <span class="label">居住省</span>
+          <div class="value">
+            <mx-picker />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">是否吸烟</span>
-        <div class="value">
-          <mx-picker />
+        <div class="item">
+          <span class="label">居住市</span>
+          <div class="value">
+            <mx-picker />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">保单回溯</span>
-        <div class="value">
-          <mx-picker />
+        <div class="item">
+          <span class="label">是否吸烟</span>
+          <div class="value">
+            <mx-picker />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
+        <div class="item">
+          <span class="label">保单回溯</span>
+          <div class="value">
+            <mx-picker />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="collapse" @click="expand = false">
+          <span>收起</span>
+          <img src="/images/icon_collapse.png" mode="aspectFit" style="width: 26rpx;height: 16rpx;">
+        </div>
       </div>
     </div>
 
@@ -341,9 +359,11 @@
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
     </div>
+    <p class="time">提交时间: 2018-12-24 17:23</p>
 
-    <div class="btn_next" @click="showConfirm = true">
-      <span>提交</span>
+    <div class="btn_next">
+      <span>撤销申请</span>
+      <span @click="showConfirm = true">修改申请</span>
     </div>
 
     <div class="mask" v-if="showConfirm"  @click="showConfirm = false"></div>
@@ -364,6 +384,9 @@
     data () {
       return {
         title: '计划书详情',
+        detail: {},
+        edit: false,
+        expand: false,
         showConfirm: false,
         test: [1, 2, 3, 4],
         testVal: 1,
@@ -373,8 +396,15 @@
     },
 
     async onLoad () {
+      this.getDetail()
     },
     methods: {
+      async getDetail () {
+        this.detail = await this.$http.get('/wx/itrade/product/plan/detail', {
+          planId: 1
+        })
+        console.log(this.detail)
+      },
       change (e) {
         console.log(e, this.value, 'change---')
       },
@@ -387,11 +417,46 @@
 
 <style scoped lang="scss">
   $mid-space: $small-space * 3;
+
+  .status_info {
+    background: #fff;
+    padding: $middle-space $mid-space;
+    @include flex();
+    >img {
+      flex-shrink:0;
+    }
+    .status {
+      padding: 0 $middle-space;
+      >span {
+        font-size: 32px;
+        color: $mainColor;
+      }
+      >p {
+        font-size: 26px;
+        color: #666;
+        text-align:justify;
+      }
+      i {
+        font-size: 24px;
+        color: $lightColor;
+      }
+    }
+    .preview {
+      @include flex();
+      @include size(165px, 56px);
+      background: transparentize(#83c014, .8);
+      color: #83c014;
+      flex-shrink:0;
+      border-radius: 4px;
+      font-size: 24px;
+    }
+  }
+
   .container {
     font-family: '苹方';
     color: $deepColor;
     border-top: 1px solid transparent;
-    padding-bottom: 120px;
+    padding-bottom: 100px;
     .module {
       margin-top: $mid-space;
       padding: 0 $mid-space;
@@ -410,6 +475,13 @@
             font-weight: normal;
             font-size: 26px;
             display: inline;
+          }
+        }
+        .operate {
+          color: $mainColor;
+          span:first-child {
+            margin-right: $big-space;
+            color: transparentize($mainColor, .2);
           }
         }
       }
@@ -472,10 +544,33 @@
           }
         }
       }
+      /*.item_container {
+        height: 0;
+        transition: all .5s;
+        overflow-y: hidden;
+      }*/
+      .collapse {
+        height: 90px;
+        @include flex();
+        color: $mainColor;
+        border-top: 1px solid $borderColor;
+      }
       .arrow {
-        width: 15px;
+        width: 0;
         height: 28px;
-        margin-left: $small-space;
+        transition: all .3s;
+      }
+      &.edit {
+        .arrow {
+          width: 15px;
+          margin-left: $small-space;
+        }
+      }
+
+      .expand {
+        height: 28px;
+        width: 15px;
+        transform: rotate(90deg);
       }
     }
     .btn_next {
@@ -486,6 +581,7 @@
       background: #fff;
       @include size(100vw, 100px);
       padding: $mid-space / 2 $mid-space;
+      @include flex();
       span {
         display: block;
         border-radius: 15px;
@@ -494,6 +590,13 @@
         height: 100%;
         @include flex();
         font-size: 32px;
+        flex: 1;
+        &:first-child {
+          background: #fff;
+          border: 1px solid $borderColor;
+          color: $deepColor;
+          margin-right: $mid-space;
+        }
       }
     }
     .mask {
@@ -542,6 +645,12 @@
           }
         }
       }
+    }
+    .time {
+      color: $lightColor;
+      @include flex();
+      padding: $small-space;
+      font-size: 24px;
     }
   }
 </style>

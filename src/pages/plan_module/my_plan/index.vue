@@ -13,10 +13,10 @@
         <wx-badge :isHidden="true" :value="2">处理中</wx-badge>
       </div>
       <div :class="{active: activeIndex === 2}" @click="activeIndex = 2">
-        <wx-badge :isHidden="false" :value="2">需复查</wx-badge>
+        <wx-badge :isHidden="false" :value="planCount.review">需复查</wx-badge>
       </div>
       <div :class="{active: activeIndex === 3}" @click="activeIndex = 3">
-        <wx-badge :isHidden="false" :value="2">已完成</wx-badge>
+        <wx-badge :isHidden="false" :value="planCount.completed">已完成</wx-badge>
       </div>
       <div class="line" :class="'p' + activeIndex"></div>
     </div>
@@ -80,12 +80,18 @@
         title: '我的计划书',
         activeIndex: 0, // status_bar index
         showInsuranceType: false,
+        planCount: {}
       }
     },
 
     async onLoad () {
+      this.queryCount()
     },
     methods: {
+      async queryCount () {
+        this.planCount = await this.$http.get('/wx/itrade/product/plan/count')
+        console.log(this.planCount)
+      },
     },
     components: {
       wxBadge,
