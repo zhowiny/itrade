@@ -37,22 +37,22 @@
         <div class="content">
           <div>
             <p>被保人</p>
-            <p>{{item.insurant_name}}</p>
+            <p>{{item.insurant_name || '---'}}</p>
           </div>
           <div>
             <p>性别</p>
-            <p>{{item.gender}}</p>
+            <p>{{item.gender || '---'}}</p>
           </div>
           <div>
             <p>是否吸烟</p>
-            <p>{{item.smoke_flag}}</p>
+            <p>{{item.smoke_flag || '---'}}</p>
           </div>
           <div>
             <p>保费</p>
-            <p>{{item.amount}}</p>
+            <p>{{item.amount || '---'}}</p>
           </div>
         </div>
-        <div class="time">提交时间: {{item.request_date}}</div>
+        <div class="time">提交时间: {{item.request_date || '---'}}</div>
       </div>
     </div>
     <div class="btn_new" @click="showInsuranceType = true">
@@ -62,11 +62,11 @@
     <div class="choose_insurance" :class="{show: showInsuranceType}">
       <img class='close' @click="showInsuranceType = false" src="/images/icon_close.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
       <div class="type">
-        <div>
+        <div @click="toPage({url:'/pages/plan_module/create_plan', data: {type: 'HONGKONG'}})">
           <img src="/images/icon_hk.png" mode="aspectFit" style="width: 120rpx;height:120rpx;">
           <p>港险</p>
         </div>
-        <div>
+        <div @click="toPage({url:'/pages/plan_module/create_plan', data: {type: 'USA'}})">
           <img src="/images/icon_usa.png" mode="aspectFit" style="width: 120rpx;height:120rpx;">
           <p>美险</p>
         </div>
@@ -144,6 +144,9 @@
       }
       this.search.page_num++
       this.getPlanList()
+    },
+    onUnload () {
+      this.planList = []
     },
     components: {
       wxBadge,

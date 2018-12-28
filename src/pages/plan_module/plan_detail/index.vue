@@ -2,55 +2,53 @@
   <div class="container">
     <div class="status_info">
       <!--处理中图标-->
-      <img src="/images/icon_plan_detail_1.png" mode="aspectFit" style="width: 100rpx;height: 97rpx;">
+      <img v-if="form.plan_status === 'PROCESSING'" src="/images/icon_plan_detail_1.png" mode="aspectFit" style="width: 100rpx;height: 97rpx;">
       <!--需复查图标-->
-      <img v-if="false" src="/images/icon_plan_detail_2.png" mode="aspectFit" style="width: 117rpx;height: 99rpx;">
+      <img v-if="form.plan_status === 'REVIEW'" src="/images/icon_plan_detail_2.png" mode="aspectFit" style="width: 117rpx;height: 99rpx;">
       <!--成功图标-->
-      <img v-if="false" src="/images/icon_plan_detail_3.png" mode="aspectFit" style="width: 93rpx;height: 93rpx;">
+      <img v-if="form.plan_status === 'COMPLETED'" src="/images/icon_plan_detail_3.png" mode="aspectFit" style="width: 93rpx;height: 93rpx;">
       <!--失败图标-->
       <img v-if="false" src="/images/icon_plan_detail_4.png" mode="aspectFit" style="width: 99rpx;height: 99rpx;">
 
       <div class="status">
-        <span>{{detail.plan_hk.plan_status}}</span>
-        <p>{{detail.plan_hk.description}}</p>
-        <i v-if="detail.plan_hk.plan_status === 'REVIEW'">提交时间: {{detail.plan_hk.review_date}}</i>
-        <i v-if="detail.plan_hk.plan_status === 'PROCESS'">提交时间: {{detail.plan_hk.request_date}}</i>
+        <span>{{form.plan_status_name}}</span>
+        <p>{{form.description}}</p>
+        <i v-if="form.plan_status === 'REVIEW'">复查时间: {{form.review_date}}</i>
+        <i v-if="form.plan_status === 'PROCESSING'">提交时间: {{form.request_date}}</i>
+        <i v-if="form.plan_status === 'COMPLETED'">完成时间: {{form.complete_date}}</i>
       </div>
       <!--成功才显示-->
-      <div class="preview" v-if="false">
+      <div
+        v-if="form.plan_status === 'COMPLETED'"
+        class="preview" @click="$common.previewFile(form.file.file_url, form.file.file_name)"
+      >
         <img src="/images/icon_preview.png" mode="aspectFit" style="width:33rpx;height:25rpx;">
         <span>点击预览</span>
       </div>
     </div>
-    <div class="module" :class="{edit: edit}">
+    <div style="order:0;" class="module" :class="{edit: view.productEditable}">
       <div class="title">
         <img class="title_icon" src="/images/icon_product_info.png" mode="aspectFit" style="width:41rpx;height:37rpx;">
         <span class="title_text">产品信息</span>
-        <div class="operate" v-if="edit">
-          <span @click="edit = false">取消</span>
-          <span @click="edit = false">保存</span>
+        <div class="operate" v-if="view.productEditable">
+          <span @click="view.productEditable = false">取消</span>
+          <span @click="view.productEditable = false">保存</span>
         </div>
-        <img  @click="edit = true" v-else src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
+        <img v-if="view.editable && !view.productEditable"  @click="view.productEditable = true" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
       </div>
       <div class="item">
         <span class="label">产品公司</span>
-        <div class="value" style="justify-content:flex-end;font-weight: bold;">{{detail.plan_hk.management_name}}
-          <!--<mx-picker :disabled="!edit" @change="" :data="test" v-model="testVal"/>-->
-        </div>
-        <!--<img class="arrow" src="/images/icon_arrow_product.png">-->
+        <div class="value" style="justify-content:flex-end;font-weight: bold;">{{form.management_name}}</div>
       </div>
       <div class="item" >
         <span class="label">产品名称</span>
-        <div class="value" style="justify-content:flex-end;font-weight: bold;">{{detail.plan_hk.item_name}}
-          <!--<mx-picker :disabled="!edit" @change="change" valueKey="id" label="name" :data="product" v-model="value"/>-->
-        </div>
-        <!--<img class="arrow" src="/images/icon_arrow_product.png">-->
+        <div class="value" style="justify-content:flex-end;font-weight: bold;">{{form.item_name}}</div>
       </div>
       <div class="item none">
         <span class="label">年期</span>
         <div class="value">
           <mx-picker
-            :disabled="!edit" valueKey="subline_item_name"
+            :disabled="!view.productEditable" valueKey="subline_item_name"
             label="subline_item_name"
             :data="template.product_year_periods"
             v-model="form.year_period"
@@ -63,7 +61,7 @@
         <span class="label">缴费方式</span>
         <div class="value">
           <mx-picker
-            :disabled="!edit" valueKey="value"
+            :disabled="!view.productEditable" valueKey="value"
             label="description"
             :data="template.product_pay_methods"
             v-model="form.pay_method"
@@ -75,7 +73,7 @@
         <span class="label">金额类型</span>
         <div class="value">
           <mx-picker
-            :disabled="!edit" valueKey="value"
+            :disabled="!view.productEditable" valueKey="value"
             label="description"
             :data="template.product_amount_types"
             v-model="form.amount_type"
@@ -87,7 +85,7 @@
         <span class="label">缴费币种</span>
         <div class="value">
           <mx-picker
-            :disabled="!edit" valueKey="value"
+            :disabled="!view.productEditable" valueKey="value"
             label="description"
             :data="template.product_currenies"
             v-model="form.currency"
@@ -100,7 +98,7 @@
         <div class="value">
           <input
             v-model="form.amount"
-            :disabled="!edit" type="text"
+            :disabled="!view.productEditable" type="text"
             placeholder-class="placeholder" placeholder="请输入"
           >
         </div>
@@ -110,10 +108,10 @@
         <span class="label">附加险</span>
         <div class="value">
           <mx-picker
-            :disabled="!edit" valueKey="value"
+            :disabled="!view.productEditable" valueKey="value"
             label="description"
             :data="template.yesno"
-            value="N"
+            v-model="form.additional_risk_flag"
           />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
@@ -122,11 +120,10 @@
         <span class="label">是否提取</span>
         <div class="value">
           <mx-picker
-            :disabled="!edit" valueKey="value"
+            :disabled="!view.productEditable" valueKey="value"
             label="description"
             :data="template.yesno"
             v-model="form.extract_flag"
-            value="N"
           />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
@@ -135,17 +132,74 @@
         <span class="label">高端医疗</span>
         <div class="value">
           <mx-picker
-            :disabled="!edit" valueKey="value"
+            :disabled="!view.productEditable" valueKey="value"
             label="description"
             :data="template.yesno"
-            value="N"
+            v-model="form.advanced_medical_flag"
           />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
     </div>
 
-    <div class="module" v-for="(item, index) in [1, 2]" :key="index">
+    <div style="order:1;" v-show="form.extract_flag === 'Y'" class="module" :class="{edit: view.productEditable}">
+      <div class="title">
+        <img class="title_icon" src="/images/icon_plan_2.png" mode="aspectFit" style="width:36rpx;height:32rpx;">
+        <span class="title_text">添加提取</span>
+      </div>
+      <div class="item">
+        <span class="label">提取类型</span>
+        <div class="value">
+          <mx-picker
+            :disabled="!view.productEditable" valueKey="value"
+            label="description"
+            :data="template.extract_types"
+            v-model="form.extract_type"
+          />
+        </div>
+        <img class="arrow" src="/images/icon_arrow_product.png">
+      </div>
+      <div class="item">
+        <span class="label">提取方式</span>
+        <div class="value">
+          <mx-picker
+            :data="template.extract_methods"
+            valueKey="value"
+            label="description"
+            v-model="form.extract_method"
+            :disabled="!view.productEditable"
+          />
+        </div>
+        <img class="arrow" src="/images/icon_arrow_product.png">
+      </div>
+      <div v-for="(item, index) in form.extracts" :key="index">
+        <div class="item">
+          <span class="label">提取年数</span>
+          <div class="value">
+            <div class="extract">
+              从第 <input :disabled="!view.productEditable" v-model="item.extract_from" type="text" value="1"> 年
+              到第 <input :disabled="!view.productEditable" v-model="item.extract_to" type="text" vlaue="10"> 年
+            </div>
+          </div>
+          <img v-if="view.productEditable && index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
+          <img v-if="view.productEditable && index === 0" src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+        </div>
+        <div class="item">
+          <span class="label">提取金额</span>
+          <div class="value">
+            <input :disabled="!view.productEditable" v-model="item.extract_amount" type="text" placeholder-class="placeholder" placeholder="请输入">
+          </div>
+          <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-for="(item, index) in form.additions" :key="index"
+      v-if="form.additional_risk_flag === 'Y' "
+      class="module"
+      style="order:0;"
+    >
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_1.png" mode="aspectFit" style="width:32rpx;height:35rpx;">
         <span class="title_text">附加险信息</span>
@@ -154,11 +208,14 @@
       </div>
       <div class="item">
         <span class="label">附加险</span>
-        <div class="value">
+        <div class="value" style="justify-content: flex-end;font-weight: bold;">
+          <!--<span>{{item.additionName}}</span>-->
           <mx-picker
             valueKey="itemId"
             label="itemName"
             :data="template.additions"
+            :disabled="!view.productEditable"
+            v-model="item.item_id"
           />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
@@ -166,105 +223,100 @@
       <div class="item textarea">
         <span class="label">附加险备注 (选填)</span>
         <div class="value">
-          <textarea placeholder-class="placeholder" placeholder="请输入" maxlength="-1" auto-height></textarea>
+          <textarea
+            :disabled="!view.productEditable"
+            v-model="item.remark" placeholder-class="placeholder"
+            placeholder="请输入" maxlength="-1" auto-height
+          ></textarea>
         </div>
       </div>
     </div>
 
-    <div class="module">
-      <div class="title">
-        <img class="title_icon" src="/images/icon_plan_2.png" mode="aspectFit" style="width:36rpx;height:32rpx;">
-        <span class="title_text">添加提取</span>
-      </div>
-      <div class="item">
-        <span class="label">提取类型</span>
-        <div class="value">
-          <mx-picker />
-        </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">提取方式</span>
-        <div class="value">
-          <mx-picker />
-        </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div v-for="(item, index) in [1, 2, 3]" :key="index">
-        <div class="item">
-          <span class="label">提取年数</span>
-          <div class="value">
-            <div class="extract">
-              从第 <input type="text" value="1"> 年到第 <input type="text" vlaue="10"> 年
-            </div>
-          </div>
-          <img v-if="index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
-          <img v-else="index > 0" src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
-        </div>
-        <div class="item">
-          <span class="label">提取金额</span>
-          <div class="value">
-            <input type="text" placeholder-class="placeholder" placeholder="请输入">
-          </div>
-          <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
-        </div>
-      </div>
-    </div>
 
-    <div class="module">
+    <div class="module" v-if="form.advanced_medical_flag === 'Y' && form.advanced_medical" style="order:1;">
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_3.png" mode="aspectFit" style="width:31rpx;height:36rpx;">
         <span class="title_text">添加高端医疗</span>
       </div>
       <div class="item">
-        <span class="label">提取方式</span>
+        <span class="label">产品名称</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker
+            v-if="template.advanced_medicals"
+            :data="template.advanced_medicals"
+            valueKey="itemId"
+            label="itemName"
+            :disabled="!view.productEditable"
+            v-model="form.advanced_medical.item_id"
+          />
+          <span v-else>{{form.advanced_medical.item_name}}</span>
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">保障级别</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker
+            :data="template.security_levels"
+            valueKey="value"
+            label="description"
+            v-model="form.advanced_medical.security_level"
+            :disabled="!view.productEditable"
+          />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">保障地区</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker
+            :data="template.security_areas"
+            valueKey="value"
+            label="description"
+            :disabled="!view.productEditable"
+            v-model="form.advanced_medical.security_area"
+          />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">自付选项</span>
         <div class="value">
-          <mx-picker />
+          <mx-picker
+            :data="template.selfpaies"
+            valueKey="self_pay_id"
+            label="self_pay_name"
+            :disabled="!view.productEditable"
+            v-model="form.advanced_medical.selfpay_id"
+          />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
     </div>
-    <div class="module">
+    <div style="order:1;" class="module" v-if="form.advanced_medical_flag === 'Y' || form.extract_flag === 'Y' || form.additional_risk_flag === 'Y'">
       <div class="item textarea">
         <span class="label">其他备注 (选填)</span>
         <div class="value">
-          <textarea placeholder-class="placeholder" placeholder="请输入" maxlength="-1" auto-height></textarea>
+          <textarea
+            :disabled="!view.productEditable"
+            v-model="form.remark" placeholder-class="placeholder"
+            placeholder="请输入" maxlength="-1" auto-height
+          ></textarea>
         </div>
       </div>
     </div>
-    <div class="module" :class="{edit: edit}">
-      <div class="title" @click="!expand && (expand = true)">
+    <div style="order:1;" class="module" :class="{edit: view.insuranceEditable}">
+      <div class="title" @click="!view.insuranctExpand && (view.insuranctExpand = true)">
         <img class="title_icon" src="/images/icon_plan_4.png" mode="aspectFit" style="width:32rpx;height:32rpx;">
         <span class="title_text">被保人信息</span>
-        <img class="arrow expand" v-if="!expand" src="/images/icon_arrow_product.png">
-        <div class="operate" v-if="expand && edit">
-          <span @click="edit = false">取消</span>
-          <span @click="edit = false">保存</span>
+        <img class="arrow expand" v-if="!view.insuranctExpand" src="/images/icon_arrow_product.png">
+        <div class="operate" v-if="view.insuranctExpand && view.insuranceEditable">
+          <span @click="view.insuranceEditable = false">取消</span>
+          <span @click="view.insuranceEditable = false">保存</span>
         </div>
-        <img  @click="edit = true" v-if="expand && !edit" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
+        <img  @click="view.insuranceEditable = true" v-if="view.editable && view.insuranctExpand && !view.insuranceEditable" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
       </div>
-      <div class="item_container" v-if="expand"><!-- :style="{height: expand ? '990rpx' : 0}"-->
+      <div class="item_container" v-if="view.insuranctExpand"><!-- :style="{height: expand ? '990rpx' : 0}"-->
         <div class="item">
           <span class="label">被保人是投保人</span>
           <div class="value">
@@ -273,6 +325,7 @@
               label="description"
               :data="template.yesno"
               :value="form.same_flag"
+              :disabled="!view.insuranceEditable"
             />
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
@@ -280,7 +333,12 @@
         <div class="item">
           <span class="label">被保人姓名</span>
           <div class="value">
-            <input v-model="form.insurant_name" type="text" placeholder-class="placeholder" placeholder="请输入">
+            <input
+              v-model="form.insurant_name"
+              type="text" :disabled="!view.insuranceEditable"
+              placeholder-class="placeholder"
+              placeholder="请输入"
+            >
           </div>
           <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
         </div>
@@ -292,6 +350,7 @@
               label="description"
               :data="template.genders"
               :value="form.insurant_gender"
+              :disabled="!view.insuranceEditable"
             />
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
@@ -305,6 +364,7 @@
               start="1900-01-01"
               end="2020-01-01"
               @change="change"
+              :disabled="!view.insuranceEditable"
             >
               <view class="picker">{{form.insurant_birth}}</view>
             </picker>
@@ -319,6 +379,7 @@
               label="description"
               :data="template.countries"
               v-model="form.insurant_country"
+              :disabled="!view.insuranceEditable"
             />
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
@@ -331,25 +392,29 @@
               label="description"
               :data="template.lives"
               v-model="form.insurant_address"
+              :disabled="!view.insuranceEditable"
             />
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
         <!--万用寿险才显示-->
-        <div class="item">
-          <span class="label">居住省</span>
-          <div class="value">
-            <mx-picker />
+        <div v-if="detail.insurance_type === 'HONGKONG_WYSX'">
+          <div class="item">
+            <span class="label">居住省</span>
+            <div class="value">
+              <mx-picker />
+            </div>
+            <img class="arrow" src="/images/icon_arrow_product.png">
           </div>
-          <img class="arrow" src="/images/icon_arrow_product.png">
-        </div>
-        <div class="item">
-          <span class="label">居住市</span>
-          <div class="value">
-            <mx-picker />
+          <div class="item">
+            <span class="label">居住市</span>
+            <div class="value">
+              <mx-picker />
+            </div>
+            <img class="arrow" src="/images/icon_arrow_product.png">
           </div>
-          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
+
         <div class="item">
           <span class="label">是否吸烟</span>
           <div class="value">
@@ -358,6 +423,7 @@
               label="description"
               :data="template.yesno"
               v-model="form.insurant_somking_flag"
+              :disabled="!view.insuranceEditable"
             />
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
@@ -370,113 +436,138 @@
               label="description"
               :data="template.yesno"
               v-model="form.insurant_policy_back"
+              :disabled="!view.insuranceEditable"
             />
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <div class="collapse" @click="expand = false">
+        <div class="collapse" @click="view.insuranctExpand = false">
           <span>收起</span>
           <img src="/images/icon_collapse.png" mode="aspectFit" style="width: 26rpx;height: 16rpx;">
         </div>
       </div>
     </div>
 
-    <div class="module">
-      <div class="title">
+    <div style="order:1;" class="module" :class="{edit: view.policyEditable}">
+      <div class="title" @click="!view.policyExpand && (view.policyExpand = true)">
         <img class="title_icon" src="/images/icon_plan_4.png" mode="aspectFit" style="width:32rpx;height:32rpx;">
         <span class="title_text">投保人信息</span>
-        <!--<img class="arrow" src="/images/icon_arrow_product.png">-->
-      </div>
-      <div class="item">
-        <span class="label">投保人姓名</span>
-        <div class="value">
-          <input v-model="form.policy_name" type="text" placeholder-class="placeholder" placeholder="请输入">
+        <img class="arrow expand" v-if="!view.policyExpand" src="/images/icon_arrow_product.png">
+        <div class="operate" v-if="view.policyExpand && view.policyEditable">
+          <span @click="view.policyEditable = false">取消</span>
+          <span @click="view.policyEditable = false">保存</span>
         </div>
-        <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
+        <img  @click="view.policyEditable = true" v-if="view.editable && view.policyExpand && !view.policyEditable" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
       </div>
-      <div class="item">
-        <span class="label">性别</span>
-        <div class="value">
-          <mx-picker
-            valueKey="value"
-            label="description"
-            :data="template.genders"
-            :value="form.policy_gender"
-          />
+      <div class="item_container" v-if="view.policyExpand">
+        <div class="item">
+          <span class="label">投保人姓名</span>
+          <div class="value">
+            <input
+              v-model="form.policy_name"
+              type="text"
+              placeholder-class="placeholder"
+              placeholder="请输入"
+              :disabled="!view.policyEditable"
+            >
+          </div>
+          <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item none">
-        <span class="label">出生日期</span>
-        <div class="value">
-          <picker
-            mode="date"
-            :value="form.policy_birth"
-            start="1900-01-01"
-            end="2020-01-01"
-            @change="change"
-          >
-            <view class="picker">{{form.policy_birth}}</view>
-          </picker>
+        <div class="item">
+          <span class="label">性别</span>
+          <div class="value">
+            <mx-picker
+              valueKey="value"
+              label="description"
+              :data="template.genders"
+              :value="form.policy_gender"
+              :disabled="!view.policyEditable"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">国籍</span>
-        <div class="value">
-          <mx-picker
-            valueKey="value"
-            label="description"
-            :data="template.countries"
-            v-model="form.policy_country"
-          />
+        <div class="item none">
+          <span class="label">出生日期</span>
+          <div class="value">
+            <picker
+              mode="date"
+              :value="form.policy_birth"
+              start="1900-01-01"
+              end="2020-01-01"
+              @change="change"
+              :disabled="!view.policyEditable"
+            >
+              <view class="picker">{{form.policy_birth}}</view>
+            </picker>
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">居住地</span>
-        <div class="value">
-          <mx-picker
-            valueKey="value"
-            label="description"
-            :data="template.lives"
-            v-model="form.policy_address"
-          />
+        <div class="item">
+          <span class="label">国籍</span>
+          <div class="value">
+            <mx-picker
+              valueKey="value"
+              label="description"
+              :data="template.countries"
+              v-model="form.policy_country"
+              :disabled="!view.policyEditable"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <!--万用寿险才显示-->
-      <div class="item">
-        <span class="label">居住省</span>
-        <div class="value">
-          <mx-picker />
+        <div class="item">
+          <span class="label">居住地</span>
+          <div class="value">
+            <mx-picker
+              valueKey="value"
+              label="description"
+              :data="template.lives"
+              v-model="form.policy_address"
+              :disabled="!view.policyEditable"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">居住市</span>
-        <div class="value">
-          <mx-picker />
+        <!--万用寿险才显示-->
+        <div v-if="detail.insurance_type === 'HONGKONG_WYSX'">
+          <div class="item">
+            <span class="label">居住省</span>
+            <div class="value">
+              <mx-picker />
+            </div>
+            <img class="arrow" src="/images/icon_arrow_product.png">
+          </div>
+          <div class="item">
+            <span class="label">居住市</span>
+            <div class="value">
+              <mx-picker />
+            </div>
+            <img class="arrow" src="/images/icon_arrow_product.png">
+          </div>
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">是否吸烟</span>
-        <div class="value">
-          <mx-picker
-            valueKey="value"
-            label="description"
-            :data="template.yesno"
-            v-model="form.policy_somking_flag"
-          />
+        <div class="item">
+          <span class="label">是否吸烟</span>
+          <div class="value">
+            <mx-picker
+              valueKey="value"
+              label="description"
+              :data="template.yesno"
+              v-model="form.policy_somking_flag"
+              :disabled="!view.policyEditable"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
+        <div class="collapse" @click="view.policyExpand = false">
+          <span>收起</span>
+          <img src="/images/icon_collapse.png" mode="aspectFit" style="width: 26rpx;height: 16rpx;">
+        </div>
       </div>
     </div>
-    <p class="time">提交时间: {{form.creation_date}}</p>
+    <p class="time" style="order:1;">提交时间: {{form.creation_date}}</p>
 
     <div class="btn_next">
-      <span>撤销申请</span>
+      <span >撤销申请</span><!--@click="cancel"-->
       <span @click="showConfirm = true">修改申请</span>
     </div>
 
@@ -504,15 +595,19 @@
           plan_hk: {},
         },
         template: {},
-        form: {},
+        form: {
+          additions: [],
+        },
+        view: {
+          editable: false,
+          productEditable: false,
+          insuranctExpand: false,
+          insuranceEditable: false,
+          policyExpand: false,
+          policyEditable: false,
+        },
 
-        edit: false,
-        expand: false,
         showConfirm: false,
-        test: [1, 2, 3, 4],
-        testVal: 1,
-        product: [{id: 1, name: 'qwer'}, {id: 2, name: 'ssss'}],
-        value: 1,
       }
     },
 
@@ -527,21 +622,40 @@
           this.detail = await this.$http.get('/wx/itrade/product/plan/detail', {
             planId: this.planId,
           })
-          let result = JSON.parse(JSON.stringify(this.detail.plan_hk))
+          let result
+          switch (this.detail.insurance_type) {
+            case 'USA':
+              result = JSON.parse(JSON.stringify(this.detail.plan_usa))
+              break
+            case 'HONGKONG':
+              result = JSON.parse(JSON.stringify(this.detail.plan_hk))
+              break
+            case 'HONGKONG_WYSX':
+              result = JSON.parse(JSON.stringify(this.detail.plan_hkwysx))
+              break
+            case 'HONGKONG_GD':
+              result = JSON.parse(JSON.stringify(this.detail.plan_hkgd))
+              break
+            default:
+              break
+          }
           result.policy_birth = result.policy_birth.split(' ')[0]
           result.insurant_birth = result.insurant_birth.split(' ')[0]
           this.type = this.detail.insurance_type
           this.form = result
+
+          // 状态为需复查时,可编辑
+          this.view.editable = this.form.plan_status === 'REVIEW'
         } catch (e) {
-          console.error(e)
+          throw new Error(e)
         }
       },
       async getTemplate () {
         try {
           let result = await this.$http.get('/wx/itrade/product/plan/template', {
             insurance_type: this.detail.insurance_type,
-            item_id: this.detail.plan_hk.item_id,
-            management_id: this.detail.plan_hk.management_id,
+            item_id: this.form.item_id,
+            management_id: this.form.management_id,
           })
           result.yesno = [
             {value: 'Y', description: '是'},
@@ -549,12 +663,31 @@
           ]
           this.template = result
         } catch (e) {
-          console.error(e)
+          throw new Error(e)
+        }
+      },
+
+      // 撤销计划书申请
+      async cancel () {
+        try {
+          let result = await this.$http.post('/wx/itrade/product/plan/cancel', {
+            insurance_type: this.type,
+            plan_id: this.form.plan_id,
+          })
+          console.log(result)
+        } catch (e) {
+          throw new Error(e)
         }
       },
       change (e) {
-        console.log(e, this.value, this.detail, 'change---')
+        console.log(e, 'eeeeeee')
       },
+    },
+    onUnload () {
+      Object.keys(this.view).forEach(key => {
+        this.view[key] = false
+      })
+      this.form = {}
     },
     components: {
       mxPicker,
@@ -568,12 +701,14 @@
   .status_info {
     background: #fff;
     padding: $middle-space $mid-space;
-    @include flex();
+    @include flex(flex-start);
+    order: 0;
     >img {
       flex-shrink:0;
     }
     .status {
       padding: 0 $middle-space;
+      flex: 1;
       >span {
         font-size: 32px;
         color: $mainColor;
@@ -604,6 +739,8 @@
     color: $deepColor;
     border-top: 1px solid transparent;
     padding-bottom: 100px;
+    display: flex;
+    flex-direction: column;
     .module {
       margin-top: $mid-space;
       padding: 0 $mid-space;
@@ -641,7 +778,10 @@
         }
         .value {
           flex: 1;
-          @include flex();
+          @include flex(flex-end);
+          >span {
+            font-weight: bold;
+          }
           input {
             flex: 1;
             text-align: right;
@@ -670,9 +810,9 @@
               text-align: center;
               flex:initial;
               margin: 0 5px;
-              @include size(80px, 60px);
-              border: 2px solid #666;
-              border-radius: 8px;
+              @include size(2em, 60px);
+              border: 2px solid transparent;
+              transition: all .3s;
             }
           }
         }
@@ -712,6 +852,8 @@
         @include flex();
         color: $mainColor;
         border-top: 1px solid $borderColor;
+        transition: all .3s;
+        overflow: hidden;
       }
       .arrow {
         width: 0;
@@ -722,6 +864,14 @@
         .arrow {
           width: 15px;
           margin-left: $small-space;
+        }
+        .item .value .extract input {
+          border-color:#666;
+          width: 80px;
+          border-radius: 8px;
+        }
+        .collapse {
+          height: 0;
         }
       }
 

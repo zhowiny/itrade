@@ -1,7 +1,7 @@
 <template>
   <div class="mx-picker_container" :class="className">
     <picker class="mx-picker" :disabled="disabled" :range="data" :range-key="label" :value="dataIndex" @change="change">
-      <div class="mx-picker_none" v-if="(!dataIndex && dataIndex !== 0) || dataIndex === -1">{{placeholder}}</div>
+      <div class="mx-picker_none" v-if="(!dataIndex && dataIndex !== 0) || dataIndex === -1 || !current">{{placeholder}}</div>
       <div class="mx-picker_text" v-else>{{label ? current[label] : valueKey ? current[valueKey] : current}}</div>
     </picker>
   </div>
@@ -67,14 +67,15 @@ export default {
         })[0]
         if (!this.current) {
           this.dataIndex = undefined
-          this.$emit('change', undefined)
-          this.$emit('input', undefined)
+          // this.$emit('change', undefined)
+          // this.$emit('input', undefined)
         }
       }
     },
     change (e) {
       this.dataIndex = e.mp.detail.value
       this.current = this.data[this.dataIndex]
+      if (!this.current) return
       if (typeof this.current !== 'object') {
         this.$emit('input', this.current)
       } else {

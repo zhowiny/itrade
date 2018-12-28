@@ -30,13 +30,13 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 4,
+			"current": 0,
 			"list": [
 				{
 					"id": 0,
 					"name": "创建计划书",
 					"pathName": "pages/plan_module/create_plan/main",
-					"query": ""
+					"query": "type=HONGKONG"
 				},
 				{
 					"id": -1,
@@ -57,9 +57,15 @@
 					"query": ""
 				},
 				{
-					"id": -1,
+					"id": 4,
 					"name": "plan_detail",
 					"pathName": "pages/plan_module/plan_detail/main",
+					"query": "planId=1875"
+				},
+				{
+					"id": -1,
+					"name": "login",
+					"pathName": "pages/login_psd/main",
 					"query": "planId=1844"
 				}
 			]
