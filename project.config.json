@@ -30,7 +30,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 1,
 			"list": [
 				{
 					"id": 0,
@@ -39,10 +39,10 @@
 					"query": "type=HONGKONG"
 				},
 				{
-					"id": -1,
+					"id": 1,
 					"name": "投保人信息",
 					"pathName": "pages/plan_module/create_info/main",
-					"query": ""
+					"query": "params[supplier_id]=1&params[item_id]=1000024&params[subline_id]=1000195&params[pay_method]=AP&params[amount_type]=IC&params[currency]=AUD&params[amount]=10000&params[additional_risk_flag]=Y&params[extract_flag]=Y&params[advanced_medical][item_id]=1000050&params[advanced_medical][security_area]=%E5%85%A8%E7%90%83&params[advanced_medical][security_level]=%E7%89%B9%E7%BA%A7&params[advanced_medical][self_pay_id]=10&params[remark]=qqqqqqqq&params[extract_type]=CV&params[extract_method]=FA&params[extracts][0][extract_amount]=22222&params[extracts][0][extract_from]=2&params[extracts][0][extract_to]=5&params[additions][0][addition_id]=Y&params[additions][0][remark]=qweqweqw&insurance_type=HONGKONG"
 				},
 				{
 					"id": -1,

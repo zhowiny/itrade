@@ -160,6 +160,7 @@
 
 <script>
   import mxPicker from '@/components/picker.vue'
+  import qs from 'qs'
   export default {
     data () {
       return {
@@ -169,12 +170,46 @@
         testVal: 1,
         product: [{id: 1, name: 'qwer'}, {id: 2, name: 'ssss'}],
         value: 1,
+
+        template: {},
+        insurance: {},
+        policy: {},
+
+        params: {},
+        insuranceType: '',
       }
     },
 
-    async onLoad () {
+    async onLoad (options) {
+      Object.keys(options).forEach(key => {
+        options[key] = decodeURIComponent(options[key])
+      })
+      let result = qs.parse(options)
+      this.insuranceType = result.insurance_type
+      this.params = result.params
+      console.log(result)
     },
     methods: {
+      /**
+       * 获取产品相关模板
+       * @return {Promise<void>}
+       */
+      async getTemplate () {
+        try {
+          let result = await this.$http.get('/wx/itrade/product/plan/template', {
+            item_id: this.params.item_id,
+            management_id: this.params.supplier_id,
+          })
+          result.yesno = [
+            {value: 'Y', description: '是'},
+            {value: 'N', description: '否'},
+          ]
+          this.template = result
+          this.insuranceType = result.insurance_type
+        } catch (e) {
+          throw new Error(e)
+        }
+      },
       change (e) {
         console.log(e, this.value, 'change---')
       },

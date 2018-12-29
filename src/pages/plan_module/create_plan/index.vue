@@ -21,7 +21,7 @@
             valueKey="management_id"
             :disabled="companyList.length < 1"
             :data="companyList"
-            v-model="form.management_id"
+            v-model="form.supplier_id"
             @change="companyChange"
           />
         </div>
@@ -49,61 +49,130 @@
             valueKey="subline_id"
             :disabled="!template.product_year_periods || template.product_year_periods.length < 1"
             :data="template.product_year_periods"
-            v-model="form.year_period"
+            v-model="form.subline_id"
           />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
-      <div class="item">
-        <span class="label">缴费方式</span>
-        <div class="value">
-          <mx-picker
-            label="description"
-            valueKey="value"
-            :disabled="!template.product_pay_methods || template.product_pay_methods.length < 1"
-            :data="template.product_pay_methods"
-            v-model="form.pay_method"
-            product_pay_methods
-          />
+      <!--美险显示字段-->
+      <div v-if="insuranceType === 'USA'">
+        <div class="item" >
+          <span class="label">金额类型</span>
+          <div class="value">
+            <mx-picker
+              label="description"
+              valueKey="value"
+              :disabled="!template.product_amount_types || template.product_amount_types.length < 1"
+              :data="template.product_amount_types"
+              v-model="form.amount_type"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
+        <div class="item">
+          <span class="label">金额</span>
+          <div class="value">
+            <input v-model="form.amount" type="text" placeholder-class="placeholder" placeholder="请输入">
+          </div>
+          <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item" >
+          <span class="label">保单需求</span>
+          <div class="value">
+            <mx-picker
+              label="description"
+              valueKey="value"
+              :disabled="!template.policy_requires || template.policy_requires.length < 1"
+              :data="template.policy_requires"
+              v-model="form.policy_demand"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item">
+          <span class="label">是否提取</span>
+          <div class="value">
+            <mx-picker
+              label="description"
+              valueKey="value"
+              :data="template.yesno"
+              v-model="form.extract_flag"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item" v-if="form.extract_flag === 'Y'"><!--v-for="(item, index) in extract" :key="index"-->
+          <span class="label">提取年数</span>
+          <div class="value">
+            <div class="extract">
+              从第 <input type="text" v-model="form.extract_from"> 年
+              到第 <input type="text" v-model="form.extract_to"> 年
+            </div>
+          </div>
+          <img v-if="false" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
+          <img v-else src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+        </div>
+
+        <div class="item textarea">
+          <span class="label">任何健康问题? (选填)</span>
+          <div class="value">
+            <textarea v-model="form.health_problem" placeholder-class="placeholder" placeholder="请输入" maxlength="-1" auto-height></textarea>
+          </div>
+        </div>
       </div>
-      <div class="item">
-        <span class="label">金额类型</span>
-        <div class="value">
-          <mx-picker
-            label="description"
-            valueKey="value"
-            :disabled="!template.product_amount_types || template.product_amount_types.length < 1"
-            :data="template.product_amount_types"
-            v-model="form.amount_type"
-          />
+      <!--不是美险才显示-->
+      <div v-else>
+        <div class="item">
+          <span class="label">缴费方式</span>
+          <div class="value">
+            <mx-picker
+              label="description"
+              valueKey="value"
+              :disabled="!template.product_pay_methods || template.product_pay_methods.length < 1"
+              :data="template.product_pay_methods"
+              v-model="form.pay_method"
+              product_pay_methods
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">缴费币种</span>
-        <div class="value">
-          <mx-picker
-            label="description"
-            valueKey="value"
-            :disabled="!template.product_currenies || template.product_currenies.length < 1"
-            :data="template.product_currenies"
-            v-model="form.currency"
-          />
+        <div class="item" v-if="insuranceType !== 'HONGKONG_GD'">
+          <span class="label">金额类型</span>
+          <div class="value">
+            <mx-picker
+              label="description"
+              valueKey="value"
+              :disabled="!template.product_amount_types || template.product_amount_types.length < 1"
+              :data="template.product_amount_types"
+              v-model="form.amount_type"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">金额</span>
-        <div class="value">
-          <input v-model="form.amount" type="text" placeholder-class="placeholder" placeholder="请输入">
+        <div class="item">
+          <span class="label">缴费币种</span>
+          <div class="value">
+            <mx-picker
+              label="description"
+              valueKey="value"
+              :disabled="!template.product_currenies || template.product_currenies.length < 1"
+              :data="template.product_currenies"
+              v-model="form.currency"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
+        <div class="item" v-if="insuranceType !== 'HONGKONG_GD'">
+          <span class="label">金额</span>
+          <div class="value">
+            <input v-model="form.amount" type="text" placeholder-class="placeholder" placeholder="请输入">
+          </div>
+          <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
+        </div>
       </div>
 
-      <!--万用寿险不显示附加险,是否提取,高端医疗-->
-      <div v-if="insuranceType !== 'HONGKONG_WYSX'">
+      <!--普通港险才显示附加险,是否提取,高端医疗-->
+      <div v-if="insuranceType === 'HONGKONG'">
         <div class="item">
           <span class="label">附加险</span>
           <div class="value">
@@ -141,11 +210,55 @@
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
       </div>
+
+      <!--只有高端医疗显示-->
+      <div v-if="insuranceType === 'HONGKONG_GD'">
+        <div class="item">
+          <span class="label">保障级别</span>
+          <div class="value">
+            <mx-picker
+              valueKey="value"
+              label="description"
+              :disabled="!template.security_levels || template.security_levels.length < 1"
+              :data="template.security_levels"
+              v-model="advancedMedicals.security_level"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item">
+          <span class="label">保障地区</span>
+          <div class="value">
+            <mx-picker
+              valueKey="value"
+              label="description"
+              :disabled="!template.security_areas || template.security_areas.length < 1"
+              :data="template.security_areas"
+              v-model="advancedMedicals.security_area"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item">
+          <span class="label">自付选项</span>
+          <div class="value">
+            <mx-picker
+              valueKey="self_pay_id"
+              label="self_pay_name"
+              :disabled="!template.selfpaies || template.selfpaies.length < 1"
+              :data="template.selfpaies"
+              v-model="advancedMedicals.self_pay_id"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+      </div>
+
     </div>
 
     <div
       class="module"
-      v-if="form.additional_risk_flag === 'Y'"
+      v-if="form.additional_risk_flag === 'Y' && insuranceType === 'HONGKONG'"
       v-for="(item, index) in additions" :key="index"
     >
       <div class="title">
@@ -177,7 +290,7 @@
 
     <div
       class="module"
-      v-if="form.extract_flag === 'Y'"
+      v-if="form.extract_flag === 'Y' && insuranceType === 'HONGKONG'"
     >
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_2.png" mode="aspectFit" style="width:36rpx;height:32rpx;">
@@ -202,8 +315,8 @@
           <mx-picker
             label="description"
             valueKey="value"
-            :disabled="!template.extract_method || template.extract_method.length < 1"
-            :data="template.extract_method"
+            :disabled="!template.extract_methods || template.extract_methods.length < 1"
+            :data="template.extract_methods"
             v-model="form.extract_method"
           />
         </div>
@@ -233,7 +346,7 @@
 
     <div
       class="module"
-      v-if="form.advanced_medical === 'Y'"
+      v-if="form.advanced_medical === 'Y' && insuranceType === 'HONGKONG'"
     >
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_3.png" mode="aspectFit" style="width:31rpx;height:36rpx;">
@@ -248,6 +361,7 @@
             :disabled="!template.advanced_medicals || template.advanced_medicals.length < 1"
             :data="template.advanced_medicals"
             v-model="advancedMedicals.item_id"
+            @change="getOptions"
           />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
@@ -256,8 +370,8 @@
         <span class="label">保障级别</span>
         <div class="value">
           <mx-picker
-            valueKey="itemId"
-            label="itemName"
+            valueKey="value"
+            label="description"
             :disabled="!template.security_levels || template.security_levels.length < 1"
             :data="template.security_levels"
             v-model="advancedMedicals.security_level"
@@ -269,8 +383,8 @@
         <span class="label">保障地区</span>
         <div class="value">
           <mx-picker
-            valueKey="itemId"
-            label="itemName"
+            valueKey="value"
+            label="description"
             :disabled="!template.security_areas || template.security_areas.length < 1"
             :data="template.security_areas"
             v-model="advancedMedicals.security_area"
@@ -282,8 +396,8 @@
         <span class="label">自付选项</span>
         <div class="value">
           <mx-picker
-            valueKey="itemId"
-            label="itemName"
+            valueKey="self_pay_id"
+            label="self_pay_name"
             :disabled="!template.selfpaies || template.selfpaies.length < 1"
             :data="template.selfpaies"
             v-model="advancedMedicals.self_pay_id"
@@ -294,17 +408,17 @@
     </div>
     <div
       class="module"
-      v-if="form.advanced_medical === 'Y' || form.extract_flag === 'Y' || form.additional_risk_flag === 'Y'"
+      v-if="insuranceType === 'HONGKONG' && (form.advanced_medical === 'Y' || form.extract_flag === 'Y' || form.additional_risk_flag === 'Y')"
     >
       <div class="item textarea">
         <span class="label">其他备注 (选填)</span>
         <div class="value">
-          <textarea v-model='remark' placeholder-class="placeholder" placeholder="请输入" maxlength="-1" auto-height></textarea>
+          <textarea v-model='form.remark' placeholder-class="placeholder" placeholder="请输入" maxlength="-1" auto-height></textarea>
         </div>
       </div>
     </div>
 
-    <div class="btn_next" @click="toPage('/pages/plan_module/create_info/main')">
+    <div class="btn_next" @click="nextStep">
       <span>下一步</span>
     </div>
 
@@ -329,9 +443,9 @@
         },
 
         form: {
-          management_id: 1, // 产品公司id
-          item_id: undefined, // 产品id
-          year_period: '', // 年期
+          supplier_id: 1, // 产品公司id
+          item_id: '', // 产品id
+          subline_id: '', // 年期
           pay_method: '', // 付款方式
           amount_type: '', // 金额类型
           currency: '', // 币种
@@ -344,6 +458,10 @@
           extract_type: '', // 提取类型
           extract_method: '', // 提取方式
 
+          policy_demand: '', // 保单需求
+          health_problem: '', // 健康问题
+          extract_from: '', // 提取开始
+          extract_to: '', // 提取结束
         },
 
         // 附加险
@@ -405,18 +523,22 @@
       async getProduct () {
         try {
           this.productList = await this.$http.get('/wx/itrade/ff/product/items', {
-            management_id: this.form.management_id
+            management_id: this.form.supplier_id
           })
         } catch (e) {
           throw new Error(e)
         }
       },
+      /**
+       * 产品改变时重置部分字段
+       */
       productChange () {
         this.reset()
         this.getTemplate()
+        return null
       },
       reset () {
-        this.form.year_period = ''
+        this.form.subline_id = ''
         this.form.pay_method = ''
         this.form.amount_type = ''
         this.form.currency = ''
@@ -432,7 +554,7 @@
         try {
           let result = await this.$http.get('/wx/itrade/product/plan/template', {
             item_id: this.form.item_id,
-            management_id: this.form.management_id,
+            management_id: this.form.supplier_id,
           })
           result.yesno = [
             {value: 'Y', description: '是'},
@@ -444,8 +566,363 @@
           throw new Error(e)
         }
       },
-      change (e) {
-        console.log(e, this.form, 'change---')
+      /**
+       * 把数据带入下一步
+       */
+      nextStep () {
+        let params = this.checkFields()
+        if (params) {
+          this.toPage({
+            url: '/pages/plan_module/create_info/main',
+            data: {params, insurance_type: this.insuranceType},
+          })
+        }
+      },
+
+      async getOptions () {
+        try {
+          this.advancedMedicals.security_area = ''
+          this.advancedMedicals.security_level = ''
+          this.advancedMedicals.self_pay_id = ''
+          let result = await this.$http.get('/wx/itrade/product/plan/advanced_medical/options', {
+            item_id: this.advancedMedicals.item_id
+          })
+          this.$set(this.template, 'security_levels', result.security_levels || result.securityLevels)
+          this.$set(this.template, 'security_areas', result.security_areas || result.securityAreas)
+          this.$set(this.template, 'selfpaies', result.selfpaies || [])
+        } catch (e) {
+          throw new Error(e)
+        }
+      },
+      /**
+       * 检验字段是否通过
+       * @return {*}
+       */
+      checkFields () {
+        let params = {}
+        let fields = {}
+        switch (this.insuranceType) {
+          case 'HONGKONG':
+            fields = [
+              {
+                require: true,
+                value: this.form.supplier_id,
+                meaning: '产品公司',
+                field: 'supplier_id',
+              },
+              {
+                require: true,
+                value: this.form.item_id,
+                meaning: '产品',
+                field: 'item_id',
+              },
+              {
+                require: true,
+                value: this.form.subline_id,
+                meaning: '年期',
+                field: 'subline_id',
+              },
+              {
+                require: true,
+                value: this.form.pay_method,
+                meaning: '付款方式',
+                field: 'pay_method',
+              },
+              {
+                require: true,
+                value: this.form.amount_type,
+                meaning: '金额类型',
+                field: 'amount_type',
+              },
+              {
+                require: true,
+                value: this.form.currency,
+                meaning: '币种',
+                field: 'currency',
+              },
+              {
+                require: true,
+                value: this.form.amount,
+                meaning: '金额',
+                field: 'amount',
+              },
+              {
+                require: true,
+                value: this.form.additional_risk_flag,
+                meaning: '附加险',
+                field: 'additional_risk_flag',
+              },
+              {
+                require: true,
+                value: this.form.extract_flag,
+                meaning: '是否提取',
+                field: 'extract_flag',
+              },
+              {
+                require: true,
+                value: this.form.advanced_medical,
+                meaning: '高端医疗',
+                field: 'advanced_medical',
+              },
+              {
+                require: false,
+                value: this.form.remark,
+                meaning: '其他备注',
+                field: 'remark',
+              },
+            ]
+            for (let field of fields) {
+              if (field.require && (!field.value && field.value !== 0)) {
+                this.showToast(field.meaning + '不能为空!')
+                return false
+              } else {
+                params[field.field] = field.value
+              }
+            }
+            // 如果添加提取,增加校验提取选项
+            if (this.form.extract_flag === 'Y') {
+              if (!this.form.extract_type) {
+                this.showToast('提取类型不能为空!')
+                return false
+              } else {
+                params.extract_type = this.form.extract_type
+              }
+              if (!this.form.extract_method) {
+                this.showToast('提取方式不能为空!')
+                return false
+              } else {
+                params.extract_method = this.form.extract_method
+              }
+              for (let e of this.extract) {
+                if (!e.extract_amount && e.extract_amount !== 0) {
+                  this.showToast('提取金额不能为空!')
+                  return false
+                }
+                if (!e.extract_from && e.extract_from !== 0) {
+                  this.showToast('提取开始年数不能为空!')
+                  return false
+                }
+                if (!e.extract_to && e.extract_to !== 0) {
+                  this.showToast('提取结束年数不能为空!')
+                  return false
+                }
+              }
+              params.extracts = this.extract
+            }
+            // 如果添加附加险,增加校验附加险产品
+            if (this.form.additional_risk_flag === 'Y') {
+              for (let addition of this.additions) {
+                if (!addition.addition_id) {
+                  this.showToast('附加险不能为空!')
+                  return false
+                }
+              }
+              params.additions = this.additions
+            }
+            // 如果添加高端医疗,增加校验高端医疗
+            if (this.form.advanced_medical === 'Y') {
+              if (!this.advancedMedicals.item_id) {
+                this.showToast('高端医疗产品不能为空!')
+                return false
+              }
+              if (!this.advancedMedicals.security_area) {
+                this.showToast('保障区域不能为空!')
+                return false
+              }
+              if (!this.advancedMedicals.security_level) {
+                this.showToast('保障级别不能为空!')
+                return false
+              }
+              if (!this.advancedMedicals.self_pay_id) {
+                this.showToast('自付选项不能为空!')
+                return false
+              }
+              params.advanced_medical = this.advancedMedicals
+            }
+            break
+          case 'HONGKONG_GD':
+            fields = [
+              {
+                require: true,
+                value: this.form.supplier_id,
+                meaning: '产品公司',
+                field: 'supplier_id',
+              },
+              {
+                require: true,
+                value: this.form.item_id,
+                meaning: '产品',
+                field: 'item_id',
+              },
+              {
+                require: true,
+                value: this.form.subline_id,
+                meaning: '年期',
+                field: 'subline_id',
+              },
+              {
+                require: true,
+                value: this.form.pay_method,
+                meaning: '缴费方式',
+                field: 'pay_method',
+              },
+              {
+                require: true,
+                value: this.form.currency,
+                meaning: '币种',
+                field: 'currency',
+              },
+            ]
+            for (let field of fields) {
+              if (field.require && (!field.value && field.value !== 0)) {
+                this.showToast(field.meaning + '不能为空!')
+                return false
+              } else {
+                params[field.field] = field.value
+              }
+            }
+            if (!this.advancedMedicals.security_area) {
+              this.showToast('保障区域不能为空!')
+              return false
+            } else {
+              params.security_area = this.advancedMedicals.security_area
+            }
+            if (!this.advancedMedicals.security_level) {
+              this.showToast('保障级别不能为空!')
+              return false
+            } else {
+              params.security_level = this.advancedMedicals.security_level
+            }
+            if (!this.advancedMedicals.self_pay_id) {
+              this.showToast('自付选项不能为空!')
+              return false
+            } else {
+              params.self_pay_id = this.advancedMedicals.self_pay_id
+            }
+            break
+          case 'USA':
+            fields = [
+              {
+                require: true,
+                value: this.form.supplier_id,
+                meaning: '产品公司',
+                field: 'supplier_id',
+              },
+              {
+                require: true,
+                value: this.form.item_id,
+                meaning: '产品',
+                field: 'item_id',
+              },
+              {
+                require: true,
+                value: this.form.subline_id,
+                meaning: '年期',
+                field: 'subline_id',
+              },
+              {
+                require: true,
+                value: this.form.amount_type,
+                meaning: '金额类型',
+                field: 'amount_type',
+              },
+              {
+                require: true,
+                value: this.form.amount,
+                meaning: '金额',
+                field: 'amount',
+              },
+              {
+                require: true,
+                value: this.form.policy_demand,
+                meaning: '保单需求',
+                field: 'policy_demand',
+              },
+              {
+                require: false,
+                value: this.form.extract_from,
+                meaning: '提取开始年数',
+                field: 'extract_from',
+              },
+              {
+                require: false,
+                value: this.form.extract_to,
+                meaning: '提取结束年数',
+                field: 'extract_to',
+              },
+              {
+                require: false,
+                value: this.form.health_problem,
+                meaning: '任何健康问题',
+                field: 'health_problem',
+              },
+            ]
+            for (let field of fields) {
+              if (field.require && (!field.value && field.value !== 0)) {
+                this.showToast(field.meaning + '不能为空!')
+                return false
+              } else {
+                params[field.field] = field.value
+              }
+            }
+            break
+          case 'HONGKONG_WYSX':
+          default:
+            fields = [
+              {
+                require: true,
+                value: this.form.supplier_id,
+                meaning: '产品公司',
+                field: 'supplier_id',
+              },
+              {
+                require: true,
+                value: this.form.item_id,
+                meaning: '产品',
+                field: 'item_id',
+              },
+              {
+                require: true,
+                value: this.form.subline_id,
+                meaning: '年期',
+                field: 'subline_id',
+              },
+              {
+                require: true,
+                value: this.form.pay_method,
+                meaning: '缴费方式',
+                field: 'pay_method',
+              },
+              {
+                require: true,
+                value: this.form.amount_type,
+                meaning: '金额类型',
+                field: 'amount_type',
+              },
+              {
+                require: true,
+                value: this.form.currency,
+                meaning: '币种',
+                field: 'currency',
+              },
+              {
+                require: true,
+                value: this.form.amount,
+                meaning: '金额',
+                field: 'amount',
+              },
+            ]
+            for (let field of fields) {
+              if (field.require && (!field.value && field.value !== 0)) {
+                this.showToast(field.meaning + '不能为空!')
+                return false
+              } else {
+                params[field.field] = field.value
+              }
+            }
+            break
+        }
+        return params
       },
     },
     components: {
