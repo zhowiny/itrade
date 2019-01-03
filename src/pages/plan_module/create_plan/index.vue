@@ -204,7 +204,7 @@
               label="description"
               valueKey="value"
               :data="template.yesno"
-              v-model="form.advanced_medical"
+              v-model="form.advanced_medical_flag"
             />
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
@@ -271,10 +271,10 @@
         <span class="label">附加险</span>
         <div class="value">
           <mx-picker
-            label="description"
-            valueKey="value"
-            :disabled="!template.yesno || template.yesno.length < 1"
-            :data="template.yesno"
+            label="itemName"
+            valueKey="itemId"
+            :disabled="!template.additions || template.additions.length < 1"
+            :data="template.additions"
             v-model="item.addition_id"
           />
         </div>
@@ -346,7 +346,7 @@
 
     <div
       class="module"
-      v-if="form.advanced_medical === 'Y' && insuranceType === 'HONGKONG'"
+      v-if="form.advanced_medical_flag === 'Y' && insuranceType === 'HONGKONG'"
     >
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_3.png" mode="aspectFit" style="width:31rpx;height:36rpx;">
@@ -361,7 +361,7 @@
             :disabled="!template.advanced_medicals || template.advanced_medicals.length < 1"
             :data="template.advanced_medicals"
             v-model="advancedMedicals.item_id"
-            @change="getOptions"
+            @change="getOptions(1)"
           />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
@@ -408,7 +408,7 @@
     </div>
     <div
       class="module"
-      v-if="insuranceType === 'HONGKONG' && (form.advanced_medical === 'Y' || form.extract_flag === 'Y' || form.additional_risk_flag === 'Y')"
+      v-if="insuranceType === 'HONGKONG' && (form.advanced_medical_flag === 'Y' || form.extract_flag === 'Y' || form.additional_risk_flag === 'Y')"
     >
       <div class="item textarea">
         <span class="label">其他备注 (选填)</span>
@@ -452,7 +452,7 @@
           amount: '', // 金额
           additional_risk_flag: 'N', // 附加险
           extract_flag: 'N', // 是否提取
-          advanced_medical: 'N', // 高端医疗
+          advanced_medical_flag: 'N', // 高端医疗
           remark: '', // 其他备注
 
           extract_type: '', // 提取类型
@@ -486,6 +486,8 @@
           security_level: '', // 保障级别
           self_pay_id: '', // 自付选项
         },
+
+        detail: {},
       }
     },
     watch: {
@@ -493,10 +495,59 @@
 
     async onLoad (params) {
       this.type = params.type
+      await this.getDetail()
       await this.getCompany()
       this.getProduct()
     },
     methods: {
+      async getDetail () {
+        try {
+          if (!this.$mp.query.plan_id) return
+          let result = await this.$http.get('/wx/itrade/product/plan/detail', {
+            planId: this.$mp.query.plan_id,
+          })
+          switch (result.insurance_type) {
+            case 'USA':
+              this.detail = JSON.parse(JSON.stringify(result.plan_usa))
+              break
+            case 'HONGKONG':
+              this.detail = JSON.parse(JSON.stringify(result.plan_hk))
+              break
+            case 'HONGKONG_WYSX':
+              this.detail = JSON.parse(JSON.stringify(result.plan_hkwysx))
+              break
+            case 'HONGKONG_GD':
+              this.detail = JSON.parse(JSON.stringify(result.plan_hkgd))
+              break
+            default:
+              break
+          }
+          this.insuranceType = result.insurance_type
+          this.detail.policy_birth = this.detail.policy_birth.split(' ')[0]
+          this.detail.insurant_birth = this.detail.insurant_birth.split(' ')[0]
+
+          Object.keys(this.form).forEach(key => {
+            this.form[key] = this.detail[key]
+          })
+          this.form.supplier_id = this.detail.management_id
+
+          // this.form.subline_id = this.detail.year_period
+          this.additions = this.detail.additions
+          this.extract = this.detail.extracts
+          this.advancedMedicals = Object.assign({self_pay_id: this.detail.advanced_medical.selfpay_id}, this.detail.advanced_medical)
+          if (this.detail.advanced_medical.item_id) {
+            this.getOptions()
+          }
+          await this.getTemplate()
+          this.template.product_year_periods.forEach(item => {
+            if (item.subline_item_name === this.detail.year_period) {
+              this.form.subline_id = item.subline_id
+            }
+          })
+        } catch (e) {
+          throw new Error(e)
+        }
+      },
       /**
        * 获取产品公司
        * @return {Promise<void>}
@@ -544,7 +595,7 @@
         this.form.currency = ''
         this.form.additional_risk_flag = 'N'
         this.form.extract_flag = 'N'
-        this.form.advanced_medical = 'N'
+        this.form.advanced_medical_flag = 'N'
       },
       /**
        * 获取产品相关模板
@@ -560,8 +611,30 @@
             {value: 'Y', description: '是'},
             {value: 'N', description: '否'},
           ]
-          this.template = result
+          Object.keys(result).forEach(key => {
+            this.$set(this.template, key, result[key] || [])
+          })
           this.insuranceType = result.insurance_type
+        } catch (e) {
+          throw new Error(e)
+        }
+      },
+      /**
+       * 查询高端医疗下拉选项
+       */
+      async getOptions (clear) {
+        try {
+          if (clear) {
+            this.advancedMedicals.security_area = ''
+            this.advancedMedicals.security_level = ''
+            this.advancedMedicals.self_pay_id = ''
+          }
+          let result = await this.$http.get('/wx/itrade/product/plan/advanced_medical/options', {
+            item_id: this.advancedMedicals.item_id
+          })
+          this.$set(this.template, 'security_levels', result.security_levels || result.securityLevels)
+          this.$set(this.template, 'security_areas', result.security_areas || result.securityAreas)
+          this.$set(this.template, 'selfpaies', result.selfpaies || [])
         } catch (e) {
           throw new Error(e)
         }
@@ -572,26 +645,11 @@
       nextStep () {
         let params = this.checkFields()
         if (params) {
+          console.log(params)
           this.toPage({
             url: '/pages/plan_module/create_info/main',
             data: {params, insurance_type: this.insuranceType},
           })
-        }
-      },
-
-      async getOptions () {
-        try {
-          this.advancedMedicals.security_area = ''
-          this.advancedMedicals.security_level = ''
-          this.advancedMedicals.self_pay_id = ''
-          let result = await this.$http.get('/wx/itrade/product/plan/advanced_medical/options', {
-            item_id: this.advancedMedicals.item_id
-          })
-          this.$set(this.template, 'security_levels', result.security_levels || result.securityLevels)
-          this.$set(this.template, 'security_areas', result.security_areas || result.securityAreas)
-          this.$set(this.template, 'selfpaies', result.selfpaies || [])
-        } catch (e) {
-          throw new Error(e)
         }
       },
       /**
@@ -605,74 +663,74 @@
           case 'HONGKONG':
             fields = [
               {
-                require: true,
+                required: true,
                 value: this.form.supplier_id,
                 meaning: '产品公司',
                 field: 'supplier_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.item_id,
                 meaning: '产品',
                 field: 'item_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.subline_id,
                 meaning: '年期',
                 field: 'subline_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.pay_method,
                 meaning: '付款方式',
                 field: 'pay_method',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.amount_type,
                 meaning: '金额类型',
                 field: 'amount_type',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.currency,
                 meaning: '币种',
                 field: 'currency',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.amount,
                 meaning: '金额',
                 field: 'amount',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.additional_risk_flag,
                 meaning: '附加险',
                 field: 'additional_risk_flag',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.extract_flag,
                 meaning: '是否提取',
                 field: 'extract_flag',
               },
               {
-                require: true,
-                value: this.form.advanced_medical,
+                required: true,
+                value: this.form.advanced_medical_flag,
                 meaning: '高端医疗',
-                field: 'advanced_medical',
+                field: 'advanced_medical_flag',
               },
               {
-                require: false,
+                required: false,
                 value: this.form.remark,
                 meaning: '其他备注',
                 field: 'remark',
               },
             ]
             for (let field of fields) {
-              if (field.require && (!field.value && field.value !== 0)) {
+              if (field.required && (!field.value && field.value !== 0)) {
                 this.showToast(field.meaning + '不能为空!')
                 return false
               } else {
@@ -720,7 +778,7 @@
               params.additions = this.additions
             }
             // 如果添加高端医疗,增加校验高端医疗
-            if (this.form.advanced_medical === 'Y') {
+            if (this.form.advanced_medical_flag === 'Y') {
               if (!this.advancedMedicals.item_id) {
                 this.showToast('高端医疗产品不能为空!')
                 return false
@@ -743,38 +801,38 @@
           case 'HONGKONG_GD':
             fields = [
               {
-                require: true,
+                required: true,
                 value: this.form.supplier_id,
                 meaning: '产品公司',
                 field: 'supplier_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.item_id,
                 meaning: '产品',
                 field: 'item_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.subline_id,
                 meaning: '年期',
                 field: 'subline_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.pay_method,
                 meaning: '缴费方式',
                 field: 'pay_method',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.currency,
                 meaning: '币种',
                 field: 'currency',
               },
             ]
             for (let field of fields) {
-              if (field.require && (!field.value && field.value !== 0)) {
+              if (field.required && (!field.value && field.value !== 0)) {
                 this.showToast(field.meaning + '不能为空!')
                 return false
               } else {
@@ -803,62 +861,68 @@
           case 'USA':
             fields = [
               {
-                require: true,
+                required: true,
                 value: this.form.supplier_id,
                 meaning: '产品公司',
                 field: 'supplier_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.item_id,
                 meaning: '产品',
                 field: 'item_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.subline_id,
                 meaning: '年期',
                 field: 'subline_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.amount_type,
                 meaning: '金额类型',
                 field: 'amount_type',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.amount,
                 meaning: '金额',
                 field: 'amount',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.policy_demand,
                 meaning: '保单需求',
                 field: 'policy_demand',
               },
               {
-                require: false,
+                required: false,
+                value: this.form.extract_flag,
+                meaning: '是否提取',
+                field: 'extract_flag',
+              },
+              {
+                required: false,
                 value: this.form.extract_from,
                 meaning: '提取开始年数',
                 field: 'extract_from',
               },
               {
-                require: false,
+                required: false,
                 value: this.form.extract_to,
                 meaning: '提取结束年数',
                 field: 'extract_to',
               },
               {
-                require: false,
+                required: false,
                 value: this.form.health_problem,
                 meaning: '任何健康问题',
                 field: 'health_problem',
               },
             ]
             for (let field of fields) {
-              if (field.require && (!field.value && field.value !== 0)) {
+              if (field.required && (!field.value && field.value !== 0)) {
                 this.showToast(field.meaning + '不能为空!')
                 return false
               } else {
@@ -870,50 +934,50 @@
           default:
             fields = [
               {
-                require: true,
+                required: true,
                 value: this.form.supplier_id,
                 meaning: '产品公司',
                 field: 'supplier_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.item_id,
                 meaning: '产品',
                 field: 'item_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.subline_id,
                 meaning: '年期',
                 field: 'subline_id',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.pay_method,
                 meaning: '缴费方式',
                 field: 'pay_method',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.amount_type,
                 meaning: '金额类型',
                 field: 'amount_type',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.currency,
                 meaning: '币种',
                 field: 'currency',
               },
               {
-                require: true,
+                required: true,
                 value: this.form.amount,
                 meaning: '金额',
                 field: 'amount',
               },
             ]
             for (let field of fields) {
-              if (field.require && (!field.value && field.value !== 0)) {
+              if (field.required && (!field.value && field.value !== 0)) {
                 this.showToast(field.meaning + '不能为空!')
                 return false
               } else {
@@ -922,6 +986,7 @@
             }
             break
         }
+        this.$mp.query.plan_id && (params.plan_id = this.$mp.query.plan_id)
         return params
       },
     },

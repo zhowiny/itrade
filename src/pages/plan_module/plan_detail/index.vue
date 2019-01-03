@@ -57,92 +57,175 @@
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
-      <div class="item">
-        <span class="label">缴费方式</span>
-        <div class="value">
-          <mx-picker
-            :disabled="!view.productEditable" valueKey="value"
-            label="description"
-            :data="template.product_pay_methods"
-            v-model="form.pay_method"
-          />
+      <div v-if="detail.insurance_type === 'USA'">
+        <div class="item" >
+          <span class="label">金额类型</span>
+          <div class="value">
+            <mx-picker
+              label="description"
+              valueKey="value"
+              :disabled="!view.productEditable"
+              :data="template.product_amount_types"
+              v-model="form.amount_type"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
+        <div class="item">
+          <span class="label">金额</span>
+          <div class="value">
+            <input :disabled="!view.productEditable" v-model="form.amount" type="text" placeholder-class="placeholder" placeholder="请输入">
+          </div>
+          <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item" >
+          <span class="label">保单需求</span>
+          <div class="value">
+            <mx-picker
+              label="description"
+              valueKey="value"
+              :disabled="!view.productEditable"
+              :data="template.policy_requires"
+              v-model="form.policy_require"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item">
+          <span class="label">是否提取</span>
+          <div class="value">
+            <mx-picker
+              label="description"
+              valueKey="value"
+              :disabled="!view.productEditable"
+              :data="template.yesno"
+              v-model="form.extract_flag"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item" v-if="form.extract_flag === 'Y'" v-for="(item, index) in form.extracts" :key="index">
+          <span class="label">提取年数</span>
+          <div class="value">
+            <div class="extract">
+              从第 <input type="text" :disabled="!view.productEditable" v-model="item.extract_from"> 年
+              到第 <input type="text" :disabled="!view.productEditable" v-model="item.extract_to"> 年
+            </div>
+          </div>
+          <img v-if="false" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
+          <img v-else src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+        </div>
+
+        <div class="item textarea">
+          <span class="label">任何健康问题? (选填)</span>
+          <div class="value">
+            <textarea
+              :disabled="!view.productEditable"
+              v-model="form.any_health_problem"
+              placeholder-class="placeholder"
+              placeholder="请输入" maxlength="-1"
+              auto-height
+            ></textarea>
+          </div>
+        </div>
       </div>
-      <div class="item">
-        <span class="label">金额类型</span>
-        <div class="value">
-          <mx-picker
-            :disabled="!view.productEditable" valueKey="value"
-            label="description"
-            :data="template.product_amount_types"
-            v-model="form.amount_type"
-          />
+
+      <div  v-else>
+        <div class="item">
+          <span class="label">缴费方式</span>
+          <div class="value">
+            <mx-picker
+              :disabled="!view.productEditable" valueKey="value"
+              label="description"
+              :data="template.product_pay_methods"
+              v-model="form.pay_method"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
+        <div class="item">
+          <span class="label">金额类型</span>
+          <div class="value">
+            <mx-picker
+              :disabled="!view.productEditable" valueKey="value"
+              label="description"
+              :data="template.product_amount_types"
+              v-model="form.amount_type"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item">
+          <span class="label">缴费币种</span>
+          <div class="value">
+            <mx-picker
+              :disabled="!view.productEditable" valueKey="value"
+              label="description"
+              :data="template.product_currenies"
+              v-model="form.currency"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item">
+          <span class="label">金额</span>
+          <div class="value">
+            <input
+              v-model="form.amount"
+              :disabled="!view.productEditable" type="text"
+              placeholder-class="placeholder" placeholder="请输入"
+            >
+          </div>
+          <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
+        </div>
       </div>
-      <div class="item">
-        <span class="label">缴费币种</span>
-        <div class="value">
-          <mx-picker
-            :disabled="!view.productEditable" valueKey="value"
-            label="description"
-            :data="template.product_currenies"
-            v-model="form.currency"
-          />
+
+      <div v-if="detail.insurance_type === 'HONGKONG'">
+        <div class="item">
+          <span class="label">附加险</span>
+          <div class="value">
+            <mx-picker
+              :disabled="!view.productEditable" valueKey="value"
+              label="description"
+              :data="template.yesno"
+              v-model="form.additional_risk_flag"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">金额</span>
-        <div class="value">
-          <input
-            v-model="form.amount"
-            :disabled="!view.productEditable" type="text"
-            placeholder-class="placeholder" placeholder="请输入"
-          >
+        <div class="item">
+          <span class="label">是否提取</span>
+          <div class="value">
+            <mx-picker
+              :disabled="!view.productEditable" valueKey="value"
+              label="description"
+              :data="template.yesno"
+              v-model="form.extract_flag"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">附加险</span>
-        <div class="value">
-          <mx-picker
-            :disabled="!view.productEditable" valueKey="value"
-            label="description"
-            :data="template.yesno"
-            v-model="form.additional_risk_flag"
-          />
+        <div class="item">
+          <span class="label">高端医疗</span>
+          <div class="value">
+            <mx-picker
+              :disabled="!view.productEditable" valueKey="value"
+              label="description"
+              :data="template.yesno"
+              v-model="form.advanced_medical_flag"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">是否提取</span>
-        <div class="value">
-          <mx-picker
-            :disabled="!view.productEditable" valueKey="value"
-            label="description"
-            :data="template.yesno"
-            v-model="form.extract_flag"
-          />
-        </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
-      </div>
-      <div class="item">
-        <span class="label">高端医疗</span>
-        <div class="value">
-          <mx-picker
-            :disabled="!view.productEditable" valueKey="value"
-            label="description"
-            :data="template.yesno"
-            v-model="form.advanced_medical_flag"
-          />
-        </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
     </div>
 
-    <div style="order:1;" v-show="form.extract_flag === 'Y'" class="module" :class="{edit: view.productEditable}">
+    <div
+      style="order:1;"
+      class="module"
+      :class="{edit: view.productEditable}"
+      v-show="form.extract_flag === 'Y' && detail.insurance_type === 'HONGKONG'"
+    >
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_2.png" mode="aspectFit" style="width:36rpx;height:32rpx;">
         <span class="title_text">添加提取</span>
@@ -196,8 +279,8 @@
 
     <div
       v-for="(item, index) in form.additions" :key="index"
-      v-if="form.additional_risk_flag === 'Y' "
-      class="module"
+      v-if="form.additional_risk_flag === 'Y' && detail.insurance_type === 'HONGKONG'"
+      class="module" :class="{edit: view.productEditable}"
       style="order:0;"
     >
       <div class="title">
@@ -215,7 +298,7 @@
             label="itemName"
             :data="template.additions"
             :disabled="!view.productEditable"
-            v-model="item.item_id"
+            v-model="item.additionId"
           />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
@@ -233,7 +316,12 @@
     </div>
 
 
-    <div class="module" v-if="form.advanced_medical_flag === 'Y' && form.advanced_medical" style="order:1;">
+    <div
+      class="module"
+      :class="{edit: view.productEditable}"
+      v-if="form.advanced_medical_flag === 'Y' && detail.insurance_type === 'HONGKONG' && form.advanced_medical"
+      style="order:1;"
+    >
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_3.png" mode="aspectFit" style="width:31rpx;height:36rpx;">
         <span class="title_text">添加高端医疗</span>
@@ -293,7 +381,7 @@
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
     </div>
-    <div style="order:1;" class="module" v-if="form.advanced_medical_flag === 'Y' || form.extract_flag === 'Y' || form.additional_risk_flag === 'Y'">
+    <div style="order:1;" class="module" v-if="detail.insurance_type === 'HONGKONG' && (form.advanced_medical_flag === 'Y' || form.extract_flag === 'Y' || form.additional_risk_flag === 'Y')">
       <div class="item textarea">
         <span class="label">其他备注 (选填)</span>
         <div class="value">
@@ -316,7 +404,7 @@
         </div>
         <img  @click="view.insuranceEditable = true" v-if="view.editable && view.insuranctExpand && !view.insuranceEditable" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
       </div>
-      <div class="item_container" v-if="view.insuranctExpand"><!-- :style="{height: expand ? '990rpx' : 0}"-->
+      <div class="item_container" :class="{actived: view.insuranctExpand}">
         <div class="item">
           <span class="label">被保人是投保人</span>
           <div class="value">
@@ -399,17 +487,29 @@
         </div>
         <!--万用寿险才显示-->
         <div v-if="detail.insurance_type === 'HONGKONG_WYSX'">
-          <div class="item">
+          <div class="item" v-if="form.insurant_provice && provinceList.length > 0">
             <span class="label">居住省</span>
             <div class="value">
-              <mx-picker />
+              <mx-picker
+                valueKey="value"
+                label="description"
+                :data="provinceList"
+                v-model="form.insurant_provice"
+                :disabled="!view.insuranceEditable"
+              />
             </div>
             <img class="arrow" src="/images/icon_arrow_product.png">
           </div>
-          <div class="item">
+          <div class="item" v-if="form.insurant_city && insurantCityList.length > 0">
             <span class="label">居住市</span>
             <div class="value">
-              <mx-picker />
+              <mx-picker
+                valueKey="value"
+                label="description"
+                :data="insurantCityList"
+                v-model="form.insurant_city"
+                :disabled="!view.insuranceEditable"
+              />
             </div>
             <img class="arrow" src="/images/icon_arrow_product.png">
           </div>
@@ -428,7 +528,20 @@
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <div class="item">
+        <div class="item" v-if="detail.insurance_type === 'USA'">
+          <span class="label">是否去过美国</span>
+          <div class="value">
+            <mx-picker
+              valueKey="value"
+              label="description"
+              :data="template.yesno"
+              v-model="form.insurant_goto_america_aflag"
+              :disabled="!view.insuranceEditable"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item" v-else>
           <span class="label">保单回溯</span>
           <div class="value">
             <mx-picker
@@ -459,7 +572,7 @@
         </div>
         <img  @click="view.policyEditable = true" v-if="view.editable && view.policyExpand && !view.policyEditable" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
       </div>
-      <div class="item_container" v-if="view.policyExpand">
+      <div class="item_container" :class="{actived: view.policyExpand}">
         <div class="item">
           <span class="label">投保人姓名</span>
           <div class="value">
@@ -530,17 +643,29 @@
         </div>
         <!--万用寿险才显示-->
         <div v-if="detail.insurance_type === 'HONGKONG_WYSX'">
-          <div class="item">
+          <div class="item" v-if="form.policy_provice && provinceList.length > 0">
             <span class="label">居住省</span>
             <div class="value">
-              <mx-picker />
+              <mx-picker
+                valueKey="value"
+                label="description"
+                :data="provinceList"
+                v-model="form.policy_provice"
+                :disabled="!view.policyEditable"
+              />
             </div>
             <img class="arrow" src="/images/icon_arrow_product.png">
           </div>
-          <div class="item">
+          <div class="item" v-if="form.policy_city && policyCityList.length > 0">
             <span class="label">居住市</span>
             <div class="value">
-              <mx-picker />
+              <mx-picker
+                valueKey="value"
+                label="description"
+                :data="policyCityList"
+                v-model="form.policy_city"
+                :disabled="!view.policyEditable"
+              />
             </div>
             <img class="arrow" src="/images/icon_arrow_product.png">
           </div>
@@ -595,6 +720,9 @@
           plan_hk: {},
         },
         template: {},
+        provinceList: [],
+        insurantCityList: [],
+        policyCityList: [],
         form: {
           additions: [],
         },
@@ -615,6 +743,14 @@
       this.planId = params.planId
       await this.getDetail()
       this.getTemplate()
+      if (this.detail.insurance_type === 'HONGKONG') {
+        this.getOptions()
+      } else if (this.detail.insurance_type === 'HONGKONG_WYSX') {
+        this.getProvince()
+        this.getCity('insurantCityList', this.form.insurant_provice)
+        this.getCity('policyCityList', this.form.policy_provice)
+      }
+      console.log(this.template, this.form)
     },
     methods: {
       async getDetail () {
@@ -661,7 +797,44 @@
             {value: 'Y', description: '是'},
             {value: 'N', description: '否'},
           ]
-          this.template = result
+          Object.keys(result).forEach(key => {
+            this.$set(this.template, key, result[key] || [])
+          })
+        } catch (e) {
+          throw new Error(e)
+        }
+      },
+      /**
+       * 获取高端医疗下拉选项
+       * @return {Promise<void>}
+       */
+      async getOptions () {
+        try {
+          if (!this.form.advanced_medical.item_id) return
+          let result = await this.$http.get('/wx/itrade/product/plan/advanced_medical/options', {
+            item_id: this.form.advanced_medical.item_id
+          })
+          this.$set(this.template, 'security_levels', result.security_levels || result.securityLevels)
+          this.$set(this.template, 'security_areas', result.security_areas || result.securityAreas)
+          this.$set(this.template, 'selfpaies', result.selfpaies || [])
+        } catch (e) {
+          throw new Error(e)
+        }
+      },
+      async getCity (fields, provice) {
+        console.log(provice, fields)
+        try {
+          if (!provice) return
+          this[fields] = await this.$http.get('/wx/itrade/ff/citys', {
+            provice: provice,
+          })
+        } catch (e) {
+          throw new Error(e)
+        }
+      },
+      async getProvince () {
+        try {
+          this.provinceList = await this.$http.get('/wx/itrade/ff/provices')
         } catch (e) {
           throw new Error(e)
         }
@@ -842,11 +1015,14 @@
           }
         }
       }
-      /*.item_container {
-        height: 0;
-        transition: all .5s;
+      .item_container {
+        max-height: 0;
         overflow-y: hidden;
-      }*/
+        transition: max-height .3s;
+        &.actived {
+          max-height: 1000px;
+        }
+      }
       .collapse {
         height: 90px;
         @include flex();

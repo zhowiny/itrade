@@ -5,7 +5,8 @@
 		"es6": true,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true
+		"newFeature": true,
+		"uglifyFileName": true
 	},
 	"miniprogramRoot": "dist/",
 	"compileType": "miniprogram",
@@ -30,19 +31,19 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 1,
+			"current": 0,
 			"list": [
 				{
 					"id": 0,
 					"name": "创建计划书",
 					"pathName": "pages/plan_module/create_plan/main",
-					"query": "type=HONGKONG"
+					"query": "type=HONGKONG&plan_id=1899"
 				},
 				{
 					"id": 1,
-					"name": "投保人信息",
+					"name": "投保人信息-港险",
 					"pathName": "pages/plan_module/create_info/main",
-					"query": "params[supplier_id]=1&params[item_id]=1000024&params[subline_id]=1000195&params[pay_method]=AP&params[amount_type]=IC&params[currency]=AUD&params[amount]=10000&params[additional_risk_flag]=Y&params[extract_flag]=Y&params[advanced_medical][item_id]=1000050&params[advanced_medical][security_area]=%E5%85%A8%E7%90%83&params[advanced_medical][security_level]=%E7%89%B9%E7%BA%A7&params[advanced_medical][self_pay_id]=10&params[remark]=qqqqqqqq&params[extract_type]=CV&params[extract_method]=FA&params[extracts][0][extract_amount]=22222&params[extracts][0][extract_from]=2&params[extracts][0][extract_to]=5&params[additions][0][addition_id]=Y&params[additions][0][remark]=qweqweqw&insurance_type=HONGKONG"
+					"query": "params[supplier_id]=41&params[item_id]=1000047&params[subline_id]=1000164&params[pay_method]=FJ&params[amount_type]=IC&params[currency]=CNY&params[amount]=100000&params[additional_risk_flag]=N&params[extract_flag]=Y&params[advanced_medical_flag]=Y&params[remark]=121212&params[extract_type]=CV&params[extract_method]=FA&params[extracts][0][extract_amount]=10000&params[extracts][0][extract_from]=2&params[extracts][0][extract_to]=5&params[advanced_medical][item_id]=1000120&params[advanced_medical][security_area]=%E5%85%A8%E7%90%83%28%E7%BE%8E%E5%9B%BD%E9%99%A4%E5%A4%96%29&params[advanced_medical][security_level]=%E6%A0%87%E5%87%86&params[advanced_medical][self_pay_id]=44&insurance_type=HONGKONG"
 				},
 				{
 					"id": -1,
@@ -60,13 +61,19 @@
 					"id": 4,
 					"name": "plan_detail",
 					"pathName": "pages/plan_module/plan_detail/main",
-					"query": "planId=1875"
+					"query": "planId=1891"
 				},
 				{
 					"id": -1,
 					"name": "login",
 					"pathName": "pages/login_psd/main",
 					"query": "planId=1844"
+				},
+				{
+					"id": -1,
+					"name": "万险",
+					"pathName": "pages/plan_module/create_info/main",
+					"query": "params[supplier_id]=41&params[item_id]=2&params[subline_id]=1000581&params[pay_method]=AP&params[amount_type]=IC&params[currency]=AUD&params[amount]=1111&insurance_type=HONGKONG_WYSX"
 				}
 			]
 		}

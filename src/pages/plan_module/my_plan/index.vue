@@ -62,11 +62,11 @@
     <div class="choose_insurance" :class="{show: showInsuranceType}">
       <img class='close' @click="showInsuranceType = false" src="/images/icon_close.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
       <div class="type">
-        <div @click="toPage({url:'/pages/plan_module/create_plan', data: {type: 'HONGKONG'}})">
+        <div @click="toPage({url:'/pages/plan_module/create_plan/main', data: {type: 'HONGKONG'}})">
           <img src="/images/icon_hk.png" mode="aspectFit" style="width: 120rpx;height:120rpx;">
           <p>港险</p>
         </div>
-        <div @click="toPage({url:'/pages/plan_module/create_plan', data: {type: 'USA'}})">
+        <div @click="toPage({url:'/pages/plan_module/create_plan/main', data: {type: 'USA'}})">
           <img src="/images/icon_usa.png" mode="aspectFit" style="width: 120rpx;height:120rpx;">
           <p>美险</p>
         </div>
