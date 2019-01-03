@@ -49,6 +49,15 @@
       console.log(params)
       this.orderType = parseInt(params.orderType)
       this.getDetail()
+      this.$auth.dataBuryPoint({
+        eventName: 'order_file_list:init:visit',
+        eventDataId: this.$mp.query.order_number,
+        source: '',
+        utmSource: '',
+        introduceCode: '',
+        shareInvestorId: '',
+        prePage: wx.getStorageSync('from')
+      })
     },
     methods: {
       async getDetail () {

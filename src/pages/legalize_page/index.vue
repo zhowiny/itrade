@@ -282,7 +282,7 @@ export default {
       } else if (data.legalize_type === 2) {
         this.cardTypeString = '护照'
       } else {
-        this.cardTypeString = ''
+        this.cardTypeString = '请选择'
       }
       if (data.status === -1 || data.status === 0) {
         this.legalizeStatus = '未认证'

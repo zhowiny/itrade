@@ -131,6 +131,7 @@ export default {
         this.$common.setAdvisorId(d.advisor_id)
         this.$common.setUserInfo(d.has_info)
         console.log(this.$common.getIsLegalize())
+        wx.refresh = true
         this.toPage({
           url: '/pages/index/main',
           type: 'switchTab'
@@ -151,6 +152,15 @@ export default {
     await this.$auth.login()
     this.getPhoneCode()
     this.getPicCode()
+    this.$auth.dataBuryPoint({
+      eventName: 'advisor_login_sms:init:visit',
+      eventDataId: '',
+      source: '',
+      utmSource: '',
+      introduceCode: '',
+      shareInvestorId: '',
+      prePage: wx.getStorageSync('from')
+    })
   },
 }
 </script>

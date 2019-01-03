@@ -127,7 +127,7 @@
     <navigator class="land_footer" hover-class="none"
       open-type="navigate" app-id="wxcd7c5762adbd3cf5" 
       :url="path + introduce_code" :path="path + introduce_code" target="miniProgram"
-      :extra-data="deliverData" version="trial"
+      :extra-data="deliverData" version="trial" @success="toMiniProgram"
       >发送给客户</navigator>
   </div>
 </template>
@@ -153,7 +153,7 @@
       // await this.$auth.login()
       // 数据统计
       this.$auth.dataBuryPoint({
-        eventName: 'estate_house_trusteeship:init:visit',
+        eventName: 'insurance_trusteeship_page:init:visit',
         eventDataId: '',
         source: this.$root.$mp.query.source,
         utmSource: this.$root.$mp.query.utm_source,
@@ -163,6 +163,18 @@
       })
     },
     methods: {
+      toMiniProgram () {
+        console.log('toMiniProgram')
+        this.$auth.dataBuryPoint({
+          eventName: 'insurance_trusteeship_page:send_to_investor:click',
+          eventDataId: '',
+          source: '',
+          utmSource: '',
+          introduceCode: this.introduceCode,
+          shareInvestorId: this.introduceCode,
+          prePage: wx.getStorageSync('from')
+        })
+      },
     },
     // onShareAppMessage (res) {
     //   return {

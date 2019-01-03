@@ -201,6 +201,10 @@ export default {
     // } else {
     //   this.legalized = false
     // }
+    if (wx.refresh) {
+      this.init()
+      wx.refresh = false
+    }
   },
 
   methods: {

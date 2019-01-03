@@ -5,7 +5,7 @@
     </div>
     <p class="title">iTrade为邀请注册制，您可以：</p>
     <p class="notice">-通过iTrade注册理财师获得邀请码</p>
-    <p class="notice">-联系客服热线：<span class="main_color">4000941580</span></p>
+    <p class="notice">-联系客服热线：<span class="main_color" @click="concat('4000941580')">4000941580</span></p>
     <div class="lr_phone">
       <div class="phone_label">
         <img src="/images/login_invite_code.png" class="invite_code_icon"/>
@@ -85,7 +85,12 @@ export default {
     },
     openFile (url) {
       this.$common.previewFile(url)
-    }
+    },
+    concat (phone) {
+      wx.makePhoneCall({
+        phoneNumber: phone
+      })
+    },
   },
 
   onLoad (option) {

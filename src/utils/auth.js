@@ -2,6 +2,8 @@ import * as config from './const'
 import fly from './request'
 /* eslint-disable */
 import qs from 'qs'
+
+let showNotice = true
 export default {
   // 获取jscode
   getCode() {
@@ -28,7 +30,7 @@ export default {
       share_investor_id: shareInvestorId,   // 分享人投资人id
       // pre_page: config.getMapPage(prePage) || '',           // 前一个页面
       pre_Page: prePage,
-      
+
       phone_brand: systemInfo.brand,                  // 手机品牌 （小程序）
       phone_model: systemInfo.model,                  // 手机型号 （小程序）
       operator_system: systemInfo.system,              // 操作系统 （小程序）
@@ -53,7 +55,10 @@ export default {
     // }else{
     wx.clearStorageSync()
     config.loadSystemInfo()
-    await this.loginWithJscode()
+    let result = await this.loginWithJscode()
+    if (result.has_bind_phone && showNotice) {
+      await this.showNotice()
+    }
     // }
   },
   // token登陆
@@ -88,6 +93,29 @@ export default {
       return result
     } catch (e) {
       console.log(e)
+      throw new Error(e)
+    }
+  },
+  async showNotice () {
+    try {
+      let result = await fly.get('/channel/list/launchNotice', {
+        app : 'itrade_wx'
+      })
+      // console.log(result.list[0])
+      if (result.list && result.list[0] && showNotice) {
+        wx.showModal({
+          title: result.list[0].title,
+          content: result.list[0].content_text,
+          showCancel: false,
+          confirmText: '好的',
+          confirmColor: '#306FF4',
+          success () {
+            showNotice = false
+          },
+        })
+      }
+    } catch (e) {
+      console.error(e)
       throw new Error(e)
     }
   },
