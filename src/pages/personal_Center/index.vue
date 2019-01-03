@@ -20,7 +20,7 @@
           <img src="/images/Collection.png" alt="">
           <p>文章收藏</p>
         </li>
-        <li @click="goPage('/pages/plan/main')">
+        <li @click="goPage('/pages/plan_module/my_plan/main')">
           <img src="/images/Prospectus.png" alt="">
           <p>计划书</p>
         </li>
