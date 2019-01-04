@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <div class="module">
+    <!--<div class="module">
       <div class="title">
         <img class="title_icon" src="/images/icon_plan.png" mode="aspectFit" style="width:41rpx;height:37rpx;">
         <span class="title_text">我的计划书</span>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
-    </div>
+    </div>-->
     <div class="module">
       <div class="title">
         <img class="title_icon" src="/images/icon_product_info.png" mode="aspectFit" style="width:41rpx;height:37rpx;">
@@ -19,13 +19,13 @@
           <mx-picker
             label="management_name"
             valueKey="management_id"
-            :disabled="companyList.length < 1"
+            :disabled="planId || companyList.length === 0"
             :data="companyList"
             v-model="form.supplier_id"
             @change="companyChange"
           />
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
+        <img v-if="!planId" class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">产品名称</span>
@@ -33,13 +33,13 @@
           <mx-picker
             label="item_name"
             valueKey="item_id"
-            :disabled="productList.length < 1"
+            :disabled="planId || productList.length === 0"
             :data="productList"
             v-model="form.item_id"
             @change="productChange"
           />
         </div>
-        <img class="arrow" src="/images/icon_arrow_product.png">
+        <img v-if="!planId" class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item none">
         <span class="label">年期</span>
@@ -48,6 +48,7 @@
             label="subline_item_name"
             valueKey="subline_id"
             :disabled="!template.product_year_periods || template.product_year_periods.length < 1"
+            :placeholder="(template.product_year_periods && template.product_year_periods.length === 0) ? '无可选项' : '请选择'"
             :data="template.product_year_periods"
             v-model="form.subline_id"
           />
@@ -109,8 +110,8 @@
               到第 <input type="text" v-model="form.extract_to"> 年
             </div>
           </div>
-          <img v-if="false" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
-          <img v-else src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+          <!--<img v-if="false" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
+          <img v-else src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">-->
         </div>
 
         <div class="item textarea">
@@ -128,6 +129,7 @@
             <mx-picker
               label="description"
               valueKey="value"
+              :placeholder="(template.product_pay_methods && template.product_pay_methods.length === 0) ? '无可选项' : '请选择'"
               :disabled="!template.product_pay_methods || template.product_pay_methods.length < 1"
               :data="template.product_pay_methods"
               v-model="form.pay_method"
@@ -142,6 +144,7 @@
             <mx-picker
               label="description"
               valueKey="value"
+              :placeholder="(template.product_amount_types && template.product_amount_types.length === 0) ? '无可选项' : '请选择'"
               :disabled="!template.product_amount_types || template.product_amount_types.length < 1"
               :data="template.product_amount_types"
               v-model="form.amount_type"
@@ -165,7 +168,7 @@
         <div class="item" v-if="insuranceType !== 'HONGKONG_GD'">
           <span class="label">金额</span>
           <div class="value">
-            <input v-model="form.amount" type="text" placeholder-class="placeholder" placeholder="请输入">
+            <input v-model="form.amount" type="number" placeholder-class="placeholder" placeholder="请输入">
           </div>
           <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
         </div>
@@ -263,9 +266,9 @@
     >
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_1.png" mode="aspectFit" style="width:32rpx;height:35rpx;">
-        <span class="title_text">附加险信息</span>
-        <img v-if="index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
-        <img v-else="index > 0" src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+        <span class="title_text">附加险信息{{index || ''}}</span>
+        <img @click="delAddition(index)" v-if="index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
+        <img @click="addAddition" v-else src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
       </div>
       <div class="item">
         <span class="label">附加险</span>
@@ -327,17 +330,17 @@
           <span class="label">提取年数</span>
           <div class="value">
             <div class="extract">
-              从第 <input type="text" v-model="item.extract_from"> 年
-              到第 <input type="text" v-model="item.extract_to"> 年
+              从第 <input type="number" v-model="item.extract_from"> 年
+              到第 <input type="number" v-model="item.extract_to"> 年
             </div>
           </div>
-          <img v-if="index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
-          <img v-else="index > 0" src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+          <img @click="delExtract(index)" v-if="index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
+          <img @click="addExtract" v-if="form.extract_method === 'FA' && index === 0" src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
         </div>
-        <div class="item">
+        <div class="item" v-if="form.extract_method !== 'MA'">
           <span class="label">提取金额</span>
           <div class="value">
-            <input v-model="item.extract_amount" type="text" placeholder-class="placeholder" placeholder="请输入">
+            <input v-model="item.extract_amount" type="number" placeholder-class="placeholder" placeholder="请输入">
           </div>
           <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
         </div>
@@ -443,7 +446,7 @@
         },
 
         form: {
-          supplier_id: 1, // 产品公司id
+          supplier_id: '', // 产品公司id
           item_id: '', // 产品id
           subline_id: '', // 年期
           pay_method: '', // 付款方式
@@ -488,6 +491,7 @@
         },
 
         detail: {},
+        planId: '',
       }
     },
     watch: {
@@ -495,9 +499,16 @@
 
     async onLoad (params) {
       this.type = params.type
+      this.planId = params.plan_id
       await this.getDetail()
       await this.getCompany()
       this.getProduct()
+    },
+    onUnload () {
+      let d = this.$options.data()
+      Object.keys(d).forEach(key => {
+        this[key] = d[key]
+      })
     },
     methods: {
       async getDetail () {
@@ -531,19 +542,14 @@
           })
           this.form.supplier_id = this.detail.management_id
 
-          // this.form.subline_id = this.detail.year_period
-          this.additions = this.detail.additions
-          this.extract = this.detail.extracts
+          this.form.subline_id = parseInt(this.detail.year_period)
+          this.detail.additions.length > 0 && (this.additions = this.detail.additions)
+          this.detail.extracts.length > 0 && (this.extract = this.detail.extracts)
           this.advancedMedicals = Object.assign({self_pay_id: this.detail.advanced_medical.selfpay_id}, this.detail.advanced_medical)
           if (this.detail.advanced_medical.item_id) {
             this.getOptions()
           }
           await this.getTemplate()
-          this.template.product_year_periods.forEach(item => {
-            if (item.subline_item_name === this.detail.year_period) {
-              this.form.subline_id = item.subline_id
-            }
-          })
         } catch (e) {
           throw new Error(e)
         }
@@ -573,6 +579,7 @@
        */
       async getProduct () {
         try {
+          if (!this.form.supplier_id) return
           this.productList = await this.$http.get('/wx/itrade/ff/product/items', {
             management_id: this.form.supplier_id
           })
@@ -639,13 +646,43 @@
           throw new Error(e)
         }
       },
+      addAddition () {
+        if (!this.additions[0].addition_id) {
+          this.showToast('请选择附加险!')
+          return
+        }
+        this.additions.unshift({
+          addition_id: '', // 附加险id
+          remark: '', // 附加险备注
+        })
+      },
+      delAddition (index) {
+        this.additions = this.additions.filter((i, k) => {
+          return index !== k
+        })
+      },
+      addExtract () {
+        if (!this.extract[0].extract_from || !this.extract[0].extract_to || !this.extract[0].extract_amount) {
+          this.showToast('请完善提取信息!')
+          return
+        }
+        this.extract.unshift({
+          extract_amount: '', // 提取金额
+          extract_from: '', // 提取开始
+          extract_to: '', // 提取结束
+        })
+      },
+      delExtract (index) {
+        this.extract = this.extract.filter((i, k) => {
+          return index !== k
+        })
+      },
       /**
        * 把数据带入下一步
        */
       nextStep () {
         let params = this.checkFields()
         if (params) {
-          console.log(params)
           this.toPage({
             url: '/pages/plan_module/create_info/main',
             data: {params, insurance_type: this.insuranceType},
@@ -752,7 +789,7 @@
                 params.extract_method = this.form.extract_method
               }
               for (let e of this.extract) {
-                if (!e.extract_amount && e.extract_amount !== 0) {
+                if (this.form.extract_method !== 'MA' && !e.extract_amount && e.extract_amount !== 0) {
                   this.showToast('提取金额不能为空!')
                   return false
                 }

@@ -8,14 +8,16 @@
       <!--成功图标-->
       <img v-if="form.plan_status === 'COMPLETED'" src="/images/icon_plan_detail_3.png" mode="aspectFit" style="width: 93rpx;height: 93rpx;">
       <!--失败图标-->
-      <img v-if="false" src="/images/icon_plan_detail_4.png" mode="aspectFit" style="width: 99rpx;height: 99rpx;">
+      <img v-if="form.plan_status === 'PLN_CANCELLED'" src="/images/icon_plan_detail_4.png" mode="aspectFit" style="width: 99rpx;height: 99rpx;">
 
       <div class="status">
         <span>{{form.plan_status_name}}</span>
-        <p>{{form.description}}</p>
+        <p v-if="form.plan_status === 'PROCESSING'">计划书申请提交成功，我们会在1-3个工作日给您处理，请耐心等待</p>
+        <p v-else>{{form.description}}</p>
         <i v-if="form.plan_status === 'REVIEW'">复查时间: {{form.review_date}}</i>
         <i v-if="form.plan_status === 'PROCESSING'">提交时间: {{form.request_date}}</i>
         <i v-if="form.plan_status === 'COMPLETED'">完成时间: {{form.complete_date}}</i>
+        <i v-if="form.plan_status === 'PLN_CANCELLED'">取消时间: {{form.cancel_date}}</i>
       </div>
       <!--成功才显示-->
       <div
@@ -30,11 +32,11 @@
       <div class="title">
         <img class="title_icon" src="/images/icon_product_info.png" mode="aspectFit" style="width:41rpx;height:37rpx;">
         <span class="title_text">产品信息</span>
-        <div class="operate" v-if="view.productEditable">
+        <!--<div class="operate" v-if="view.productEditable">
           <span @click="view.productEditable = false">取消</span>
           <span @click="view.productEditable = false">保存</span>
         </div>
-        <img v-if="view.editable && !view.productEditable"  @click="view.productEditable = true" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
+        <img v-if="view.editable && !view.productEditable"  @click="view.productEditable = true" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">-->
       </div>
       <div class="item">
         <span class="label">产品公司</span>
@@ -48,7 +50,7 @@
         <span class="label">年期</span>
         <div class="value">
           <mx-picker
-            :disabled="!view.productEditable" valueKey="subline_item_name"
+            :disabled="!view.productEditable" valueKey="subline_id"
             label="subline_item_name"
             :data="template.product_year_periods"
             v-model="form.year_period"
@@ -286,8 +288,8 @@
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_1.png" mode="aspectFit" style="width:32rpx;height:35rpx;">
         <span class="title_text">附加险信息</span>
-        <img v-if="index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
-        <img v-else="index > 0" src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+        <!--<img v-if="index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">-->
+        <!--<img v-else="index > 0" src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">-->
       </div>
       <div class="item">
         <span class="label">附加险</span>
@@ -298,7 +300,7 @@
             label="itemName"
             :data="template.additions"
             :disabled="!view.productEditable"
-            v-model="item.additionId"
+            v-model="item.addition_id"
           />
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
@@ -394,15 +396,15 @@
       </div>
     </div>
     <div style="order:1;" class="module" :class="{edit: view.insuranceEditable}">
-      <div class="title" @click="!view.insuranctExpand && (view.insuranctExpand = true)">
+      <div class="title" @click="view.insuranctExpand = !view.insuranctExpand">
         <img class="title_icon" src="/images/icon_plan_4.png" mode="aspectFit" style="width:32rpx;height:32rpx;">
         <span class="title_text">被保人信息</span>
-        <img class="arrow expand" v-if="!view.insuranctExpand" src="/images/icon_arrow_product.png">
-        <div class="operate" v-if="view.insuranctExpand && view.insuranceEditable">
+        <img class="arrow expand" :class="{actived: view.insuranctExpand}" src="/images/icon_arrow_product.png">
+        <!--<div class="operate" v-if="view.insuranctExpand && view.insuranceEditable">
           <span @click="view.insuranceEditable = false">取消</span>
           <span @click="view.insuranceEditable = false">保存</span>
         </div>
-        <img  @click="view.insuranceEditable = true" v-if="view.editable && view.insuranctExpand && !view.insuranceEditable" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
+        <img  @click="view.insuranceEditable = true" v-if="view.editable && view.insuranctExpand && !view.insuranceEditable" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">-->
       </div>
       <div class="item_container" :class="{actived: view.insuranctExpand}">
         <div class="item">
@@ -554,23 +556,23 @@
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <div class="collapse" @click="view.insuranctExpand = false">
+        <!--<div class="collapse" @click="view.insuranctExpand = false">
           <span>收起</span>
           <img src="/images/icon_collapse.png" mode="aspectFit" style="width: 26rpx;height: 16rpx;">
-        </div>
+        </div>-->
       </div>
     </div>
 
     <div style="order:1;" class="module" :class="{edit: view.policyEditable}">
-      <div class="title" @click="!view.policyExpand && (view.policyExpand = true)">
+      <div class="title" @click="view.policyExpand = !view.policyExpand">
         <img class="title_icon" src="/images/icon_plan_4.png" mode="aspectFit" style="width:32rpx;height:32rpx;">
         <span class="title_text">投保人信息</span>
-        <img class="arrow expand" v-if="!view.policyExpand" src="/images/icon_arrow_product.png">
-        <div class="operate" v-if="view.policyExpand && view.policyEditable">
+        <img class="arrow expand" :class="{actived: view.policyExpand}" src="/images/icon_arrow_product.png">
+        <!--<div class="operate" v-if="view.policyExpand && view.policyEditable">
           <span @click="view.policyEditable = false">取消</span>
           <span @click="view.policyEditable = false">保存</span>
         </div>
-        <img  @click="view.policyEditable = true" v-if="view.editable && view.policyExpand && !view.policyEditable" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">
+        <img  @click="view.policyEditable = true" v-if="view.editable && view.policyExpand && !view.policyEditable" src="/images/icon_edit.png" style="width: 33rpx;height:34rpx;">-->
       </div>
       <div class="item_container" :class="{actived: view.policyExpand}">
         <div class="item">
@@ -683,17 +685,17 @@
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <div class="collapse" @click="view.policyExpand = false">
+        <!--<div class="collapse" @click="view.policyExpand = false">
           <span>收起</span>
           <img src="/images/icon_collapse.png" mode="aspectFit" style="width: 26rpx;height: 16rpx;">
-        </div>
+        </div>-->
       </div>
     </div>
     <p class="time" style="order:1;">提交时间: {{form.creation_date}}</p>
 
-    <div class="btn_next">
-      <span >撤销申请</span><!--@click="cancel"-->
-      <span @click="showConfirm = true">修改申请</span>
+    <div class="btn_next" v-if="form.plan_status !== 'COMPLETED' && form.plan_status !== 'PLN_CANCELLED'">
+      <span :style="form.plan_status !== 'REVIEW' ? 'margin-right: 0' : ''" @click="confirm">撤销申请</span>
+      <span v-if="form.plan_status === 'REVIEW'" @click="toPage('/pages/plan_module/create_plan/main?plan_id=' + form.plan_id)">修改申请</span>
     </div>
 
     <div class="mask" v-if="showConfirm"  @click="showConfirm = false"></div>
@@ -779,6 +781,7 @@
           result.insurant_birth = result.insurant_birth.split(' ')[0]
           this.type = this.detail.insurance_type
           this.form = result
+          this.form.year_period = parseInt(this.form.year_period)
 
           // 状态为需复查时,可编辑
           this.view.editable = this.form.plan_status === 'REVIEW'
@@ -839,15 +842,29 @@
           throw new Error(e)
         }
       },
-
+      confirm () {
+        this.showModal({
+          title: '提示',
+          content: '确定要撤销此计划书申请吗?',
+          cancelText: '考虑一下',
+          cancelColor: '#306FF4',
+          confirmText: '确认',
+          confirmColor: '#333',
+          success: res => {
+            if (res.confirm) {
+              this.cancel()
+            }
+          }
+        })
+      },
       // 撤销计划书申请
       async cancel () {
         try {
-          let result = await this.$http.post('/wx/itrade/product/plan/cancel', {
-            insurance_type: this.type,
-            plan_id: this.form.plan_id,
-          })
-          console.log(result)
+          let result = await this.$http.post('/wx/itrade/product/plan/cancel', this.form.plan_id)
+          if (result) {
+            this.getDetail()
+            this.showToast('撤销成功')
+          }
         } catch (e) {
           throw new Error(e)
         }
@@ -1051,10 +1068,14 @@
         }
       }
 
-      .expand {
+      .arrow.expand {
         height: 28px;
         width: 15px;
         transform: rotate(90deg);
+        transition: transform .4s;
+        &.actived {
+          transform: rotate(-90deg);
+        }
       }
     }
     .btn_next {

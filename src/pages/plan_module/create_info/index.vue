@@ -274,7 +274,7 @@
         insurantCityList: [],
         policyCityList: [],
         insurance: {
-          same_flag: 'Y', // 被保人是否是投保人
+          same_flag: 'N', // 被保人是否是投保人
           insurant_name: '', // 被保人
           insurant_gender: '', // 被保人性别
           insurant_birth: '', // 被保人出生日期
@@ -346,13 +346,13 @@
     },
 
     async onLoad (options) {
+      let o = {}
       Object.keys(options).forEach(key => {
-        options[key] = decodeURIComponent(options[key])
+        o[decodeURIComponent(key)] = decodeURIComponent(options[key])
       })
-      let result = qs.parse(options)
+      let result = qs.parse(o)
       this.insuranceType = result.insurance_type
       this.params = result.params
-
       await this.getDetail()
       this.getTemplate()
       if (this.insuranceType === 'HONGKONG_WYSX') {

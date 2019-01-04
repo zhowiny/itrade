@@ -17,10 +17,10 @@
         <wx-badge :isHidden="true" :value="2">处理中</wx-badge>
       </div>
       <div :class="{active: activeIndex === 2}" @click="filter('需复查', 2)">
-        <wx-badge :isHidden="false" :value="planCount.review">需复查</wx-badge>
+        <wx-badge :isHidden="!planCount.review" :value="planCount.review">需复查</wx-badge>
       </div>
       <div :class="{active: activeIndex === 3}" @click="filter('已完成', 3)">
-        <wx-badge :isHidden="false" :value="planCount.completed">已完成</wx-badge>
+        <wx-badge :isHidden="!planCount.completed" :value="planCount.completed">已完成</wx-badge>
       </div>
       <div class="line" :class="'p' + activeIndex"></div>
     </div>
@@ -32,7 +32,7 @@
       >
         <div class="title">
           <h3>{{item.item_name}}</h3>
-          <span class="status">{{item.status}}</span>
+          <span class="status"  :class="'state_' + statusColorList[item.status]">{{item.status}}</span>
         </div>
         <div class="content">
           <div>
@@ -55,7 +55,7 @@
         <div class="time">提交时间: {{item.request_date || '---'}}</div>
       </div>
     </div>
-    <div class="btn_new" @click="showInsuranceType = true">
+    <div class="btn_new" @click="toPage({url:'/pages/plan_module/create_plan/main'})">
       <span>+ 新建计划书</span>
     </div>
 
@@ -96,12 +96,28 @@
           status: '',
         },
         timer: null,
+
+        statusList: [
+          {state: '', label: '全部状态'},
+          {state: '已完成', label: '已完成'},
+          // {state: '获取中', label: '获取中'},
+          {state: '处理中', label: '处理中'},
+          {state: '需复查', label: '需复查'},
+        ],
+        statusColorList: {
+          '处理中': 'primary',
+          '已完成': 'success',
+          '需复查': 'info',
+          '已取消': 'error',
+          'undefined': 'primary',
+        },
       }
     },
 
     async onLoad () {
       this.queryCount()
       this.getPlanList()
+      // this.dataBuryPoint('my_plan_list:init:visit')
     },
     methods: {
       async queryCount () {
@@ -136,6 +152,17 @@
           this.getPlanList()
         }, 500)
       },
+      dataBuryPoint (evt) {
+        this.$auth.dataBuryPoint({
+          eventName: evt,
+          eventDataId: this.$mp.query.product_id || '',
+          source: this.$root.$mp.query.source,
+          utmSource: this.$root.$mp.query.utm_source,
+          introduceCode: this.introduce_code,
+          shareInvestorId: '',
+          prePage: wx.getStorageSync('from')
+        })
+      },
     },
     onReachBottom () {
       if (this.isLastPage) {
@@ -147,6 +174,7 @@
     },
     onUnload () {
       this.planList = []
+      this.showInsuranceType = false
     },
     components: {
       wxBadge,
@@ -252,6 +280,18 @@
       }
       .status {
         color: $mainColor;
+      }
+      .state_info {
+        color: #FFBB01;
+      }
+      .state_primary {
+        color: $mainColor;
+      }
+      .state_success {
+        color: #0aba07;
+      }
+      .state_error {
+        color: #FF3d55;
       }
     }
   }
