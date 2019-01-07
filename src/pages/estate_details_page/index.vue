@@ -169,7 +169,7 @@
         </block>
       </div>
       <div class="text_detail" v-if="selectedHouse == 1">
-        <wxParse :content="article" :imageProp="imageProp" noData="数据加载中。。。" className="wx_parse_box"/>
+        <wx-parse :content="article" :imageProp="imageProp" noData="数据加载中。。。" className="wx_parse_box"/>
       </div>
       <div class="content_information" v-if="selectedHouse == 2">
         <div :class="index == productArticle.length - 1 ? 'border_none content_information_item' : 'content_information_item'" v-for="(item, index) in productArticle" :key="index" @click="goArticle(item.id)">
@@ -402,7 +402,7 @@ export default {
         this.detail = res
         this.estateDetail = res.finance_estate_desc
         this.totleLength = res.images.length
-        let newDescs = res.finance_estate_desc.descs.replace(/<o:p>|&nbsp;/ig, '')
+        let newDescs = res.finance_estate_desc.descs.replace(/<o:p>|&nbsp;|<span>|<\/span>|<font>|<\/font>/ig, '')
         this.article = newDescs
         if (res.management_tag) {
           this.management_tag = res.management_tag.split(',')

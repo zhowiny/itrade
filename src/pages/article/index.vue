@@ -14,19 +14,29 @@
       <wx-parse :content="article.content" :image-prop="{mode: 'widthFix'}"  className="wx_parse_box" />
     </div>
     <div class="article_product">
-      <div class="article_product-add" @click="toPage({url: '/pages/choose_product/main', type: 'redirectTo', data: {article_id: article_id, product: product_id_list_str, introduce_code: introduce_code}})" v-if="productArr.length === 0">
+      <!-- <div class="article_product-add" @click="toPage({url: '/pages/choose_product/main', type: 'redirectTo', data: {article_id: article_id, product: product_id_list_str, introduce_code: introduce_code}})" v-if="productArr.length === 0">
         <span>添加产品推荐</span>
         <img src="/images/icon_arrow_product.png" mode="aspectFit" style="width:15rpx;height:28rpx;">
       </div>
       <div class="article_product-del" v-else>
         <span>产品推荐</span>
+      </div> -->
+      <div class="article_product-text">
+        <span class="article_product-default">产品推荐</span>
+        <span class="article_product-return" @click="defaultList">恢复默认推荐</span>
+        <span class="article_product-del" v-if="status" @click="deleteProduct()">确定删除</span>
+        <span class="article_product-del" v-if="!status" @click="status=true">删除</span>
+        <span class="article_product-add" @click="addProduct">添加</span>
       </div>
-
-      <div class="article_product-item"
+      <p v-if="show_tips" class="article_tips">！最多可添加5个，数量已达5个，可删除后再添加</p>
+      <div>
+        <product-list :data="productArr" :editor="status" @clickSelect="delData" @clickProduct="handleClick"/>
+      </div>
+      <!--<<div class="article_product-item"
            v-for="(item, index) in productArr"
            :key="index"
       >
-        <div class="article_product-item_cnt"  >
+        <div class="article_product-item_cnt">
           <div class="article_product-item_title" @click="handleClick(item, index)">
             <h2>{{item.name}}</h2>
             <span>{{item.tags}}</span>
@@ -47,13 +57,13 @@
           </div>
           <div class="article_product-item_del" @click="deleteProduct(item)">删除</div>
         </div>
-        <!--<div class="article_product-item_del" @click="deleteProduct(item)">删除</div>-->
-      </div>
+        div class="article_product-item_del" @click="deleteProduct(item)">删除</div>
+      </div>-->
 
-      <div class="article_product-update" @click="toPage({url: '/pages/choose_product/main', type: 'redirectTo', data: {article_id: article_id, product: product_id_list_str, introduce_code: introduce_code}})"  v-if="productArr.length > 0">
+      <!-- <div class="article_product-update" @click="toPage({url: '/pages/choose_product/main', type: 'redirectTo', data: {article_id: article_id, product: product_id_list_str, introduce_code: introduce_code}})"  v-if="productArr.length > 0">
         <span>更改产品推荐</span>
         <img src="/images/icon_arrow_product.png" mode="aspectFit" style="width:15rpx;height:28rpx;">
-      </div>
+      </div> -->
     </div>
     <!-- + '&share_id=' + article.shared_advisor_code + '&k=' + k-->
     <div class="share_btn" @click="toMiniProgram"> 分享 </div>
@@ -68,6 +78,7 @@
 
 <script>
   import wxParse from 'mpvue-wxparse'
+  import productList from '@/components/product-list'
   export default {
     data () {
       return {
@@ -81,9 +92,12 @@
         productArr: [],
         product_id_list_str: '',
         edit: false,
+        status: false,
+        show_tips: false
       }
     },
     async onLoad (params) {
+      console.log(params)
       this.article_id = this.$mp.query.article_id || ''
       this.share_id = this.$mp.query.share_id || ''
       this.introduce_code = this.$mp.query.introduce_code || ''
@@ -157,15 +171,12 @@
           })
         }
       },
-      aaa () {
-        console.log('qwer')
-      },
       async getArticleList () {
         try {
           let detail = await this.$http.get('/wx/itrade/article/detail', {
             article_id: this.article_id,
             share_id: this.share_id,
-            introduce_code: this.introduce_code,
+            // introduce_code: this.introduce_code,
           })
           let rex = /<img\ssrc="\S+=">/ig
           let video = /<a\shref="(\S+\.mp4)">(\S+)<\/a>/ig
@@ -177,8 +188,10 @@
           this.productArr.forEach(item => {
             // this.$set(item, 'operate', false)
             arr.push(item.id)
+            item.management_feature = item.management_feature.split(',')
           })
           this.product_id_list_str = arr.join('-')
+          console.log(this.productArr)
         } catch (e) {
           throw new Error(e)
         }
@@ -202,10 +215,11 @@
           },
         })
       },
-      handleClick (item, index) {
+      handleClick (data) {
         // if (item.product_status !== 'created') return
         let url = ''
-        switch (item.product_type) {
+        console.log(data)
+        switch (data.product_type) {
           case 1:
           case 4:
             url = '/pages/finance_details_page/main'
@@ -219,26 +233,31 @@
           default:
             break
         }
-        if (!item.operate) {
+        if (!data.operate) {
           this.toPage({
             url: url,
             data: {
-              product_id: item.id,
-              product_type: item.product_type,
+              product_id: data.id,
+              product_type: data.product_type,
             }
           })
         } else {
-          item.operate = false
+          data.operate = false
         }
       },
-      async deleteProduct (item) {
-        let temp = this.productArr.filter(i => item.id !== i.id)
-        let data = temp.map(i => {
-          return {
-            product_id: i.id,
-            product_type: i.product_type,
+      async deleteProduct () {
+        // let temp = this.productArr.filter(i => item.id !== i.id)
+        // console.log(this.productArr, 'deleteProduct')
+        let data = []
+        let temp = []
+        this.productArr.map(i => {
+          if (!i.del) {
+            data.push({product_id: i.id, product_type: i.product_type})
+            temp.push(i)
           }
         })
+        console.log(data)
+        console.log(temp)
         try {
           let result = await this.$http.post('/wx/itrade/article/product', {
             article_id: this.$mp.query.article_id,
@@ -246,17 +265,52 @@
           })
           if (result.share_id) {
             this.productArr = temp
-            let arr = []
-            this.productArr.forEach(item => {
-              arr.push(item.id)
-            })
-            this.product_id_list_str = arr.join('-')
+            // let arr = []
+            // this.productArr.forEach(item => {
+            //   arr.push(item.id)
+            // })
+            // this.product_id_list_str = arr.join('-')
+            this.share_id = result.share_id
             this.showToast('删除成功!', this.getArticleList)
+            this.status = false
           }
         } catch (e) {
           throw new Error(e)
         }
       },
+      delData (e) {
+        console.log(e)
+        this.productArr = e
+      },
+      addProduct () {
+        if (this.productArr.length > 4) {
+          this.show_tips = true
+        } else {
+          this.toPage({
+            url: '/pages/choose_product/main', 
+            type: 'redirectTo', 
+            data: {
+              article_id: this.article_id, 
+              introduce_code: this.introduce_code,
+              share_id: this.share_id,
+              add_count: this.productArr.length
+            }
+          })
+        }
+      },
+      // 恢复默认排序
+      async defaultList () {
+        this.$http.post('/wx/article/update/revertRecommenedProdcut',{
+          article_id: this.article_id,
+          share_id: this.share_id,
+        }).then(res => {
+          console.log(res)
+          if (res.share_id) {
+            this.share_id = res.share_id
+          }
+          this.getArticleList()
+        })
+      }
      /* handleStart (e) {
         console.log(e)
         this.point.startX = e.clientX
@@ -283,7 +337,8 @@
       },*/
     },
     components: {
-      wxParse
+      wxParse,
+      productList,
     },
     onShareAppMessage (res) {
       return {
@@ -297,28 +352,30 @@
 <style  lang="scss" scoped>
   .article {
     &_container {
-      background: #fff;
       padding-bottom: 100px;
       .share_btn {
         position: fixed;
-        left: 0;
-        bottom: 0;
-        @include size(100vw, 100px);
+        left: 10vw;
+        bottom: 25px;
+        @include size(80vw, 80px);
         @include flex();
         background: $mainColor;
         color: #fff;
         font-size: 26px;
+        border-radius: 40px;
       }
     }
     &_title {
+      background: #fff;
       padding: $middle-space;
-      @include flex();
+      @include flex(flex-start);
       h2 {
         flex: 1;
         font-size: 40px;
       }
     }
     &_pv {
+      background: #fff;
       padding: $small-space $middle-space;
       color: $lightColor;
       font-size: 26px;
@@ -338,89 +395,112 @@
       }
     }
     &_content {
+      background: #fff;
       padding: $big-space $middle-space;
     }
     &_product {
-
       width: 100vw;
       overflow-x: hidden;
       &:before {
         content: '';
         display: block;
         @include size(100%, $middle-space);
-        background: $backgroundColor;
       }
-      &-add, &-del, &-update {
-        @include flex(space-between);
-        padding: $middle-space;
-        span {flex: 1;}
-        b {
-          color: red;
-        }
+      &-text{
+        height: 98px;
+        background: #fff;
+        @include flex(flex-start);
+        padding: 0 21px;
+        margin-bottom: 22px;
       }
-      &-del {
-        border-bottom: 1px solid $borderColor;
+      &-default{
+        font-size: 28px;
+        color: #666;
+        font-weight: bold;
       }
-      &-item {
-        @include size(900px, auto);
-        transition: transform .3s;
-        &.actived {
-          transform: translateX(-150px);
-        }
-        &_cnt {
-          width: 750px;
-          display: inline-block;
-        }
-        &_del {
-          display:flex;
-          justify-content:center;
-          align-items:center;
-          width:750px;
-          border-top:1px dashed $borderColor;
-          padding: $small-space 0;
-          color: $lightColor;
-          font-size:28px;
-        }
-        &_title {
-          @include flex(space-between);
-          padding: $middle-space;
-          h2 {
-            flex: 1;
-            font-size: 28px;
-          }
-          span {
-            font-size: 22px;
-            padding: 5px 10px;
-            background: #FFBB01;
-            color: #fff;
-            border-radius: 5px;
-          }
-        }
-        &_detail {
-          @include flex();
-          font-size: 26px;
-          padding: 0 $middle-space $middle-space $middle-space;
-          div {
-            flex: 1;
-            @include flex(center, flex-between);
-            flex-direction: column;
-            text-align: center;
-            p {
-              margin-bottom: $middle-space;
-            }
-            span {
-              font-size: 24px;
-              color: $lightColor;
-            }
-          }
-        }
-        &:after {
-          content: '';
-          display: block;
-          @include size(100%, $middle-space);
-          background: $backgroundColor;
-        }
+      &-return{
+        color: #969696;
+        font-size: 24px;
+        margin-left: 30px;
       }
+      &-del{
+        flex: 1;
+        text-align: right;
+        color: #FF4037;
+        font-size: 26px;
+      }
+      &-add{
+        font-size: 26px;
+        color: #306FF4;
+        margin-left: 30px;
+      }
+      // &-item {
+      //   @include size(900px, auto);
+      //   transition: transform .3s;
+      //   &.actived {
+      //     transform: translateX(-150px);
+      //   }
+      //   &_cnt {
+      //     width: 750px;
+      //     display: inline-block;
+      //   }
+      //   &_del {
+      //     display:flex;
+      //     justify-content:center;
+      //     align-items:center;
+      //     width:750px;
+      //     border-top:1px dashed $borderColor;
+      //     padding: $small-space 0;
+      //     color: $lightColor;
+      //     font-size:28px;
+      //   }
+      //   &_title {
+      //     @include flex(space-between);
+      //     padding: $middle-space;
+      //     h2 {
+      //       flex: 1;
+      //       font-size: 28px;
+      //     }
+      //     span {
+      //       font-size: 22px;
+      //       padding: 5px 10px;
+      //       background: #FFBB01;
+      //       color: #fff;
+      //       border-radius: 5px;
+      //     }
+      //   }
+      //   &_detail {
+      //     @include flex();
+      //     font-size: 26px;
+      //     padding: 0 $middle-space $middle-space $middle-space;
+      //     div {
+      //       flex: 1;
+      //       @include flex(center, flex-between);
+      //       flex-direction: column;
+      //       text-align: center;
+      //       p {
+      //         margin-bottom: $middle-space;
+      //       }
+      //       span {
+      //         font-size: 24px;
+      //         color: $lightColor;
+      //       }
+      //     }
+      //   }
+      //   &:after {
+      //     content: '';
+      //     display: block;
+      //     @include size(100%, $middle-space);
+      //     background: $backgroundColor;
+      //   }
+      // }
+    }
+    &_tips {
+      font-size: 24px;
+      color: #FE3845;
+      // line-height: 62px;
+      padding-left: 20px;
+      margin-bottom: 22px;
     }
   }
 </style>

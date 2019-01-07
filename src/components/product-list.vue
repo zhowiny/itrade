@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <div class="item" v-for="(item, index) in data" :key="index">
+    <div class="item" v-for="(item, index) in data" :key="index" :class="editor?'active':''">
 
       <div class="item_admin" @click="clickAdmin(item)" v-if="hasAdmin">
         <p class="adminLogo" v-if="item.product_type!=3"> <img class="adminLogo" :src="item.management_logo" alt=""> </p>
@@ -17,9 +17,15 @@
             <p class="adminDetails_attr_hollow" v-if="item.product_type==3"> 线上生成计划书 </p>
           </div>
         </div>
+        <div class="item_del" ref="del">
+          <div>
+            <img class="item_del_icon" v-if="!item.del" @click="select(index)" src="/images/uncheck.png" alt="">
+            <img class="item_del_icon" v-if="item.del" @click="select(index)" src="/images/checked.png" alt="">
+          </div>
+        </div>
       </div>
 
-      <div  @click="clickProduct(item)">
+      <div class="item_details" @click="clickProduct(item)">
           <!-- 金融 -->
         <div class="item_product" v-if="item.product_type==1">
           <div class="productTitle">
@@ -124,8 +130,9 @@
             </div>
           </div>
         </div>
+        <div class="item_details_blank"></div>
       </div>
-
+      
     </div>
   </div>
 </template>
@@ -144,6 +151,10 @@
       hasAdmin: {
         type: Boolean,
         default: true
+      },
+      editor: {
+        type: Boolean,
+        default: false,
       }
     },
     data () {
@@ -161,6 +172,11 @@
       clickProduct (data) {
         this.$emit('clickProduct', data)
       },
+      select (i) {
+        let data = this.data
+        this.$set(data[i], 'del', !data[i].del)
+        this.$emit('clickSelect', data)
+      },
     }
   }
 </script>
@@ -169,7 +185,10 @@
   .list{
     .item{
       margin-bottom: 20rpx;
+      transform: translateX(0);
+      transition: transform 0.5s;
       &_admin{
+        position: relative;
         padding: $middle-space;
         background: #ffffff;
         border-bottom: 1px solid $borderColor;
@@ -211,6 +230,19 @@
               color: #E1A678;
               border: 1px solid #E1A678;
             }
+          }
+        }
+        .item_del{
+          position: absolute;
+          width: 80px;
+          height: 100%;
+          right: -80px;
+          @include flex();
+          background: #fff;
+          border-bottom: 1px solid $borderColor;
+          &_icon{
+            width: 48px;
+            height: 48px;
           }
         }
       }
@@ -377,6 +409,20 @@
           }
         }
       }
+      &_details{
+        position: relative;
+        &_blank{
+          position: absolute;
+          top: 0;
+          right: -80px;
+          width: 80px;
+          height: 100%;
+          background: #fff;
+        }
+      }
+    }
+    .active{
+      transform: translateX(-80px);
     }
   }
 </style>
