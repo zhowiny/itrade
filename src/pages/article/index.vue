@@ -30,7 +30,7 @@
       </div>
       <p v-if="show_tips" class="article_tips">！最多可添加5个，数量已达5个，可删除后再添加</p>
       <div>
-        <product-list :data="productArr" :editor="status" @clickSelect="delData" @clickProduct="handleClick"/>
+        <product-list :data="productArr" :editor="status" :articleProduct="true" @clickSelect="delData" @clickProduct="handleClick"/>
       </div>
       <!--<<div class="article_product-item"
            v-for="(item, index) in productArr"

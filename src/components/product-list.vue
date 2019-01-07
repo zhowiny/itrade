@@ -45,7 +45,11 @@
                 <span class="productAttr_right_label">投资期限：</span>
                 <span class="productAttr_right_value">{{item.invest_term || '---'}}</span>
               </p>
-              <p>
+              <p v-if="articleProduct">
+                <span class="productAttr_right_label">起投金额：</span>
+                <span class="productAttr_right_value">{{item.minimum_invest_amount || '---'}}</span>
+              </p>
+              <p v-if="!articleProduct">
                 <span class="productAttr_right_label">佣金比例：</span>
                 <span class="productAttr_right_value commission" v-if="legalize">{{item.commission || '---'}}</span>
                 <span class="productAttr_right_value noAuth" v-if="!legalize">认证可见</span>
@@ -70,7 +74,7 @@
             <p class="estateDetails_attr"> {{item.property_type || '---'}}·{{item.main_apartment || '---'}}·{{item.apartment_area || '---'}} </p>
             <p class="estateDetails_money">
               <span class="estateDetails_money_label">总价 ¥</span> <span class="estateDetails_money_value money">{{item.amount || '---'}}万<span style="font-size: 24rpx;">起</span> </span>
-              <span class="estateDetails_money_label">佣金</span> <span class="estateDetails_money_value commission" v-if="legalize">{{item.commission || '---'}}</span> <span class="estateDetails_money_value noAuth" v-if="!legalize">认证可见</span>
+              <span class="estateDetails_money_label" v-if="!articleProduct">佣金</span> <span class="estateDetails_money_value commission" v-if="legalize && !articleProduct">{{item.commission || '---'}}</span> <span class="estateDetails_money_value noAuth" v-if="!legalize && !articleProduct">认证可见</span>
             </p>
             <div class="estateDetails_profit"> <p>近一年房价{{item.increase || '---'}}</p> <p>年租金{{item.year_rent_return_rate || '---'}}</p> </div>
           </div>
@@ -94,7 +98,11 @@
                 <span class="productAttr_right_label">缴费年期：</span>
                 <span class="productAttr_right_value">{{item.payment_years || '---'}}</span>
               </p>
-              <p>
+              <p v-if="articleProduct">
+                <span class="productAttr_right_label">起投金额：</span>
+                <span class="productAttr_right_value">{{item.minimum_invest_amount || '---'}}</span>
+              </p>
+              <p v-if="!articleProduct">
                 <span class="productAttr_right_label">佣金比例：</span>
                 <span class="productAttr_right_value commission" v-if="legalize">{{item.commission || '---'}}</span>
                 <span class="productAttr_right_value noAuth" v-if="!legalize">认证可见</span>
@@ -122,7 +130,11 @@
                 <span class="productAttr_right_label">起投金额：</span>
                 <span class="productAttr_right_value">{{item.minimum_invest_amount || '---'}}</span>
               </p>
-              <p>
+              <p v-if="articleProduct">
+                <span class="productAttr_right_label">投资期限：</span>
+                <span class="productAttr_right_value">{{item.invest_term || '---'}}</span>
+              </p>
+              <p v-if="!articleProduct">
                 <span class="productAttr_right_label">佣金比例：</span>
                 <span class="productAttr_right_value commission" v-if="legalize">{{item.commission || '---'}}</span>
                 <span class="productAttr_right_value noAuth" v-if="!legalize">认证可见</span>
@@ -153,6 +165,10 @@
         default: true
       },
       editor: {
+        type: Boolean,
+        default: false,
+      },
+      articleProduct: {
         type: Boolean,
         default: false,
       }
