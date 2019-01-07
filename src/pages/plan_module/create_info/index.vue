@@ -296,7 +296,25 @@
           // policy_city: '', // 投保人居住市
           policy_somking_flag: 'N', // 投保人是否吸烟
         },
-
+        description: {
+          same_flag: '被保人是否是投保人',
+          insurant_name: '被保人',
+          insurant_gender: '被保人性别',
+          insurant_birth: '被保人出生日期',
+          insurant_country: '被保人国籍',
+          insurant_address: '被保人居住地',
+          insurant_somking_flag: '被保人是否吸烟',
+          insurant_policy_back: '保单回溯',
+          insurant_province: '被保人居住省',
+          insurant_city: '被保人居住市',
+          insurant_goto_america_aflag: '是否去过美国',
+          policy_name: '投保人姓名',
+          policy_gender: '投保人性别',
+          policy_birth: '投保人出生日期',
+          policy_country: '投保人国籍',
+          policy_address: '投保人居住地',
+          policy_somking_flag: '投保人是否吸烟',
+        },
         params: {},
         insuranceType: '',
         detail: {},
@@ -471,7 +489,7 @@
         for (let key of Object.keys(this.insurance)) {
           if (!fields.includes(key)) {
             if (!this.insurance[key]) {
-              this.showToast(key + '不能为空!')
+              this.showToast(this.description[key] + '不能为空!')
               return false
             }
             plan[key] = this.insurance[key]
@@ -482,7 +500,7 @@
             plan[key] = this.insurance[key.replace('policy', 'insurant')]
           } else if (!fields.includes(key)) {
             if (!this.policy[key]) {
-              this.showToast(key + '不能为空!')
+              this.showToast(this.description[key] + '不能为空!')
               return false
             }
             plan[key] = this.policy[key]
