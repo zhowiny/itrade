@@ -19,13 +19,13 @@
           <mx-picker
             label="management_name"
             valueKey="management_id"
-            :disabled="planId || companyList.length === 0"
+            :disabled="disabled || companyList.length === 0"
             :data="companyList"
             v-model="form.supplier_id"
             @change="companyChange"
           />
         </div>
-        <img v-if="!planId" class="arrow" src="/images/icon_arrow_product.png">
+        <img v-if="!disabled" class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item">
         <span class="label">产品名称</span>
@@ -33,13 +33,13 @@
           <mx-picker
             label="item_name"
             valueKey="item_id"
-            :disabled="planId || productList.length === 0"
+            :disabled="disabled || productList.length === 0"
             :data="productList"
             v-model="form.item_id"
             @change="productChange"
           />
         </div>
-        <img v-if="!planId" class="arrow" src="/images/icon_arrow_product.png">
+        <img v-if="!disabled" class="arrow" src="/images/icon_arrow_product.png">
       </div>
       <div class="item none">
         <span class="label">年期</span>
@@ -48,7 +48,6 @@
             label="subline_item_name"
             valueKey="subline_id"
             :disabled="!template.product_year_periods || template.product_year_periods.length < 1"
-            :placeholder="(template.product_year_periods && template.product_year_periods.length === 0) ? '无可选项' : '请选择'"
             :data="template.product_year_periods"
             v-model="form.subline_id"
           />
@@ -73,7 +72,7 @@
         <div class="item">
           <span class="label">金额</span>
           <div class="value">
-            <input v-model="form.amount" type="text" placeholder-class="placeholder" placeholder="请输入">
+            <input @change="fixed('amount', form.amount)" v-model="form.amount" type="digit" placeholder-class="placeholder" placeholder="请输入">
           </div>
           <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
         </div>
@@ -106,8 +105,8 @@
           <span class="label">提取年数</span>
           <div class="value">
             <div class="extract">
-              从第 <input type="text" v-model="form.extract_from"> 年
-              到第 <input type="text" v-model="form.extract_to"> 年
+              从第 <input type="number" v-model="form.extract_from"> 年
+              到第 <input type="number" v-model="form.extract_to"> 年
             </div>
           </div>
           <!--<img v-if="false" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
@@ -129,7 +128,6 @@
             <mx-picker
               label="description"
               valueKey="value"
-              :placeholder="(template.product_pay_methods && template.product_pay_methods.length === 0) ? '无可选项' : '请选择'"
               :disabled="!template.product_pay_methods || template.product_pay_methods.length < 1"
               :data="template.product_pay_methods"
               v-model="form.pay_method"
@@ -144,7 +142,6 @@
             <mx-picker
               label="description"
               valueKey="value"
-              :placeholder="(template.product_amount_types && template.product_amount_types.length === 0) ? '无可选项' : '请选择'"
               :disabled="!template.product_amount_types || template.product_amount_types.length < 1"
               :data="template.product_amount_types"
               v-model="form.amount_type"
@@ -168,7 +165,7 @@
         <div class="item" v-if="insuranceType !== 'HONGKONG_GD'">
           <span class="label">金额</span>
           <div class="value">
-            <input v-model="form.amount" type="number" placeholder-class="placeholder" placeholder="请输入">
+            <input @change="fixed('amount', form.amount)" v-model="form.amount" type="digit" placeholder-class="placeholder" placeholder="请输入">
           </div>
           <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
         </div>
@@ -267,8 +264,8 @@
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_1.png" mode="aspectFit" style="width:32rpx;height:35rpx;">
         <span class="title_text">附加险信息{{index || ''}}</span>
-        <img @click="delAddition(index)" v-if="index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
-        <img @click="addAddition" v-else src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+        <img @click="addAddition" v-if="index === 0" src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+        <img @click="delAddition(index)" v-if="additions.length > 1" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;margin-left: 20rpx;">
       </div>
       <div class="item">
         <span class="label">附加险</span>
@@ -334,13 +331,13 @@
               到第 <input type="number" v-model="item.extract_to"> 年
             </div>
           </div>
-          <img @click="delExtract(index)" v-if="index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
           <img @click="addExtract" v-if="form.extract_method === 'FA' && index === 0" src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+          <img @click="delExtract(index)" v-if="extract.length > 1" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;margin-left: 20rpx;">
         </div>
         <div class="item" v-if="form.extract_method !== 'MA'">
           <span class="label">提取金额</span>
           <div class="value">
-            <input v-model="item.extract_amount" type="number" placeholder-class="placeholder" placeholder="请输入">
+            <input @change="fixed('extract_amount', item.extract_amount, item)" v-model="item.extract_amount" type="digit" placeholder-class="placeholder" placeholder="请输入">
           </div>
           <img v-if="false" class="arrow" src="/images/icon_arrow_product.png">
         </div>
@@ -421,10 +418,9 @@
       </div>
     </div>
 
-    <div class="btn_next" @click="nextStep">
-      <span>下一步</span>
-    </div>
-
+    <cover-view class="btn_next" @click="nextStep">
+      <cover-view>下一步</cover-view>
+    </cover-view>
   </div>
 </template>
 
@@ -492,14 +488,24 @@
 
         detail: {},
         planId: '',
+        disabled: false,
       }
     },
     watch: {
     },
 
     async onLoad (params) {
-      this.type = params.type
-      this.planId = params.plan_id
+      if (params.plan_id) {
+        this.planId = params.plan_id
+        this.disabled = true
+      }
+      if (params.item_id && params.management_id) {
+        this.form.supplier_id = parseInt(params.management_id)
+        this.form.item_id = parseInt(params.item_id)
+        this.disabled = true
+        this.getTemplate()
+      }
+
       await this.getDetail()
       await this.getCompany()
       this.getProduct()
@@ -647,11 +653,11 @@
         }
       },
       addAddition () {
-        if (!this.additions[0].addition_id) {
+        if (!this.additions[this.additions.length - 1].addition_id) {
           this.showToast('请选择附加险!')
           return
         }
-        this.additions.unshift({
+        this.additions.push({
           addition_id: '', // 附加险id
           remark: '', // 附加险备注
         })
@@ -662,11 +668,12 @@
         })
       },
       addExtract () {
-        if (!this.extract[0].extract_from || !this.extract[0].extract_to || !this.extract[0].extract_amount) {
+        let lastIndex = this.extract.length - 1
+        if (!this.extract[lastIndex].extract_from || !this.extract[lastIndex].extract_to || !this.extract[lastIndex].extract_amount) {
           this.showToast('请完善提取信息!')
           return
         }
-        this.extract.unshift({
+        this.extract.push({
           extract_amount: '', // 提取金额
           extract_from: '', // 提取开始
           extract_to: '', // 提取结束
@@ -677,12 +684,23 @@
           return index !== k
         })
       },
+      fixed (...params) {
+        console.log(params)
+        let dot = params[1].indexOf('.')
+        let value = dot === 0 ? parseFloat('0' + params[1]) : parseFloat(params[1])
+        if (params[2]) {
+          params[2][params[0]] = value.toFixed(2)
+        } else {
+          this.form[params[0]] = value.toFixed(2)
+        }
+      },
       /**
        * 把数据带入下一步
        */
       nextStep () {
         let params = this.checkFields()
         if (params) {
+          console.log(params)
           this.toPage({
             url: '/pages/plan_module/create_info/main',
             data: {params, insurance_type: this.insuranceType},
@@ -1107,6 +1125,7 @@
             padding: 0 $mid-space $mid-space;
             textarea {
               flex: 1;
+              z-index: 0;
               background: #e8e8e8;
               min-height: 140px;
               border-radius: 8px;
@@ -1128,17 +1147,21 @@
     }
     .btn_next {
       position: fixed;
+      z-index: 10;
       bottom: 0;
       left: 0;
       background: #fff;
       @include size(100vw, 100px);
       padding: $mid-space / 2 $mid-space;
-      span {
+      box-sizing:border-box;
+      cover-view {
         display: block;
         border-radius: 15px;
         background: $mainColor;
         color: #fff;
         height: 100%;
+        line-height: 70px;
+        text-align: center;
         @include flex();
         font-size: 32px;
       }

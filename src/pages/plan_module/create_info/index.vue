@@ -42,7 +42,7 @@
         <div class="value" style="justify-content: flex-end">
           <picker
             mode="date"
-            start="1900-01-01" end="2020-01-01"
+            start="1900-01-01" :end="date"
             :value="insurance.insurant_birth"
             fields="day" @change="e => (insurance.insurant_birth = e.mp.detail.value)"
           >
@@ -120,7 +120,7 @@
           <mx-picker
             label="description"
             valueKey="value"
-            :data="template.yesno"
+            :data="template.usa"
             v-model="insurance.insurant_goto_america_aflag"
           />
         </div>
@@ -170,7 +170,7 @@
         <div class="value"  style="justify-content: flex-end">
           <picker
             mode="date"
-            start="1900-01-01" end="2020-01-01"
+            start="1900-01-01" :end="date"
             :value="policy.policy_birth"
             fields="day" @change="e => (policy.policy_birth = e.mp.detail.value)"
           >
@@ -203,7 +203,7 @@
         </div>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
-      <div v-if="insuranceType === 'HONGKONG_WYSX'">
+      <!--<div v-if="insuranceType === 'HONGKONG_WYSX'">
         <div class="item" v-if="policy.policy_address === 'China'">
           <span class="label">居住省</span>
           <div class="value">
@@ -229,7 +229,7 @@
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-      </div>
+      </div>-->
       <div class="item">
         <span class="label">是否吸烟</span>
         <div class="value">
@@ -274,7 +274,7 @@
         insurantCityList: [],
         policyCityList: [],
         insurance: {
-          same_flag: 'N', // 被保人是否是投保人
+          same_flag: 'Y', // 被保人是否是投保人
           insurant_name: '', // 被保人
           insurant_gender: '', // 被保人性别
           insurant_birth: '', // 被保人出生日期
@@ -292,14 +292,15 @@
           policy_birth: '', // 投保人出生日期
           policy_country: '', // 投保人国籍
           policy_address: '', // 投保人居住地
-          policy_province: '', // 投保人居住省
-          policy_city: '', // 投保人居住市
+          // policy_province: '', // 投保人居住省
+          // policy_city: '', // 投保人居住市
           policy_somking_flag: 'N', // 投保人是否吸烟
         },
 
         params: {},
         insuranceType: '',
         detail: {},
+        date: '',
       }
     },
     watch: {
@@ -323,26 +324,26 @@
             break
         }
       },
-      'policy.policy_address': function (newVal) {
-        this.policyCityList = []
-        this.policy.policy_province = ''
-        switch (newVal) {
-          case 'Hong Kong':
-            this.policy.policy_province = '810000'
-            this.getCity('policyCityList', '810000')
-            break
-          case 'MO':
-            this.policy.policy_province = '820000'
-            this.getCity('policyCityList', '820000')
-            break
-          case 'Taiwan':
-            this.policy.policy_province = '710000'
-            this.getCity('policyCityList', '710000')
-            break
-          default:
-            break
-        }
-      },
+      // 'policy.policy_address': function (newVal) {
+      //   this.policyCityList = []
+      //   this.policy.policy_province = ''
+      //   switch (newVal) {
+      //     case 'Hong Kong':
+      //       this.policy.policy_province = '810000'
+      //       this.getCity('policyCityList', '810000')
+      //       break
+      //     case 'MO':
+      //       this.policy.policy_province = '820000'
+      //       this.getCity('policyCityList', '820000')
+      //       break
+      //     case 'Taiwan':
+      //       this.policy.policy_province = '710000'
+      //       this.getCity('policyCityList', '710000')
+      //       break
+      //     default:
+      //       break
+      //   }
+      // },
     },
 
     async onLoad (options) {
@@ -351,6 +352,8 @@
         o[decodeURIComponent(key)] = decodeURIComponent(options[key])
       })
       let result = qs.parse(o)
+      this.date = this.format(new Date(), 'yyyy-MM-dd')
+      console.log(this.date)
       this.insuranceType = result.insurance_type
       this.params = result.params
       await this.getDetail()
@@ -407,6 +410,11 @@
           result.yesno = [
             {value: 'Y', description: '是'},
             {value: 'N', description: '否'},
+          ]
+          result.usa = [
+            {value: 'YY', description: '去过'},
+            {value: 'YN', description: '有美签没去过'},
+            {value: 'NN', description: '没有美签'},
           ]
           this.template = result
           this.insuranceType = result.insurance_type
@@ -517,7 +525,8 @@
             url = '/wx/itrade/product/plan/update'
           }
           let result = await this.$http.post(url, data)
-          result && this.showToast(result, this.toPage('/pages/plan_module/create_success/main'))
+          result && this.toPage('/pages/plan_module/create_success/main')
+          // result && this.showToast(result, this.toPage('/pages/plan_module/create_success/main'))
         } catch (e) {
           throw new Error(e)
         }

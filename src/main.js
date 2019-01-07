@@ -32,6 +32,7 @@ Vue.mixin({
       })
     },
     format (date, fmt) {
+      // yyyy-mm-dd或者yyyy/mm/dd
       let o = {
         'M+': date.getMonth() + 1,
         'd+': date.getDate(),

@@ -122,7 +122,7 @@
       </div>
       <div class="finance_footer_right">
         <div class="finance_footer_invest" @click="toMiniProgram"> 发送客户 </div>
-        <div class="finance_footer_adviser" @click="toPage('/pages/plan/main?product_id=' + deliverData.product_id )"> 生成计划书 </div>
+        <div class="finance_footer_adviser" @click="toPage({url: '/pages/plan_module/my_plan/main', data: {management_id: detail.management_id, item_id: detail.id}})"> 生成计划书 </div>
       </div>
     </div>
     <button id="contact" open-type="contact"></button>

@@ -1,7 +1,7 @@
 <template>
   <div class="mx-picker_container" :class="className">
-    <picker class="mx-picker" :disabled="disabled" :range="data" :range-key="label" :value="dataIndex" @change="change">
-      <div class="mx-picker_none" v-if="(!dataIndex && dataIndex !== 0) || dataIndex === -1 || !current">{{data.length > 0 ? placeholder : '无选项'}}</div>
+    <picker @click="click" class="mx-picker" :disabled="disabled" :range="data" :range-key="label" :value="dataIndex" @change="change">
+      <div class="mx-picker_none" v-if="(!dataIndex && dataIndex !== 0) || dataIndex === -1 || !current">{{placeholder}}</div>
       <div class="mx-picker_text" v-else>{{label ? current[label] : valueKey ? current[valueKey] : current}}</div>
     </picker>
   </div>
@@ -54,6 +54,11 @@ export default {
     this.init(this.value)
   },
   methods: {
+    click (e) {
+      if (this.data.length === 0) {
+        this.showToast('无可选值')
+      }
+    },
     init (val) {
       if (!this.valueKey) {
         this.dataIndex = this.data.indexOf(val)

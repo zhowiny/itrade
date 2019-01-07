@@ -4,11 +4,11 @@
       <img src="/images/icon_success.png" mode="aspectFit" style="width: 166rpx;height: 166rpx;">
       <p>
         计划书申请已提交成功 <br>
-        我们会在<b>2-3</b>个工作日给您处理 <br>
+        我们会在<b>1-3</b>个工作日给您处理 <br>
         请耐心等候
       </p>
       <div class="btn" @click="toPage('/pages/plan_module/my_plan/main')">查看我的计划书</div>
-      <div class="btn back">返回产品页</div>
+      <div class="btn back" @click="toPage({url: '/pages/index/main', type: 'switchTab'})">返回首页</div>
     </div>
   </div>
 </template>

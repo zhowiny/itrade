@@ -386,13 +386,13 @@
       },
       async getDetail () {
         try {
-          let url = '/wx/itrade/order/detail_of_advisor'
           if (this.orderType === 3) {
-            url = '/wx/itrade/order/detail_of_insurance'
+            this.detail = await this.$http.get('/wx/itrade/order/detail_of_insurance', {
+              order_number: this.$mp.query.order_number
+            })
+          } else {
+            this.detail = await this.$http.post('/wx/itrade/order/detail_of_advisor?order_number=' + this.$mp.query.order_number)
           }
-          this.detail = await this.$http.get(url, {
-            order_number: this.$mp.query.order_number
-          })
           if (this.orderType === 3) {
             if (['退保处理中', '保险公司拒保', '搁置受保', '保单失效', '已取消', '已退保', '预约失败'].includes(this.detail.statusName)) {
               this.showInsuranceProgress = false

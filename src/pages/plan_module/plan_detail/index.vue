@@ -22,7 +22,7 @@
       <!--成功才显示-->
       <div
         v-if="form.plan_status === 'COMPLETED'"
-        class="preview" @click="$common.previewFile(form.file.file_url, form.file.file_name)"
+        class="preview" @click="preview"
       >
         <img src="/images/icon_preview.png" mode="aspectFit" style="width:33rpx;height:25rpx;">
         <span>点击预览</span>
@@ -53,7 +53,7 @@
             :disabled="!view.productEditable" valueKey="subline_id"
             label="subline_item_name"
             :data="template.product_year_periods"
-            v-model="form.year_period"
+            v-model="form.subline_id"
             @change="change"
           />
         </div>
@@ -145,7 +145,7 @@
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <div class="item">
+        <div class="item" v-if="detail.insurance_type !== 'HONGKONG_GD'">
           <span class="label">金额类型</span>
           <div class="value">
             <mx-picker
@@ -169,7 +169,7 @@
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <div class="item">
+        <div class="item" v-if="detail.insurance_type !== 'HONGKONG_GD'">
           <span class="label">金额</span>
           <div class="value">
             <input
@@ -220,6 +220,49 @@
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
       </div>
+
+      <!--只有高端医疗显示-->
+      <div v-if="detail.insurance_type === 'HONGKONG_GD'">
+        <div class="item">
+          <span class="label">保障级别</span>
+          <div class="value">
+            <mx-picker
+              valueKey="value"
+              label="description"
+              :disabled="!view.productEditable"
+              :data="template.security_levels"
+              v-model="form.security_level"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item">
+          <span class="label">保障地区</span>
+          <div class="value">
+            <mx-picker
+              valueKey="value"
+              label="description"
+              :disabled="!view.productEditable"
+              :data="template.security_areas"
+              v-model="form.security_area"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+        <div class="item">
+          <span class="label">自付选项</span>
+          <div class="value">
+            <mx-picker
+              valueKey="self_pay_id"
+              label="self_pay_name"
+              :disabled="!view.productEditable"
+              :data="template.selfpaies"
+              v-model="form.selfpay_id"
+            />
+          </div>
+          <img class="arrow" src="/images/icon_arrow_product.png">
+        </div>
+      </div>
     </div>
 
     <div
@@ -262,8 +305,8 @@
           <span class="label">提取年数</span>
           <div class="value">
             <div class="extract">
-              从第 <input :disabled="!view.productEditable" v-model="item.extract_from" type="text" value="1"> 年
-              到第 <input :disabled="!view.productEditable" v-model="item.extract_to" type="text" vlaue="10"> 年
+              从第 <input :disabled="!view.productEditable" v-model="item.extract_from" type="text"> 年
+              到第 <input :disabled="!view.productEditable" v-model="item.extract_to" type="text"> 年
             </div>
           </div>
           <img v-if="view.productEditable && index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
@@ -781,7 +824,6 @@
           result.insurant_birth = result.insurant_birth.split(' ')[0]
           this.type = this.detail.insurance_type
           this.form = result
-          this.form.year_period = parseInt(this.form.year_period)
 
           // 状态为需复查时,可编辑
           this.view.editable = this.form.plan_status === 'REVIEW'
@@ -865,6 +907,14 @@
             this.getDetail()
             this.showToast('撤销成功')
           }
+        } catch (e) {
+          throw new Error(e)
+        }
+      },
+      async preview () {
+        try {
+          this.$common.previewFile(this.form.file.file_url, this.form.file.file_name)
+          await this.$http.post('/wx/itrade/product/plan/open_file', this.planId)
         } catch (e) {
           throw new Error(e)
         }

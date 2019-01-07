@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="search_bar">
+    <div class="search_bar" v-if="!params.item_id">
       <img src="/images/search.png" mode="aspectFit" style="width: 28rpx;height:29rpx;">
       <input placeholder-class="placeholder"
              v-model="search.params" type="text"
@@ -9,7 +9,7 @@
       >
 
     </div>
-    <div class="status_bar">
+    <div class="status_bar" v-if="!params.item_id">
       <div :class="{active: activeIndex === 0}" @click="filter('全部', 0)">
         <wx-badge :isHidden="true" :value="2">全部</wx-badge>
       </div>
@@ -55,7 +55,7 @@
         <div class="time">提交时间: {{item.request_date || '---'}}</div>
       </div>
     </div>
-    <div class="btn_new" @click="toPage({url:'/pages/plan_module/create_plan/main'})">
+    <div class="btn_new" @click="toPage({url:'/pages/plan_module/create_plan/main', data: params})">
       <span>+ 新建计划书</span>
     </div>
 
@@ -111,13 +111,19 @@
           '已取消': 'error',
           'undefined': 'primary',
         },
+        params: {},
       }
     },
 
-    async onLoad () {
+    async onLoad (params) {
+      this.params = params
+      params.item_id && (this.search.product_id = params.item_id)
       this.queryCount()
       this.getPlanList()
       // this.dataBuryPoint('my_plan_list:init:visit')
+    },
+    onShow () {
+      this.queryCount()
     },
     methods: {
       async queryCount () {
@@ -175,6 +181,14 @@
     onUnload () {
       this.planList = []
       this.showInsuranceType = false
+      this.search = {
+        page_num: 1,
+        page_size: 10,
+        params: '',
+        policy_insurant_name: '',
+        product_id: '',
+        status: '',
+      }
     },
     components: {
       wxBadge,
