@@ -12,7 +12,7 @@
           <mx-picker
             label="description"
             valueKey="value"
-            :data="template.yesno"
+            :data="template.same_flag"
             v-model="insurance.same_flag"
           />
         </div>
@@ -140,7 +140,7 @@
       </div>
     </div>
 
-    <div class="module" v-if="insurance.same_flag === 'N'">
+    <div class="module" v-if="insurance.same_flag === 'Y'">
       <div class="title">
         <img class="title_icon" src="/images/icon_plan_4.png" mode="aspectFit" style="width:32rpx;height:32rpx;">
         <span class="title_text">投保人信息</span>
@@ -274,7 +274,7 @@
         insurantCityList: [],
         policyCityList: [],
         insurance: {
-          same_flag: 'Y', // 被保人是否是投保人
+          same_flag: 'N', // 被保人是否是投保人
           insurant_name: '', // 被保人
           insurant_gender: '', // 被保人性别
           insurant_birth: '', // 被保人出生日期
@@ -365,22 +365,34 @@
     },
 
     async onLoad (options) {
+      this.reset()
       let o = {}
       Object.keys(options).forEach(key => {
         o[decodeURIComponent(key)] = decodeURIComponent(options[key])
       })
       let result = qs.parse(o)
       this.date = this.format(new Date(), 'yyyy-MM-dd')
-      console.log(this.date)
       this.insuranceType = result.insurance_type
       this.params = result.params
+      this.params.plan_id && wx.setNavigationBarTitle({
+        title: '修改计划书',
+      })
       await this.getDetail()
       this.getTemplate()
       if (this.insuranceType === 'HONGKONG_WYSX') {
         this.getProvince()
       }
     },
+    onUnload () {
+      this.reset()
+    },
     methods: {
+      reset () {
+        let d = this.$options.data()
+        Object.keys(d).forEach(key => {
+          this[key] = d[key]
+        })
+      },
       async getDetail () {
         try {
           if (!this.params.plan_id) return
@@ -428,6 +440,10 @@
           result.yesno = [
             {value: 'Y', description: '是'},
             {value: 'N', description: '否'},
+          ]
+          result.same_flag = [
+            {value: 'Y', description: '否'},
+            {value: 'N', description: '是'},
           ]
           result.usa = [
             {value: 'YY', description: '去过'},
@@ -496,7 +512,7 @@
           }
         }
         for (let key of Object.keys(this.policy)) {
-          if (this.insurance.same_flag === 'Y') {
+          if (this.insurance.same_flag === 'N') {
             plan[key] = this.insurance[key.replace('policy', 'insurant')]
           } else if (!fields.includes(key)) {
             if (!this.policy[key]) {
@@ -543,7 +559,7 @@
             url = '/wx/itrade/product/plan/update'
           }
           let result = await this.$http.post(url, data)
-          result && this.toPage('/pages/plan_module/create_success/main')
+          result && this.toPage({url: '/pages/plan_module/create_success/main', data: result})
           // result && this.showToast(result, this.toPage('/pages/plan_module/create_success/main'))
         } catch (e) {
           throw new Error(e)

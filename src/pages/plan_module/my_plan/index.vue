@@ -24,8 +24,11 @@
       </div>
       <div class="line" :class="'p' + activeIndex"></div>
     </div>
-
-    <div class="plan_list">
+    <div class="none" v-if="planList.length === 0">
+      <img src="/images/icon_none_2.png" alt="">
+      <p>无申请记录</p>
+    </div>
+    <div class="plan_list"  v-else>
       <div class="plan_item"
            v-for="(item, index) in planList"
            :key="index" @click="toPage({url: '/pages/plan_module/plan_detail/main', data: {planId: item.plan_id}})"
@@ -55,7 +58,7 @@
         <div class="time">提交时间: {{item.request_date || '---'}}</div>
       </div>
     </div>
-    <div class="btn_new" @click="toPage({url:'/pages/plan_module/create_plan/main', data: params})">
+    <div class="btn_new" @click="newPlan">
       <span>+ 新建计划书</span>
     </div>
 
@@ -85,6 +88,7 @@
         activeIndex: 0, // status_bar index
         showInsuranceType: false,
         planCount: {},
+
         isLastPage: false,
         planList: [],
         search: {
@@ -112,33 +116,63 @@
           'undefined': 'primary',
         },
         params: {},
+        quoteCount: '',
+        planQuote: '',
       }
     },
 
     async onLoad (params) {
+      this.planList = []
       this.params = params
       params.item_id && (this.search.product_id = params.item_id)
-      this.queryCount()
-      this.getPlanList()
+      // this.queryCount()
+      // this.getPlanList()
+      // this.queryPlanQuote()
       // this.dataBuryPoint('my_plan_list:init:visit')
+    },
+    onHide () {
+      // let d = this.$options.data()
+      // Object.keys(d).forEach(key => {
+      //   this[key] = d[key]
+      // })
+      this.isLastPage = false
+      this.search.page_num = 1
+      this.planList = []
     },
     onShow () {
       this.queryCount()
+      this.getPlanList()
+      this.queryPlanQuote()
     },
     methods: {
+      async queryPlanQuote () {
+        try {
+          let result = await this.$http.get('/wx/itrade/product/plan/quote/check')
+          this.planQuote = result.plan_quote
+          this.quoteCount = result.add_plan_quote
+        } catch (e) {
+          console.error(e)
+        }
+      },
       async queryCount () {
         this.planCount = await this.$http.get('/wx/itrade/product/plan/count')
       },
       async getPlanList () {
-        let result = await this.$http.get('/wx/itrade/product/plan/list', this.search)
-        this.planList = this.planList.concat(result.list)
-        this.isLastPage = result.is_last_page
-        if (result.list.length === 0) {
-          this.showToast('没有更多数据了~')
+        try {
+          if (this.isLastPage) return
+          let result = await this.$http.get('/wx/itrade/product/plan/list', this.search)
+          this.planList = this.planList.concat(result.list)
+          this.isLastPage = result.is_last_page
+          if (result.list.length === 0) {
+            this.showToast('没有更多数据了~')
+          }
+        } catch (e) {
+          throw new Error(e)
         }
       },
       filter (status, index) {
         this.activeIndex = index
+        this.isLastPage = false
         if (index === 0) {
           this.search.status = ''
         } else {
@@ -153,10 +187,24 @@
         this.timer = setTimeout(() => {
           this.search.status = ''
           this.activeIndex = 0
+          this.isLastPage = false
           this.search.page_num = 1
           this.planList = []
           this.getPlanList()
         }, 500)
+      },
+      newPlan () {
+        if (this.planQuote) {
+          this.toPage({url: '/pages/plan_module/create_plan/main', data: this.params})
+        } else {
+          this.showModal({
+            title: '提示',
+            content: `您的计划书额度不够!\n温馨提示:保单签单时可扩增计划书额度,1张签单=${this.quoteCount}份计划书`,
+            confirmText: '我知道了',
+            confirmColor: '#306FF4',
+            showCancel: false,
+          })
+        }
       },
       dataBuryPoint (evt) {
         this.$auth.dataBuryPoint({
@@ -177,18 +225,6 @@
       }
       this.search.page_num++
       this.getPlanList()
-    },
-    onUnload () {
-      this.planList = []
-      this.showInsuranceType = false
-      this.search = {
-        page_num: 1,
-        page_size: 10,
-        params: '',
-        policy_insurant_name: '',
-        product_id: '',
-        status: '',
-      }
     },
     components: {
       wxBadge,
@@ -307,6 +343,20 @@
       .state_error {
         color: #FF3d55;
       }
+    }
+  }
+  .none {
+    @include size(100vw,100vh);
+    background: #fff;
+    text-align: center;
+    img {
+      width: 430px;
+      height: 290px;
+      margin: 25% auto 0 auto;
+    }
+    p {
+      color: $lightColor;
+      text-align: center;
     }
   }
   .btn_new {

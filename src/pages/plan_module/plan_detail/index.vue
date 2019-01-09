@@ -87,8 +87,8 @@
               label="description"
               valueKey="value"
               :disabled="!view.productEditable"
-              :data="template.policy_requires"
-              v-model="form.policy_require"
+              :data="template.policy_demands"
+              v-model="form.policy_demand"
             />
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
@@ -114,8 +114,8 @@
               到第 <input type="text" :disabled="!view.productEditable" v-model="item.extract_to"> 年
             </div>
           </div>
-          <img v-if="false" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
-          <img v-else src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
+          <!--<img v-if="false" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">-->
+          <!--<img v-else src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">-->
         </div>
 
         <div class="item textarea">
@@ -456,7 +456,7 @@
             <mx-picker
               valueKey="value"
               label="description"
-              :data="template.yesno"
+              :data="template.same_flag"
               :value="form.same_flag"
               :disabled="!view.insuranceEditable"
             />
@@ -579,7 +579,7 @@
             <mx-picker
               valueKey="value"
               label="description"
-              :data="template.yesno"
+              :data="template.usa"
               v-model="form.insurant_goto_america_aflag"
               :disabled="!view.insuranceEditable"
             />
@@ -736,10 +736,10 @@
     </div>
     <p class="time" style="order:1;">提交时间: {{form.creation_date}}</p>
 
-    <div class="btn_next" v-if="form.plan_status !== 'COMPLETED' && form.plan_status !== 'PLN_CANCELLED'">
-      <span :style="form.plan_status !== 'REVIEW' ? 'margin-right: 0' : ''" @click="confirm">撤销申请</span>
-      <span v-if="form.plan_status === 'REVIEW'" @click="toPage('/pages/plan_module/create_plan/main?plan_id=' + form.plan_id)">修改申请</span>
-    </div>
+    <cover-view class="btn_next" v-if="form.plan_status !== 'COMPLETED' && form.plan_status !== 'PLN_CANCELLED'">
+      <cover-view :style="form.plan_status !== 'REVIEW' ? 'margin-right: 0' : ''" @click="confirm">撤销申请</cover-view>
+      <cover-view v-if="form.plan_status === 'REVIEW'" @click="toPage('/pages/plan_module/create_plan/main?plan_id=' + form.plan_id)">修改申请</cover-view>
+    </cover-view>
 
     <div class="mask" v-if="showConfirm"  @click="showConfirm = false"></div>
     <div class="confirm" v-if="showConfirm">
@@ -841,6 +841,15 @@
           result.yesno = [
             {value: 'Y', description: '是'},
             {value: 'N', description: '否'},
+          ]
+          result.same_flag = [
+            {value: 'Y', description: '否'},
+            {value: 'N', description: '是'},
+          ]
+          result.usa = [
+            {value: 'YY', description: '去过'},
+            {value: 'YN', description: '有美签没去过'},
+            {value: 'NN', description: '没有美签'},
           ]
           Object.keys(result).forEach(key => {
             this.$set(this.template, key, result[key] || [])
@@ -1137,13 +1146,16 @@
       @include size(100vw, 100px);
       padding: $mid-space / 2 $mid-space;
       @include flex();
-      span {
+      box-sizing: border-box;
+      cover-view {
         display: block;
         border-radius: 15px;
         background: $mainColor;
         color: #fff;
         height: 100%;
         @include flex();
+        text-align: center;
+        line-height: 70px;
         font-size: 32px;
         flex: 1;
         &:first-child {

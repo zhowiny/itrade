@@ -31,13 +31,13 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 3,
+			"current": 7,
 			"list": [
 				{
 					"id": 0,
 					"name": "创建计划书",
 					"pathName": "pages/plan_module/create_plan/main",
-					"query": "type=HONGKONG&plan_id=1899"
+					"query": "plan_id=1955"
 				},
 				{
 					"id": 1,
@@ -46,10 +46,10 @@
 					"query": "params[supplier_id]=41&params[item_id]=1000047&params[subline_id]=1000164&params[pay_method]=FJ&params[amount_type]=IC&params[currency]=CNY&params[amount]=100000&params[additional_risk_flag]=N&params[extract_flag]=Y&params[advanced_medical_flag]=Y&params[remark]=121212&params[extract_type]=CV&params[extract_method]=FA&params[extracts][0][extract_amount]=10000&params[extracts][0][extract_from]=2&params[extracts][0][extract_to]=5&params[advanced_medical][item_id]=1000120&params[advanced_medical][security_area]=%E5%85%A8%E7%90%83%28%E7%BE%8E%E5%9B%BD%E9%99%A4%E5%A4%96%29&params[advanced_medical][security_level]=%E6%A0%87%E5%87%86&params[advanced_medical][self_pay_id]=44&insurance_type=HONGKONG"
 				},
 				{
-					"id": -1,
+					"id": 2,
 					"name": "create_success",
 					"pathName": "pages/plan_module/create_success/main",
-					"query": ""
+					"query": "plan_id=1960&success_enum=MATCH"
 				},
 				{
 					"id": 3,
@@ -74,6 +74,12 @@
 					"name": "万险",
 					"pathName": "pages/plan_module/create_info/main",
 					"query": "params[supplier_id]=41&params[item_id]=2&params[subline_id]=1000581&params[pay_method]=AP&params[amount_type]=IC&params[currency]=AUD&params[amount]=1111&insurance_type=HONGKONG_WYSX"
+				},
+				{
+					"id": -1,
+					"name": "invite",
+					"pathName": "pages/package/invite/main",
+					"query": ""
 				}
 			]
 		}

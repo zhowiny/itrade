@@ -122,7 +122,7 @@
       </div>
       <div class="finance_footer_right">
         <div class="finance_footer_invest" @click="toMiniProgram"> 发送客户 </div>
-        <div class="finance_footer_adviser" @click="toPage({url: '/pages/plan_module/my_plan/main', data: {management_id: detail.management_id, item_id: detail.id}})"> 生成计划书 </div>
+        <div class="finance_footer_adviser" @click="newPlan"> 生成计划书 </div>
       </div>
     </div>
     <button id="contact" open-type="contact"></button>
@@ -167,6 +167,8 @@
         showShareBtn: false,
         showReserveLink: false,
         reserveLink: '',
+        quoteCount: '',
+        planQuote: '',
       }
     },
     computed: {
@@ -186,6 +188,7 @@
 
       await this.getParams()
       await this.getProductDetail()
+      this.queryPlanQuote()
 
       this.reserveLink = `https://${wx.mx_dev ? 'org' : ''}api.fortunefed.com/mx/sso/login?action=APPOINTMENT_SIGN_BILL&channelId=${this.planParams.related_party_id}&itemId=${this.detail.id}&supplierId=${this.detail.management_id}&token=${this.planParams.unitive_token}`
 
@@ -202,6 +205,12 @@
         introduceCode: this.introduceCode,
         shareInvestorId: '',
         prePage: wx.getStorageSync('from')
+      })
+    },
+    onUnload () {
+      let d = this.$options.data()
+      Object.keys(d).forEach(key => {
+        this[key] = d[key]
       })
     },
     methods: {
@@ -233,10 +242,10 @@
         try {
           let result = await this.$http.post(`/wx/itrade/finance/detail?finance_id=${this.productId}&product_type=${this.productType}`, {})
           result.product_book_documents.forEach(item => {
-            item.document_type = item.document_type.split('/') || 'pdf'
+            item.document_type && (item.document_type = item.document_type.split('/') || 'pdf')
           })
           result.introduction_documents.forEach(item => {
-            item.document_type = item.document_type.split('/') || 'pdf'
+            item.document_type && (item.document_type = item.document_type.split('/') || 'pdf')
           })
           this.detail = result
           console.log(this.detail)
@@ -249,6 +258,34 @@
           this.planParams = await this.$http.get('/wx/itrade/ffplan/apply_param')
         } catch (e) {
           throw new Error(e)
+        }
+      },
+      async queryPlanQuote () {
+        try {
+          let result = await this.$http.get('/wx/itrade/product/plan/quote/check')
+          this.planQuote = result.plan_quote
+          this.quoteCount = result.add_plan_quote
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      newPlan () {
+        if (this.planQuote) {
+          this.toPage({
+            url: '/pages/plan_module/create_plan/main',
+            data: {
+              management_id: this.detail.management_id,
+              item_id: this.detail.id
+            },
+          })
+        } else {
+          this.showModal({
+            title: '提示',
+            content: `您的计划书额度不够!\n温馨提示:保单签单时可扩增计划书额度,1张签单=${this.quoteCount}份计划书`,
+            confirmText: '我知道了',
+            confirmColor: '#306FF4',
+            showCancel: false,
+          })
         }
       },
       createPlan () {

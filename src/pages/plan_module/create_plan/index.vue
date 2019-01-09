@@ -82,8 +82,8 @@
             <mx-picker
               label="description"
               valueKey="value"
-              :disabled="!template.policy_requires || template.policy_requires.length < 1"
-              :data="template.policy_requires"
+              :disabled="!template.policy_demands || template.policy_demands.length < 1"
+              :data="template.policy_demands"
               v-model="form.policy_demand"
             />
           </div>
@@ -101,12 +101,12 @@
           </div>
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
-        <div class="item" v-if="form.extract_flag === 'Y'"><!--v-for="(item, index) in extract" :key="index"-->
+        <div class="item" v-if="form.extract_flag === 'Y'" v-for="(item, index) in extract" :key="index">
           <span class="label">提取年数</span>
           <div class="value">
             <div class="extract">
-              从第 <input type="number" v-model="form.extract_from"> 年
-              到第 <input type="number" v-model="form.extract_to"> 年
+              从第 <input type="number" v-model="item.extract_from"> 年
+              到第 <input type="number" v-model="item.extract_to"> 年
             </div>
           </div>
           <!--<img v-if="false" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
@@ -418,6 +418,9 @@
       </div>
     </div>
 
+    <!--<div class="btn_next" @click="nextStep">
+      <span>下一步</span>
+    </div>-->
     <cover-view class="btn_next" @click="nextStep">
       <cover-view>下一步</cover-view>
     </cover-view>
@@ -495,9 +498,14 @@
     },
 
     async onLoad (params) {
+      this.resetAll()
       if (params.plan_id) {
         this.planId = params.plan_id
         this.disabled = true
+        this.title = '修改计划书'
+        wx.setNavigationBarTitle({
+          title: this.title,
+        })
       }
       if (params.item_id && params.management_id) {
         this.form.supplier_id = parseInt(params.management_id)
@@ -511,12 +519,15 @@
       this.getProduct()
     },
     onUnload () {
-      let d = this.$options.data()
-      Object.keys(d).forEach(key => {
-        this[key] = d[key]
-      })
+      this.resetAll()
     },
     methods: {
+      resetAll () {
+        let d = this.$options.data()
+        Object.keys(d).forEach(key => {
+          this[key] = d[key]
+        })
+      },
       async getDetail () {
         try {
           if (!this.$mp.query.plan_id) return
@@ -548,12 +559,23 @@
           })
           this.form.supplier_id = this.detail.management_id
 
-          this.form.subline_id = parseInt(this.detail.year_period)
-          this.detail.additions.length > 0 && (this.additions = this.detail.additions)
-          this.detail.extracts.length > 0 && (this.extract = this.detail.extracts)
-          this.advancedMedicals = Object.assign({self_pay_id: this.detail.advanced_medical.selfpay_id}, this.detail.advanced_medical)
-          if (this.detail.advanced_medical.item_id) {
-            this.getOptions()
+          if (this.detail.additions && this.detail.additions.length > 0) {
+            this.additions = this.detail.additions
+          }
+          if (this.detail.extracts && this.detail.extracts.length > 0) {
+            this.extract = this.detail.extracts
+          }
+          if (this.detail.advanced_medical) {
+            this.advancedMedicals = Object.assign({self_pay_id: this.detail.advanced_medical.selfpay_id}, this.detail.advanced_medical)
+            this.detail.advanced_medical.item_id && this.getOptions()
+          }
+          if (this.detail.any_health_problem) {
+            this.form.health_problem = this.detail.any_health_problem
+          }
+          if (this.insuranceType === 'HONGKONG_GD') {
+            this.advancedMedicals.security_area = this.detail.security_area
+            this.advancedMedicals.security_level = this.detail.security_level
+            this.advancedMedicals.self_pay_id = this.detail.selfpay_id
           }
           await this.getTemplate()
         } catch (e) {
@@ -609,6 +631,10 @@
         this.form.additional_risk_flag = 'N'
         this.form.extract_flag = 'N'
         this.form.advanced_medical_flag = 'N'
+        let d = this.$options.data()
+        this.advancedMedicals = d.advancedMedicals
+        this.extract = d.extract
+        this.additions = d.additions
       },
       /**
        * 获取产品相关模板
@@ -685,7 +711,7 @@
         })
       },
       fixed (...params) {
-        console.log(params)
+        if (!params[1] && params[1] !== 0) return
         let dot = params[1].indexOf('.')
         let value = dot === 0 ? parseFloat('0' + params[1]) : parseFloat(params[1])
         if (params[2]) {
@@ -838,12 +864,12 @@
                 this.showToast('高端医疗产品不能为空!')
                 return false
               }
-              if (!this.advancedMedicals.security_area) {
-                this.showToast('保障区域不能为空!')
-                return false
-              }
               if (!this.advancedMedicals.security_level) {
                 this.showToast('保障级别不能为空!')
+                return false
+              }
+              if (!this.advancedMedicals.security_area) {
+                this.showToast('保障地区不能为空!')
                 return false
               }
               if (!this.advancedMedicals.self_pay_id) {
@@ -894,17 +920,17 @@
                 params[field.field] = field.value
               }
             }
-            if (!this.advancedMedicals.security_area) {
-              this.showToast('保障区域不能为空!')
-              return false
-            } else {
-              params.security_area = this.advancedMedicals.security_area
-            }
             if (!this.advancedMedicals.security_level) {
               this.showToast('保障级别不能为空!')
               return false
             } else {
               params.security_level = this.advancedMedicals.security_level
+            }
+            if (!this.advancedMedicals.security_area) {
+              this.showToast('保障地区不能为空!')
+              return false
+            } else {
+              params.security_area = this.advancedMedicals.security_area
             }
             if (!this.advancedMedicals.self_pay_id) {
               this.showToast('自付选项不能为空!')
@@ -952,22 +978,10 @@
                 field: 'policy_demand',
               },
               {
-                required: false,
+                required: true,
                 value: this.form.extract_flag,
                 meaning: '是否提取',
                 field: 'extract_flag',
-              },
-              {
-                required: false,
-                value: this.form.extract_from,
-                meaning: '提取开始年数',
-                field: 'extract_from',
-              },
-              {
-                required: false,
-                value: this.form.extract_to,
-                meaning: '提取结束年数',
-                field: 'extract_to',
               },
               {
                 required: false,
@@ -982,6 +996,20 @@
                 return false
               } else {
                 params[field.field] = field.value
+              }
+            }
+            if (this.form.extract_flag === 'Y') {
+              for (let e of this.extract) {
+                if (!e.extract_from && e.extract_from !== 0) {
+                  this.showToast('提取开始年数不能为空!')
+                  return false
+                }
+                if (!e.extract_to && e.extract_to !== 0) {
+                  this.showToast('提取结束年数不能为空!')
+                  return false
+                }
+                params.extract_from = e.extract_from
+                params.extract_to = e.extract_to
               }
             }
             break
@@ -1058,6 +1086,7 @@
     color: $deepColor;
     border-top: 1px solid transparent;
     padding-bottom: 120px;
+    min-height: 100vh;
     .module {
       margin-top: $mid-space;
       padding: 0 $mid-space;
@@ -1154,7 +1183,7 @@
       @include size(100vw, 100px);
       padding: $mid-space / 2 $mid-space;
       box-sizing:border-box;
-      cover-view {
+      span, cover-view {
         display: block;
         border-radius: 15px;
         background: $mainColor;
