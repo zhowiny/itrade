@@ -130,6 +130,11 @@
       // this.queryPlanQuote()
       // this.dataBuryPoint('my_plan_list:init:visit')
     },
+    onShow () {
+      this.queryCount()
+      this.getPlanList()
+      this.queryPlanQuote()
+    },
     onHide () {
       // let d = this.$options.data()
       // Object.keys(d).forEach(key => {
@@ -139,10 +144,10 @@
       this.search.page_num = 1
       this.planList = []
     },
-    onShow () {
-      this.queryCount()
-      this.getPlanList()
-      this.queryPlanQuote()
+    onUnload () {
+      this.isLastPage = false
+      this.search.page_num = 1
+      this.planList = []
     },
     methods: {
       async queryPlanQuote () {
@@ -158,14 +163,15 @@
         this.planCount = await this.$http.get('/wx/itrade/product/plan/count')
       },
       async getPlanList () {
+        console.log(this.isLastPage)
         try {
           if (this.isLastPage) return
           let result = await this.$http.get('/wx/itrade/product/plan/list', this.search)
           this.planList = this.planList.concat(result.list)
           this.isLastPage = result.is_last_page
-          if (result.list.length === 0) {
-            this.showToast('没有更多数据了~')
-          }
+          // if (result.list.length === 0) {
+          //   this.showToast('没有更多数据了~')
+          // }
         } catch (e) {
           throw new Error(e)
         }

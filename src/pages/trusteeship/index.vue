@@ -9,7 +9,8 @@
       </h2>
       <p>提供房产证办理、委托出租、账单查询及代缴、委托出手，房屋价格评估、房屋装修、维修及日常维护等10余种服务项目</p>
     </div>
-    <div @click="toPage('/pages/package/insurance_landing_page/main')">
+    <!--<div @click="toPage('/pages/package/insurance_landing_page/main')">-->
+    <div @click="toPage('/pages/package/invite/main')">
       <img src="/images/bg_trusteeship.png" class="bg">
       <h2>
         <img src="/images/icon_trusteeship1.png" mode="aspectFit" style="width: 65rpx;height:60rpx;">

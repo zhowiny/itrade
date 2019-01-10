@@ -1,8 +1,6 @@
 <template>
   <div class="invest-container">
     <canvas canvas-id="invest" :style='"width: "+canvas.width+"px;height:"+canvas.height+"px"' @longtap="getSetting"></canvas>
-    <!--<div class="save"  @click="getSetting">保存海报</div>
-    <p>点击保存，分享到朋友圈</p>-->
 
     <cover-view class="mask" v-if="showTip">
       <cover-view class="toast">
@@ -12,24 +10,18 @@
           <cover-view class="li">·由于小程序分享限制，请到朋友圈上传图片分享</cover-view>
         </cover-view>
         <cover-view class="btn" @click="showTip = false">继续分享</cover-view>
-        <!--<navigator
-          class="btn"
-          target="miniProgram"
-          open-type="exit"
-          version="release"
-        >继续分享</navigator>-->
       </cover-view>
       <cover-image class="img" src="/images/icon_save.png" mode="aspectFit" style="width: 140rpx; height: 140rpx;"/>
     </cover-view>
     <cover-view class="share">
       <cover-view class="btn">
         <button @click="getSetting">
-          分享到朋友圈
+          保存海报
         </button>
       </cover-view>
       <cover-view class="btn">
-        <button open-type="share" :data-path="'/pages/landing_page/main?introduce_code=' + introduce_code" >
-          分享微信好友
+        <button @click="toMiniProgram">
+          分享C端小程序
         </button>
       </cover-view>
     </cover-view>
@@ -69,7 +61,7 @@
       try {
         let status = await this.$http.post('/wx/itrade/channel/advisor_info', {})
         this.introduce_code = status.code
-        this.qrcode = await this.$http.get('/wx/advisor/mini/qrcode', {
+        this.qrcode = await this.$http.get('/wx/advisor/mini/get/qrcode', {
           path: '/pages/after_service/insurance_landing_page/main?introduce_code=' + this.introduce_code,
           type: 3, // 1 活动 2 B端 3 C端
         })
@@ -82,6 +74,15 @@
       }
     },
     methods: {
+      toMiniProgram () {
+        wx.navigateToMiniProgram({
+          appId: 'wxcd7c5762adbd3cf5',
+          path: `pages/after_service/insurance_landing_page/main?source=itrade_wx&introduce_code=${this.introduce_code}`,
+          extraData: {},
+          envVersion: 'trial',
+          // envVersion: 'develop',
+        })
+      },
       initChat () {
         let {context, width, height} = this.canvas
         let qrcodeSize = 100

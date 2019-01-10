@@ -1,7 +1,7 @@
 <template>
   <div class="invite">
     <img :src="img" mode="widthFix">
-    <div class="invite_customer" @click="toPage('/pages/package/share/main')"> 邀请客户开户 </div>
+    <div class="invite_customer" @click="toPage('/pages/package/share/main')"> 邀请客户托管 </div>
   </div>
 </template>
 

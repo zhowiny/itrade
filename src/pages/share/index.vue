@@ -46,26 +46,10 @@ export default {
       let _this = this
       if (_this.type === 1) {
         // 数据统计
-        this.$auth.dataBuryPoint({
-          eventName: 'invite_consumer:invite_button:click',
-          eventDataId: '',
-          source: this.$root.$mp.query.source,
-          utmSource: this.$root.$mp.query.utm_source,
-          introduceCode: this.introduce_code,
-          shareInvestorId: '',
-          prePage: wx.getStorageSync('from')
-        })
+        this.buryPoint('invite_consumer:invite_button:click')
       } else {
         // 数据统计
-        this.$auth.dataBuryPoint({
-          eventName: 'invite_advisor:send_to_wx_friends:click',
-          eventDataId: '',
-          source: this.$root.$mp.query.source,
-          utmSource: this.$root.$mp.query.utm_source,
-          introduceCode: this.introduce_code,
-          shareInvestorId: '',
-          prePage: wx.getStorageSync('from')
-        })
+        this.buryPoint('invite_advisor:send_to_wx_friends:click')
       }
       wx.navigateToMiniProgram({
         appId: 'wxcd7c5762adbd3cf5',
