@@ -9,13 +9,13 @@
     <!-- <p>小美推荐:</p> -->
     <p class="product_tips">！最多可添加5个，已添加{{add_count}}个，还可添加{{5 - add_count}}个</p>
     <div class="product_list">
-      <div class="product_list_item" v-for="(item, i) in productList" :key="i" @click="selectProduct(item)">
+      <div class="product_list_item" v-for="(item, i) in productList" :key="i">
         <div>
-          <p>{{item.product_name}}</p>
+          <p @click="goProductDetail(item)">{{item.product_name}}</p>
           <!-- <span>{{item.tags}}</span> -->
         </div>
-        <img v-if="!item.checked" src="/images/uncheck.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
-        <img v-else src="/images/checked.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
+        <img v-if="!item.checked" src="/images/uncheck.png" mode="aspectFit" @click="selectProduct(item)" style="width: 48rpx;height:48rpx;">
+        <img v-else src="/images/checked.png" mode="aspectFit" @click="selectProduct(item)" style="width: 48rpx;height:48rpx;">
       </div>
     </div>
     <div class="btn" @click="submit">确认</div>
@@ -101,6 +101,36 @@
           }
         }
       },
+      goProductDetail (data) {
+        switch (data.product_type) {
+          case 2:
+            this.toPage({
+              url: '/pages/estate_details_page/main',
+              data: {
+                product_id: data.product_id,
+                product_type: data.product_type,
+              }
+            })
+            break
+          case 3:
+            this.toPage({
+              url: '/pages/insurance_details_page/main',
+              data: {
+                product_id: data.product_id,
+                product_type: data.product_type,
+              }
+            })
+            break
+          default:
+            this.toPage({
+              url: '/pages/finance_details_page/main',
+              data: {
+                product_id: data.product_id,
+                product_type: data.product_type,
+              }
+            })
+        }
+      }
     },
   }
 </script>
