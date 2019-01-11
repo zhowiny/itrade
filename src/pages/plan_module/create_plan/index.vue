@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <!--<div class="module">
-      <div class="title">
+    <div class="module">
+      <div class="title" @click="toPage('/pages/plan_module/my_plan/main')">
         <img class="title_icon" src="/images/icon_plan.png" mode="aspectFit" style="width:41rpx;height:37rpx;">
         <span class="title_text">我的计划书</span>
         <img class="arrow" src="/images/icon_arrow_product.png">
       </div>
-    </div>-->
+    </div>
     <div class="module">
       <div class="title">
         <img class="title_icon" src="/images/icon_product_info.png" mode="aspectFit" style="width:41rpx;height:37rpx;">
@@ -70,7 +70,7 @@
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
         <div class="item">
-          <span class="label">金额</span>
+          <span class="label">金额($)</span>
           <div class="value">
             <input @change="fixed('amount', form.amount)" v-model="form.amount" type="digit" placeholder-class="placeholder" placeholder="请输入">
           </div>

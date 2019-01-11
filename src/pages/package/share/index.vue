@@ -1,15 +1,14 @@
 <template>
   <div class="invest-container">
-    <canvas canvas-id="invest" :style='"width: "+canvas.width+"px;height:"+canvas.height+"px"' @longtap="getSetting"></canvas>
-
+    <canvas canvas-id="invest" :style='"width: "+canvas.width+"px;height:"+canvas.height+"px;"'></canvas>
     <cover-view class="mask" v-if="showTip">
       <cover-view class="toast">
         <cover-view class="close"  @click="showTip = false">&times;</cover-view>
         <cover-view class="ul">
           <cover-view class="li">·图片已保存到相册</cover-view>
-          <cover-view class="li">·由于小程序分享限制，请到朋友圈上传图片分享</cover-view>
+          <cover-view class="li">·你可从相册选择图片发送给微信好友或朋友圈</cover-view>
         </cover-view>
-        <cover-view class="btn" @click="showTip = false">继续分享</cover-view>
+        <cover-view class="btn" @click="showTip = false">好的</cover-view>
       </cover-view>
       <cover-image class="img" src="/images/icon_save.png" mode="aspectFit" style="width: 140rpx; height: 140rpx;"/>
     </cover-view>
@@ -50,6 +49,7 @@
         qrcode: 'https://filehz.meixinglobal.com/TwoDimensionCodeImage/20190109/d0089f74-c576-4919-b562-009a1f54d349.png',
         backgroundImg: 'https://filehz.meixinglobal.com/20190109/C5A686CD00F19D094FEE1A54D2EF3AA1/WechatIMG2.png',
         showTip: false,
+        img: '',
       }
     },
     computed: {
@@ -72,6 +72,10 @@
       } catch (e) {
         throw new Error(e)
       }
+    },
+    onUnload () {
+      let d = this.$options.data()
+      this.backgroundImg = d.backgroundImg
     },
     methods: {
       toMiniProgram () {
@@ -96,6 +100,13 @@
           canvasId: 'invest',
           actions: this.canvas.context.getActions()
         })
+        // wx.canvasToTempFilePath({
+        //   canvasId: 'invest',
+        //   success: (res) => {
+        //     this.img = res.tempFilePath
+        //     console.log(this.img)
+        //   }
+        // })
       },
       /**
        * 下载图片
@@ -105,7 +116,6 @@
         images = images.filter(i => i)
         let temp = []
         let count = 0
-        console.log(images)
         this.showLoading({title: '加载中'})
         return new Promise((resolve, reject) => {
           images.forEach((item, index) => {
@@ -145,12 +155,10 @@
                 // destHeight: this.canvas.height,
                 canvasId: 'invest',
                 success: (res) => {
-                  console.log(res.tempFilePath)
                   wx.saveImageToPhotosAlbum({
                     filePath: res.tempFilePath,
                     success: (res) => {
                       this.buryPoint('invite_advisor:send_to_wx_zone:click')
-                      console.log(res)
                       // wx.showToast({title: '保存成功'})
                       this.showTip = true
                     },
@@ -170,11 +178,9 @@
         wx.getSetting({
           success: (res) => {
             if (!res.authSetting['scope.writePhotosAlbum']) {
-              console.log(res)
               wx.authorize({
                 scope: 'scope.writePhotosAlbum',
                 success (res) {
-                  console.log(this)
                   this.saveImg()
                 },
                 fail (err) {

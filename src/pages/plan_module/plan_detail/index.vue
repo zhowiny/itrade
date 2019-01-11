@@ -20,13 +20,17 @@
         <i v-if="form.plan_status === 'PLN_CANCELLED'">取消时间: {{form.cancel_date}}</i>
       </div>
       <!--成功才显示-->
-      <div
-        v-if="form.plan_status === 'COMPLETED'"
-        class="preview" @click="preview"
-      >
-        <img src="/images/icon_preview.png" mode="aspectFit" style="width:33rpx;height:25rpx;">
-        <span>点击预览</span>
+      <div class="operate" v-if="form.plan_status === 'COMPLETED'">
+        <div class="preview" @click="preview">
+          <img src="/images/icon_preview.png" mode="aspectFit" style="width:33rpx;height:25rpx;">
+          <span>点击预览</span>
+        </div>
+        <button open-type="share" class="preview share">
+          <img src="/images/icon_share_1.png" mode="aspectFit" style="width:33rpx;height:25rpx;">
+          <span>点击分享</span>
+        </button>
       </div>
+
     </div>
     <div style="order:0;" class="module" :class="{edit: view.productEditable}">
       <div class="title">
@@ -74,7 +78,7 @@
           <img class="arrow" src="/images/icon_arrow_product.png">
         </div>
         <div class="item">
-          <span class="label">金额</span>
+          <span class="label">金额($)</span>
           <div class="value">
             <input :disabled="!view.productEditable" v-model="form.amount" type="text" placeholder-class="placeholder" placeholder="请输入">
           </div>
@@ -928,9 +932,25 @@
           throw new Error(e)
         }
       },
+      toMiniProgram () {
+        let item = this.form.file
+        wx.navigateToMiniProgram({
+          appId: 'wxcd7c5762adbd3cf5',
+          path: `/pages/investment_report_file/main?fileType=${item.file_name}&source=itrade_wx&title=${item.file_name}&filePath=${item.file_url}`,
+          envVersion: 'trial',
+        })
+      },
       change (e) {
         console.log(e, 'eeeeeee')
       },
+    },
+    onShareAppMessage (res) {
+      let item = this.form.file
+      return {
+        title: item.file_name,
+        imageUrl: '/images/icon_pdf.png',
+        path: `/pages/share_file/main?fileType=${item.file_name}&filePath=${item.file_url}&title=${item.file_name}`,
+      }
     },
     onUnload () {
       Object.keys(this.view).forEach(key => {
@@ -940,7 +960,7 @@
     },
     components: {
       mxPicker,
-    }
+    },
   }
 </script>
 
@@ -980,6 +1000,19 @@
       flex-shrink:0;
       border-radius: 4px;
       font-size: 24px;
+      &:last-child {
+        margin-top: 5px;
+        background: transparentize($mainColor, .8);
+        color: $mainColor;
+      }
+      &.share {
+        border:none;
+        line-height: 0;
+        padding: 0;
+        &:after, &:before {
+          content: normal;
+        }
+      }
     }
   }
 

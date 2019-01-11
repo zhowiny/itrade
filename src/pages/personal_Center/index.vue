@@ -21,7 +21,9 @@
           <p>文章收藏</p>
         </li>
         <li @click="goPage('/pages/plan_module/my_plan/main')">
-          <img src="/images/Prospectus.png" alt="">
+          <wx-badge :value="this.planCount.completed + this.planCount.review" :isHidden="this.planCount.completed + this.planCount.review <= 0" position="top:30rpx;right:-5rpx">
+            <img src="/images/Prospectus.png" alt="">
+          </wx-badge>
           <p>计划书</p>
         </li>
         <li @click="goPage({url: '/pages/my_Order/main'})">
@@ -68,6 +70,7 @@
 </template>
 
 <script>
+  import wxBadge from '@/components/badge'
   export default {
     data () {
       return {
@@ -82,6 +85,7 @@
         path: `/pages/open_account/open_account/main?source=sharefromB&introduce_code=`,
         loginStatus: false,
         introduce_code: '',
+        planCount: {},
       }
     },
 
@@ -117,10 +121,18 @@
         this.class_name = status.class_name
         this.deliverData.id = status.channel_id
         this.deliverData.id = status.id
+
+        this.queryCount()
+      },
+      async queryCount () {
+        this.planCount = await this.$http.get('/wx/itrade/product/plan/count')
       },
     },
 
     created () {
+    },
+    onShow () {
+      this.queryCount()
     },
     async mounted (opsid) {
       this.init()
@@ -139,6 +151,9 @@
       // 停止下拉刷新
       await this.init()
       wx.stopPullDownRefresh()
+    },
+    components: {
+      wxBadge,
     },
   }
 </script>
@@ -218,8 +233,11 @@
     .invitation {
       @include flex(space-around);
       @include size(100vw, auto);
-      padding: $big-space * 2 $middle-space;
+      padding: $big-space * 2 0;
       text-align: center;
+      li {
+        flex: 1;
+      }
     }
   }
 

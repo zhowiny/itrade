@@ -34,7 +34,7 @@
            :key="index" @click="toPage({url: '/pages/plan_module/plan_detail/main', data: {planId: item.plan_id}})"
       >
         <div class="title">
-          <h3>{{item.item_name}}</h3>
+          <h3>{{item.item_name}}/年期:{{item.subline_name || '---'}}</h3>
           <span class="status"  :class="'state_' + statusColorList[item.status]">{{item.status}}</span>
         </div>
         <div class="content">
@@ -43,8 +43,8 @@
             <p>{{item.insurant_name || '---'}}</p>
           </div>
           <div>
-            <p>性别</p>
-            <p>{{item.gender || '---'}}</p>
+            <p>性别/年龄</p>
+            <p>{{item.gender || '---'}}/{{item.age ? item.age : item.age === 0 ? '0' : '---'}}</p>
           </div>
           <div>
             <p>是否吸烟</p>
