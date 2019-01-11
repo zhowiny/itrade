@@ -26,7 +26,7 @@
   export default {
     data () {
       return {
-        title: '添加产品',
+        title: '产品库',
         productList: [],
         selectedProduct: [],
         productName: '',

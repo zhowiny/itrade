@@ -1,78 +1,91 @@
 <template>
   <div class="article_container">
-    <div class="article_title" @click="favor">
-      <h2>{{article.title}}</h2>
-      <img v-if="article.is_favor" src="/images/icon_collection_active.png" mode="aspectFit" style="width: 44rpx;height:44rpx;">
-      <img v-else src="/images/icon_collection.png" mode="aspectFit" style="width: 44rpx;height:44rpx;">
-    </div>
-    <p class="article_pv">{{article.created_at}} | 阅读量: {{article.pv}}</p>
-    <div class="article_comment" v-if="article.comments">
-      <p>小美短评: <span>(该短评内容不会显示在分享后的页面中)</span> <img @click="copy(article)" src="/images/icon_copy1.png" mode="aspectFit" style="width: 44rpx;height:44rpx;"></p>
-      <div>{{article.comments}}</div>
-    </div>
-    <div class="article_content">
-      <wx-parse :content="article.content" :image-prop="{mode: 'widthFix'}"  className="wx_parse_box" />
-    </div>
-    <div class="article_product">
-      <!-- <div class="article_product-add" @click="toPage({url: '/pages/choose_product/main', type: 'redirectTo', data: {article_id: article_id, product: product_id_list_str, introduce_code: introduce_code}})" v-if="productArr.length === 0">
-        <span>添加产品推荐</span>
-        <img src="/images/icon_arrow_product.png" mode="aspectFit" style="width:15rpx;height:28rpx;">
+    <scroll-view scroll-y :scroll-into-view="viewID">
+      <div class="article_title" @click="favor">
+        <h2>{{article.title}}</h2>
+        <img v-if="article.is_favor" src="/images/icon_collection_active.png" mode="aspectFit" style="width: 44rpx;height:44rpx;">
+        <img v-else src="/images/icon_collection.png" mode="aspectFit" style="width: 44rpx;height:44rpx;">
       </div>
-      <div class="article_product-del" v-else>
-        <span>产品推荐</span>
-      </div> -->
-      <div class="article_product-text">
-        <span class="article_product-default">产品推荐</span>
-        <span class="article_product-return" @click="defaultList">恢复默认推荐</span>
-        <span class="article_product-del" v-if="status" @click="deleteProduct()">确定删除</span>
-        <span class="article_product-del" v-if="!status" @click="status=true">删除</span>
-        <span class="article_product-add" @click="addProduct">添加</span>
+      <p class="article_pv">{{article.created_at}} | 阅读量: {{article.pv}}</p>
+      <div class="article_comment" v-if="article.comments">
+        <p>小美短评: <span>(该短评内容不会显示在分享后的页面中)</span> <img @click="copy(article)" src="/images/icon_copy1.png" mode="aspectFit" style="width: 44rpx;height:44rpx;"></p>
+        <div>{{article.comments}}</div>
       </div>
-      <p v-if="show_tips" class="article_tips">！最多可添加5个，数量已达5个，可删除后再添加</p>
-      <div>
-        <product-list :data="productArr" :editor="status" :articleProduct="true" @clickSelect="delData" @clickProduct="handleClick"/>
+      <div class="article_content">
+        <wx-parse :content="article.content" :image-prop="{mode: 'widthFix'}"  className="wx_parse_box" />
       </div>
-      <!--<<div class="article_product-item"
-           v-for="(item, index) in productArr"
-           :key="index"
-      >
-        <div class="article_product-item_cnt">
-          <div class="article_product-item_title" @click="handleClick(item, index)">
-            <h2>{{item.name}}</h2>
-            <span>{{item.tags}}</span>
-          </div>
-          <div class="article_product-item_detail" @click="handleClick(item, index)">
-            <div>
-              <p>{{item.return_rate}}</p>
-              <span>预计年化</span>
-            </div>
-            <div>
-              <p>{{item.invest_term}}</p>
-              <span>投资期限</span>
-            </div>
-            <div>
-              <p>{{item.minimum_invest_amount}}</p>
-              <span>佣金比例</span>
-            </div>
-          </div>
-          <div class="article_product-item_del" @click="deleteProduct(item)">删除</div>
+      <div class="article_product">
+        <!-- <div class="article_product-add" @click="toPage({url: '/pages/choose_product/main', type: 'redirectTo', data: {article_id: article_id, product: product_id_list_str, introduce_code: introduce_code}})" v-if="productArr.length === 0">
+          <span>添加产品推荐</span>
+          <img src="/images/icon_arrow_product.png" mode="aspectFit" style="width:15rpx;height:28rpx;">
         </div>
-        div class="article_product-item_del" @click="deleteProduct(item)">删除</div>
-      </div>-->
+        <div class="article_product-del" v-else>
+          <span>产品推荐</span>
+        </div> -->
+        <div class="article_product-text" id="recommend">
+          <span class="article_product-default">产品推荐</span>
+          <span class="article_product-return" v-if="article.is_use_recommend_product" @click="defaultList">恢复默认推荐</span>
+          <span class="article_product-del" v-if="status" @click="status=false" style="flex:2">取消</span>
+          <span class="article_product-del" v-if="status" @click="deleteProduct()">确定删除</span>
+          <span class="article_product-del" v-if="!status && productArr && productArr.length > 0" @click="status=true">删除</span>
+          <span class="article_product-add" @click="addProduct">添加</span>
+        </div>
+        <p v-if="show_tips" class="article_tips">！最多可添加5个，数量已达5个，可删除后再添加</p>
+        <div v-if="productArr && productArr.length > 0">
+          <product-list :data="productArr" :editor="status" :articleProduct="true" @clickSelect="delData" @clickProduct="handleClick"/>
+        </div>
+        <div class="article_product-blank" v-else @click="addProduct">
+          <img src="/images/add_icon.png" alt="" class="add-icon">
+          <p class="add-title">添加产品</p>
+          <p>添加推荐产品后再分享更容易获客</p>
+        </div>
+        <!--<<div class="article_product-item"
+            v-for="(item, index) in productArr"
+            :key="index"
+        >
+          <div class="article_product-item_cnt">
+            <div class="article_product-item_title" @click="handleClick(item, index)">
+              <h2>{{item.name}}</h2>
+              <span>{{item.tags}}</span>
+            </div>
+            <div class="article_product-item_detail" @click="handleClick(item, index)">
+              <div>
+                <p>{{item.return_rate}}</p>
+                <span>预计年化</span>
+              </div>
+              <div>
+                <p>{{item.invest_term}}</p>
+                <span>投资期限</span>
+              </div>
+              <div>
+                <p>{{item.minimum_invest_amount}}</p>
+                <span>佣金比例</span>
+              </div>
+            </div>
+            <div class="article_product-item_del" @click="deleteProduct(item)">删除</div>
+          </div>
+          div class="article_product-item_del" @click="deleteProduct(item)">删除</div>
+        </div>-->
 
-      <!-- <div class="article_product-update" @click="toPage({url: '/pages/choose_product/main', type: 'redirectTo', data: {article_id: article_id, product: product_id_list_str, introduce_code: introduce_code}})"  v-if="productArr.length > 0">
-        <span>更改产品推荐</span>
-        <img src="/images/icon_arrow_product.png" mode="aspectFit" style="width:15rpx;height:28rpx;">
+        <!-- <div class="article_product-update" @click="toPage({url: '/pages/choose_product/main', type: 'redirectTo', data: {article_id: article_id, product: product_id_list_str, introduce_code: introduce_code}})"  v-if="productArr.length > 0">
+          <span>更改产品推荐</span>
+          <img src="/images/icon_arrow_product.png" mode="aspectFit" style="width:15rpx;height:28rpx;">
+        </div> -->
+      </div>
+      <!-- + '&share_id=' + article.shared_advisor_code + '&k=' + k-->
+      <div class="share_btn" @click="toMiniProgram"> 分享 </div>
+      <!-- <navigator hover-class="none" class="share_btn"
+                open-type="navigate" app-id="wxcd7c5762adbd3cf5"
+                :path="'/pages/article/main?source=itrade_wx&article_id=' + article.id + '&introduce_code=' + article.shared_advisor_code + '&share_id=' + article.share_id"
+                target="miniProgram"
+                version="trial"
+      >分享</navigator> -->
+      <!-- <div class="recommend-fixed" @click="scrollToRecommend">
+        <p>产品</p>
+        <p>推荐</p>
+        <img src="/images/arrow_down_icon.png" alt="">
       </div> -->
-    </div>
-    <!-- + '&share_id=' + article.shared_advisor_code + '&k=' + k-->
-    <div class="share_btn" @click="toMiniProgram"> 分享 </div>
-    <!-- <navigator hover-class="none" class="share_btn"
-               open-type="navigate" app-id="wxcd7c5762adbd3cf5"
-               :path="'/pages/article/main?source=itrade_wx&article_id=' + article.id + '&introduce_code=' + article.shared_advisor_code + '&share_id=' + article.share_id"
-               target="miniProgram"
-               version="trial"
-    >分享</navigator> -->
+    </scroll-view>
   </div>
 </template>
 
@@ -93,7 +106,8 @@
         product_id_list_str: '',
         edit: false,
         status: false,
-        show_tips: false
+        show_tips: false,
+        viewID: ''
       }
     },
     async onLoad (params) {
@@ -310,6 +324,12 @@
           }
           this.getArticleList()
         })
+      },
+      scrollToRecommend () {
+        console.log('scrollToRecommend')
+        this.viewID = 'recommend'
+        // let val = document.getElementById('recommend')
+        // console.log(val, 'scrollToRecommend')
       }
      /* handleStart (e) {
         console.log(e)
@@ -409,7 +429,7 @@
       &-text{
         height: 98px;
         background: #fff;
-        @include flex(flex-start);
+        @include flex(space-between);
         padding: 0 21px;
         margin-bottom: 22px;
       }
@@ -419,6 +439,7 @@
         font-weight: bold;
       }
       &-return{
+        flex: 1;
         color: #969696;
         font-size: 24px;
         margin-left: 30px;
@@ -433,6 +454,21 @@
         font-size: 26px;
         color: #306FF4;
         margin-left: 30px;
+      }
+      &-blank{
+        font-size: 24px;
+        text-align: center;
+        background: #fff;
+        padding: 52px 0 63px;
+        .add-icon{
+          width: 70px;
+          height: 70px;
+        }
+        .add-title{
+          font-size: 28px;
+          font-weight: bold;
+          margin: 30px 0 20px;
+        }
       }
       // &-item {
       //   @include size(900px, auto);
@@ -501,6 +537,30 @@
       // line-height: 62px;
       padding-left: 20px;
       margin-bottom: 22px;
+    }
+  }
+  .recommend-fixed{
+    position: fixed;
+    bottom: 120px;
+    right: 40px;
+    width: 120px;
+    height: 120px;
+    @include flex(space-around);
+    flex-direction: column;
+    color: #fff;
+    font-size: 26px;
+    text-align: center;
+    border-radius: 50%;
+    background: #306FF4;
+    p:first-child{
+      margin-top: 12px;
+    }
+    p:nth-child(2){
+      // margin-bottom: 4px;
+    }
+    img{
+      width: 18px;
+      height: 14px;
     }
   }
 </style>

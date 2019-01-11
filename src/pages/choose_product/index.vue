@@ -14,13 +14,13 @@
     </div>
     <p class="product_tips">！最多可添加5个，已添加{{add_count}}个，还可添加{{5 - add_count}}个</p>
     <div class="product_list">
-      <div class="product_list_item" v-for="(item, i) in productList" :key="i" @click="selectProduct(item)">
+      <div class="product_list_item" v-for="(item, i) in productList" :key="i">
         <div>
-          <p>{{item.product_name}}</p>
+          <p @click="goProductDetail(item)">{{item.product_name}}</p>
           <!-- <span>{{item.tags}}</span> -->
         </div>
-        <img v-if="!item.checked" src="/images/uncheck.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
-        <img v-else src="/images/checked.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
+        <img @click="selectProduct(item)" v-if="!item.checked" src="/images/uncheck.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
+        <img @click="selectProduct(item)" v-else src="/images/checked.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
       </div>
     </div>
     <div class="btn" @click="submit">确认</div>
@@ -31,7 +31,7 @@
   export default {
     data () {
       return {
-        title: '添加产品',
+        title: '产品库',
         productList: [],
         selectedProduct: [],
         productName: '',
@@ -65,7 +65,7 @@
     methods: {
       async getList (tagId, name) {
         try {
-          this.selectedProduct = []
+          // this.selectedProduct = []
           let list = await this.$http.get('/wx/itrade/article/get/listSelectProduct', {
             article_id: this.article_id,
             page_num: 1,
@@ -74,7 +74,7 @@
             tag_id: tagId,
             search_param: name
           })
-          this.productList = list.product_list
+          this.productList = this.compareId(list.product_list, this.selectedProduct)
           console.log(this.productList)
         } catch (e) {
           throw new Error(e)
@@ -139,6 +139,58 @@
         })
         this.product_tag[index].active = true
         this.getList(value.tag_id, '')
+      },
+      compareId (list, ids) {
+        console.log(ids, 'compareId ids')
+        if (list instanceof Array) {
+        } else {
+          return list
+        }
+        if (ids instanceof Array) {
+        } else {
+          return list
+        }
+        if (ids.length < 1 || list.length < 1) return list
+
+        for (var i = list.length - 1; i >= 0; i--) {
+          ids.map((v, k) => {
+            if (list[i].product_id === v.product_id) {
+              list[i].checked = true
+            }
+          })
+        }
+        console.log(list, 'compareIdlist')
+        return list
+      },
+      goProductDetail (data) {
+        switch (data.product_type) {
+          case 2:
+            this.toPage({
+              url: '/pages/estate_details_page/main',
+              data: {
+                product_id: data.product_id,
+                product_type: data.product_type,
+              }
+            })
+            break
+          case 3:
+            this.toPage({
+              url: '/pages/insurance_details_page/main',
+              data: {
+                product_id: data.product_id,
+                product_type: data.product_type,
+              }
+            })
+            break
+          default:
+            this.toPage({
+              url: '/pages/finance_details_page/main',
+              data: {
+                product_id: data.product_id,
+                product_type: data.product_type,
+              }
+            })
+        }
       }
     },
   }
@@ -176,7 +228,7 @@
       float: left;
     }
     &_li{
-      min-width: 120px;
+      min-width: 160px;
       text-align: center;
       line-height: 80px;
       margin-right: 20px;
