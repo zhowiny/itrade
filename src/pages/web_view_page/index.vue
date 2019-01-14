@@ -23,7 +23,7 @@ export default {
   },
   async mounted () {
     this.url = await wx.getStorageSync('webViewUrl')
-    if (this.$common.version === '1.0.1') {
+    if (!wx.mx_dev) {
       this.url = this.url.replace('https://weixin.fortunefed.com/#/', 'https://weixin.fortunefed.com/prod/#/')
     }
     console.log(this.url)
