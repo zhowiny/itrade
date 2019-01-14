@@ -25,7 +25,7 @@
           <img src="/images/icon_preview.png" mode="aspectFit" style="width:33rpx;height:25rpx;">
           <span>点击预览</span>
         </div>
-        <button open-type="share" class="preview share">
+        <button @click="toMiniProgram" class="preview share">
           <img src="/images/icon_share_1.png" mode="aspectFit" style="width:33rpx;height:25rpx;">
           <span>点击分享</span>
         </button>
@@ -944,14 +944,14 @@
         console.log(e, 'eeeeeee')
       },
     },
-    onShareAppMessage (res) {
-      let item = this.form.file
-      return {
-        title: item.file_name,
-        imageUrl: '/images/icon_pdf.png',
-        path: `/pages/share_file/main?fileType=${item.file_name}&filePath=${item.file_url}&title=${item.file_name}`,
-      }
-    },
+    // onShareAppMessage (res) {
+    //   let item = this.form.file
+    //   return {
+    //     title: item.file_name,
+    //     imageUrl: '/images/icon_pdf.png',
+    //     path: `/pages/share_file/main?fileType=${item.file_name}&filePath=${item.file_url}&title=${item.file_name}`,
+    //   }
+    // },
     onUnload () {
       Object.keys(this.view).forEach(key => {
         this.view[key] = false

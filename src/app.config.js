@@ -56,6 +56,7 @@ module.exports = {
         'insurance_landing_page/main', // 保单分享页
         'invite/main', // 保单邀请页
         'share/main', // 保单分享页
+        'order_commissions/main', // 订单佣金明细
       ]
     },
     {

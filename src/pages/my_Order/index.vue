@@ -160,24 +160,32 @@
           },
         ],
         list: [],
+        temp: [],
+        page: 1,
+        pageSize: 10,
       }
     },
 
     methods: {
-      productfun (product, order, time) {
+      async productfun (product, order, time) {
         let params = {
           order_source: 'sale',
           order_type: product,
           order_status: order,
           time_kind: time,
         }
-        this.$http.get('/wx/itrade/order/list', params).then(res => {
-          if (parseInt(params.order_type) === 3) {
-            this.list = res.global_order_resp_vos.filter(item => item.from_clb)
+        try {
+          let result = await this.$http.get('/wx/itrade/order/list', params)
+          if (parseInt(product) === 3) {
+            this.temp = result.global_order_resp_vos.filter(item => item.from_clb)
           } else {
-            this.list = res.global_order_resp_vos
+            this.temp = result.global_order_resp_vos
           }
-        })
+          this.page = 1
+          this.list = this.temp.slice(0, 10)
+        } catch (e) {
+          throw new Error(e)
+        }
       },
       topage (orderNumber, orderType) {
         this.toPage({url: '/pages/order_detail_other/main', data: {order_number: orderNumber, order_type: orderType}})
@@ -219,14 +227,23 @@
         this.productfun(this.product, this.order, this.time)
       }
     },
-
+    onReachBottom () {
+      console.log(this.page, this.pageSize, this.list)
+      let pageCount = this.temp.length % this.pageSize === 0 ? this.temp.length / this.pageSize : Math.ceil(this.temp.length / this.pageSize)
+      if (this.page === pageCount) {
+        this.showToast('已经到底了!')
+        return
+      }
+      this.page++
+      this.list = this.temp.slice(0, this.page * this.pageSize)
+    },
     created () {
     },
     components: {
       mxSelect,
     },
     async mounted () {
-      this.productfun(this.product, this.order, this.time)
+      await this.productfun(this.product, this.order, this.time)
       this.$auth.dataBuryPoint({
         eventName: 'order_list:init:visit',
         eventDataId: '',
