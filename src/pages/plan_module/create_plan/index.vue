@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="module">
-      <div class="title" @click="toPage('/pages/plan_module/my_plan/main')">
+    <div class="module" v-if="disabled && !planId">
+      <div class="title" @click="toPage('/pages/plan_module/my_plan/main?item_id=' + form.item_id)">
         <img class="title_icon" src="/images/icon_plan.png" mode="aspectFit" style="width:41rpx;height:37rpx;">
         <span class="title_text">我的计划书</span>
         <img class="arrow" src="/images/icon_arrow_product.png">
@@ -289,7 +289,7 @@
         </div>
       </div>
     </div>
-    
+
 
     <div
       class="module"

@@ -58,7 +58,7 @@
         <div class="time">提交时间: {{item.request_date || '---'}}</div>
       </div>
     </div>
-    <div class="btn_new" @click="newPlan">
+    <div class="btn_new" @click="newPlan" v-if="!search.product_id">
       <span>+ 新建计划书</span>
     </div>
 
@@ -147,6 +147,7 @@
     onUnload () {
       this.isLastPage = false
       this.search.page_num = 1
+      this.search.product_id = ''
       this.planList = []
     },
     methods: {
