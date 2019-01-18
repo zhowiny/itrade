@@ -590,14 +590,16 @@ export default {
           'production_age_limit': this.sublineName,
           'insurant_birth': this.insurance.insurant_birth,
         }
+        wx.hideErrorTip = true
         let result = await this.$http.post('/wx/itrade/ff/product/permium/calculate', data)
         if (result && result.first_stage_permium) {
           this.showConfirm = true
           this.amount = result.first_stage_permium
         }
+        wx.hideErrorTip = false
       } catch (e) {
+        wx.hideErrorTip = false
         if (e.msg === '计算产品保费失败') {
-          this.hideToast()
           this.submit()
         }
         console.error(e)

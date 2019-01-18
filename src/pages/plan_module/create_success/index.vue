@@ -7,7 +7,7 @@
       </p>
       <p v-else>
         计划书申请已提交成功 <br>
-        我们会在<b>1-3</b>个工作日给您处理 <br>
+        我们会在<b>1-2</b>个工作日给您处理 <br>
         请耐心等候
       </p>
       <div v-if="status === 'MATCH'" class="btn" @click="toPage({url: '/pages/plan_module/plan_detail/main', data: {planId: planId}})">查看文件</div>

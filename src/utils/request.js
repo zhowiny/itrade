@@ -39,7 +39,7 @@ fly.interceptors.response.use((response) => {
   if (response.data.code === 1 && response.data.msg === 'success') {
     return response.data.body
   }
-  wx.showToast({
+  !wx.hideErrorTip && wx.showToast({
     title: response.data.msg,
     icon: 'none',
     duration: 3000,

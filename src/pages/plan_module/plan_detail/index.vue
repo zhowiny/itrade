@@ -12,7 +12,7 @@
 
       <div class="status">
         <span>{{form.plan_status_name}}</span>
-        <p v-if="form.plan_status === 'PROCESSING'">计划书申请提交成功，我们会在1-3个工作日给您处理，请耐心等待</p>
+        <p v-if="form.plan_status === 'PROCESSING'">计划书申请提交成功，我们会在1-2个工作日给您处理，请耐心等待</p>
         <p v-else>{{form.description}}</p>
         <i v-if="form.plan_status === 'REVIEW'">复查时间: {{form.review_date}}</i>
         <i v-if="form.plan_status === 'PROCESSING'">提交时间: {{form.request_date}}</i>
@@ -316,7 +316,7 @@
           <img v-if="view.productEditable && index > 0" src="/images/icon_sub.png" style="width: 39rpx;height: 39rpx;">
           <img v-if="view.productEditable && index === 0" src="/images/icon_add.png" style="width: 39rpx;height: 39rpx;">
         </div>
-        <div class="item">
+        <div class="item"  v-if="form.extract_method !== 'MA'">
           <span class="label">提取金额</span>
           <div class="value">
             <input :disabled="!view.productEditable" v-model="item.extract_amount" type="text" placeholder-class="placeholder" placeholder="请输入">
