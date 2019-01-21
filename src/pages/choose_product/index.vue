@@ -1,18 +1,21 @@
 <template>
   <div class="container">
-    <div class="search">
-      <div class="search_bar">
-        <img src="/images/icon_search.png" mode="aspectFit" style="width:30rpx;height:30rpx;">
-        <input type="text" placeholder="搜索产品、详情、资管方..." @input="goSearch()" v-model="productName" @click="goSearch()">
+    <div class="fixed">
+      <div class="search">
+        <div class="search_bar">
+          <img src="/images/icon_search.png" mode="aspectFit" style="width:30rpx;height:30rpx;">
+          <input type="text" placeholder="搜索产品、详情、资管方..." @input="goSearch()" v-model="productName" @click="goSearch()">
+        </div>
       </div>
+      <!-- <p>小美推荐:</p> -->
+      <div class="product_top">
+        <ul class="product_top_ul">
+          <li class="product_top_li" :class="item.active ? 'active' : ''" v-for="(item, index) in product_tag" :key="index" @click="changeTagProduct(index)">{{item.name}}</li>
+        </ul>
+      </div>
+      <p class="product_tips">！最多可添加5个，已添加{{add_count}}个，还可添加{{5 - add_count}}个</p>
     </div>
-    <!-- <p>小美推荐:</p> -->
-    <div class="product_top">
-      <ul class="product_top_ul">
-        <li class="product_top_li" :class="item.active ? 'active' : ''" v-for="(item, index) in product_tag" :key="index" @click="changeTagProduct(index)">{{item.name}}</li>
-      </ul>
-    </div>
-    <p class="product_tips">！最多可添加5个，已添加{{add_count}}个，还可添加{{5 - add_count}}个</p>
+    
     <div class="product_list">
       <div class="product_list_item" v-for="(item, i) in productList" :key="i">
         <div>
@@ -197,6 +200,12 @@
 </script>
 <style lang="scss" scoped>
 .container {
+  .fixed{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
   .search {
     background: #fff;
     padding: $middle-space;
@@ -245,8 +254,10 @@
     line-height: 72px;
     padding: 0;
     padding-left: 20px;
+    background: $backgroundColor;
   }
   .product_list {
+    padding-top: 280px;
     padding-bottom: 80px;
     &_item {
       background: #fff;

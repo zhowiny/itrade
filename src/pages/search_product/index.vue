@@ -1,13 +1,16 @@
 <template>
   <div class="container">
-    <div class="search">
-      <div class="search_bar">
-        <img src="/images/icon_search.png" mode="aspectFit" style="width:30rpx;height:30rpx;">
-        <input type="text" placeholder="搜索产品、详情、资管方..." @input="getList(productName)" v-model="productName">
+    <div class="fixed">
+      <div class="search">
+        <div class="search_bar">
+          <img src="/images/icon_search.png" mode="aspectFit" style="width:30rpx;height:30rpx;">
+          <input type="text" placeholder="搜索产品、详情、资管方..." @input="getList(productName)" v-model="productName">
+        </div>
       </div>
+      <!-- <p>小美推荐:</p> -->
+      <p class="product_tips">！最多可添加5个，已添加{{add_count}}个，还可添加{{5 - add_count}}个</p>
     </div>
-    <!-- <p>小美推荐:</p> -->
-    <p class="product_tips">！最多可添加5个，已添加{{add_count}}个，还可添加{{5 - add_count}}个</p>
+    
     <div class="product_list">
       <div class="product_list_item" v-for="(item, i) in productList" :key="i">
         <div>
@@ -136,6 +139,12 @@
 </script>
 <style lang="scss" scoped>
 .container {
+  .fixed{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
   .search {
     background: #fff;
     padding: $middle-space;
@@ -162,9 +171,11 @@
     line-height: 72px;
     padding: 0;
     padding-left: 20px;
+    background: $backgroundColor;
   }
   .product_list {
     background: #fff;
+    padding-top: 190px;
     padding-bottom: 80px;
     &_item {
       border-bottom: 1px solid $borderColor;
