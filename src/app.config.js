@@ -43,6 +43,7 @@ module.exports = {
     'pages/new_prospectus/main', // 新建保险计划书
     'pages/article/main', // 资讯详情
     'pages/choose_product/main', // 选择产品
+    'pages/search_product/main', // 搜索产品
     'pages/plan/main', // 我的计划书
     'pages/share_file/main', // 分享文件页
     'pages/trusteeship/main', // 托管服务

@@ -4,15 +4,10 @@
       <div class="search">
         <div class="search_bar">
           <img src="/images/icon_search.png" mode="aspectFit" style="width:30rpx;height:30rpx;">
-          <input type="text" placeholder="搜索产品、详情、资管方..." @input="goSearch()" v-model="productName" @click="goSearch()">
+          <input type="text" placeholder="搜索产品、详情、资管方..." @input="getList(productName)" v-model="productName">
         </div>
       </div>
       <!-- <p>小美推荐:</p> -->
-      <div class="product_top">
-        <ul class="product_top_ul">
-          <li class="product_top_li" :class="item.active ? 'active' : ''" v-for="(item, index) in product_tag" :key="index" @click="changeTagProduct(index)">{{item.name}}</li>
-        </ul>
-      </div>
       <p class="product_tips">！最多可添加5个，已添加{{add_count}}个，还可添加{{5 - add_count}}个</p>
     </div>
     
@@ -22,8 +17,8 @@
           <p @click="goProductDetail(item)">{{item.product_name}}</p>
           <!-- <span>{{item.tags}}</span> -->
         </div>
-        <img @click="selectProduct(item)" v-if="!item.checked" src="/images/uncheck.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
-        <img @click="selectProduct(item)" v-else src="/images/checked.png" mode="aspectFit" style="width: 48rpx;height:48rpx;">
+        <img v-if="!item.checked" src="/images/uncheck.png" mode="aspectFit" @click="selectProduct(item)" style="width: 48rpx;height:48rpx;">
+        <img v-else src="/images/checked.png" mode="aspectFit" @click="selectProduct(item)" style="width: 48rpx;height:48rpx;">
       </div>
     </div>
     <div class="btn" @click="submit">确认</div>
@@ -38,46 +33,33 @@
         productList: [],
         selectedProduct: [],
         productName: '',
-        add_count: '',
         article_id: '',
-        introduce_code: '',
         share_id: '',
-        product_tag: [
-          {name: '系统推荐', tag_id: -1, active: true},
-          {name: '爆款', tag_id: 11, active: false},
-          {name: '固收理财', tag_id: 1, active: false},
-          {name: '房地产基金', tag_id: 2, active: false},
-          {name: '对冲/另类', tag_id: 3, active: false},
-          {name: '独角兽', tag_id: 4, active: false},
-          {name: '家族信托', tag_id: 6, active: false},
-          {name: '海外房产', tag_id: 7, active: false},
-          {name: '人民币', tag_id: 8, active: false},
-          {name: '移民项目', tag_id: 9, active: false},
-          {name: '公募基金', tag_id: 10, active: false},
-        ]
+        introduce_code: '',
+        add_count: ''
       }
     },
     async onLoad (params) {
       console.log(params)
-      this.add_count = params.add_count
       this.article_id = params.article_id
+      this.share_id = params.share_id
       this.introduce_code = params.introduce_code
-      this.share_id = params.share_id || ''
-      this.getList(-1, '')
+      this.add_count = params.add_count
+      this.getList('')
     },
     methods: {
-      async getList (tagId, name) {
+      async getList (name) {
         try {
-          // this.selectedProduct = []
+          this.selectedProduct = []
           let list = await this.$http.get('/wx/itrade/article/get/listSelectProduct', {
             article_id: this.article_id,
             page_num: 1,
             page_size: 10,
             share_id: this.share_id,
-            tag_id: tagId,
+            tag_id: -1,
             search_param: name
           })
-          this.productList = this.compareId(list.product_list, this.selectedProduct)
+          this.productList = list.product_list
           console.log(this.productList)
         } catch (e) {
           throw new Error(e)
@@ -108,7 +90,7 @@
               share_id: this.share_id
             })
             if (result.share_id) {
-              this.share_id = result.share_id
+              this.share_id = await result.share_id
               this.showToast('修改成功!', () => {
                 this.toPage({
                   url: '/pages/article/main',
@@ -121,49 +103,6 @@
             throw new Error(e)
           }
         }
-      },
-      goSearch () {
-        console.log('goSearch')
-        this.toPage({
-          url: '/pages/search_product/main',
-          type: 'redirectTo',
-          data: {
-            article_id: this.article_id,
-            introduce_code: this.introduce_code,
-            share_id: this.share_id,
-            add_count: this.add_count
-          }
-        })
-      },
-      changeTagProduct (index) {
-        let value = this.product_tag[index]
-        this.product_tag.map((item) => {
-          item.active = false
-        })
-        this.product_tag[index].active = true
-        this.getList(value.tag_id, '')
-      },
-      compareId (list, ids) {
-        console.log(ids, 'compareId ids')
-        if (list instanceof Array) {
-        } else {
-          return list
-        }
-        if (ids instanceof Array) {
-        } else {
-          return list
-        }
-        if (ids.length < 1 || list.length < 1) return list
-
-        for (var i = list.length - 1; i >= 0; i--) {
-          ids.map((v, k) => {
-            if (list[i].product_id === v.product_id) {
-              list[i].checked = true
-            }
-          })
-        }
-        console.log(list, 'compareIdlist')
-        return list
       },
       goProductDetail (data) {
         switch (data.product_type) {
@@ -226,28 +165,6 @@
   >p {
     padding: $big-space $middle-space $middle-space $middle-space;
   }
-  .product_top{
-    background: #fff;
-    overflow-x: scroll; 
-    border-top: 1px solid #dddddd;
-    &_ul{
-      height: 80px;
-      min-width: 100%;
-      display: flex;
-      float: left;
-    }
-    &_li{
-      min-width: 160px;
-      text-align: center;
-      line-height: 80px;
-      margin-right: 20px;
-      border-bottom: 4px solid transparent;
-    }
-    .active{
-      color: #306FF4;
-      border-bottom: 4px solid #306FF4;
-    }
-  }
   .product_tips{
     font-size: 24px;
     color: #FE3845;
@@ -257,10 +174,10 @@
     background: $backgroundColor;
   }
   .product_list {
-    padding-top: 280px;
+    background: #fff;
+    padding-top: 190px;
     padding-bottom: 80px;
     &_item {
-      background: #fff;
       border-bottom: 1px solid $borderColor;
       padding: $middle-space;
       @include flex();
