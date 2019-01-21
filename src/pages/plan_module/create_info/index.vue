@@ -374,6 +374,7 @@ export default {
     })
     let result = qs.parse(o)
     this.date = this.format(new Date(), 'yyyy-MM-dd')
+    this.productId = result.productId
     this.insuranceType = result.insurance_type
     this.params = result.params
     this.params.plan_id && wx.setNavigationBarTitle({
@@ -565,7 +566,8 @@ export default {
           url = '/wx/itrade/product/plan/update'
         }
         let result = await this.$http.post(url, data)
-        result && this.toPage({ url: '/pages/plan_module/create_success/main', data: result })
+        result = Object.assign(result, {productId: this.productId})
+        this.toPage({ url: '/pages/plan_module/create_success/main', data: result })
       } catch (e) {
         throw new Error(e)
       }

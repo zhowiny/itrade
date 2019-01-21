@@ -55,7 +55,8 @@
             <p>{{item.amount || '---'}}</p>
           </div>
         </div>
-        <div class="time">提交时间: {{item.request_date || '---'}}</div>
+        <div v-if="activeIndex === 3" class="time">已完成时间: {{item.request_date || '---'}}</div>
+        <div v-else class="time">提交时间: {{item.request_date || '---'}}</div>
       </div>
     </div>
     <div class="btn_new" @click="newPlan" v-if="!search.product_id">
@@ -164,7 +165,6 @@
         this.planCount = await this.$http.get('/wx/itrade/product/plan/count')
       },
       async getPlanList () {
-        console.log(this.isLastPage)
         try {
           if (this.isLastPage) return
           let result = await this.$http.get('/wx/itrade/product/plan/list', this.search)

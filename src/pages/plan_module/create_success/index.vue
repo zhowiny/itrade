@@ -12,7 +12,8 @@
       </p>
       <div v-if="status === 'MATCH'" class="btn" @click="toPage({url: '/pages/plan_module/plan_detail/main', data: {planId: planId}})">查看文件</div>
       <div v-else class="btn" @click="toPage('/pages/plan_module/my_plan/main')">查看我的计划书</div>
-      <div class="btn back" @click="toPage({url: '/pages/index/main', type: 'switchTab'})">返回首页</div>
+      <div v-if="productId" class="btn back" @click="toPage({url: '/pages/insurance_details_page/main', data: {product_id: productId, product_type: 3}})">返回产品</div>
+      <div v-else class="btn back" @click="toPage({url: '/pages/index/main', type: 'switchTab'})">返回首页</div>
     </div>
   </div>
 </template>
@@ -24,12 +25,14 @@
         title: '提交成功',
         planId: '',
         status: '',
+        productId: '',
       }
     },
 
     onLoad () {
       this.planId = this.$mp.query.plan_id
       this.status = this.$mp.query.success_enum
+      this.productId = this.$mp.query.productId
     },
     methods: {
     },

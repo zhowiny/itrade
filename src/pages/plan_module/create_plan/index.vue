@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="module" v-if="disabled && !planId">
+    <div class="module" v-if="productId">
       <div class="title" @click="toPage('/pages/plan_module/my_plan/main?item_id=' + form.item_id)">
         <img class="title_icon" src="/images/icon_plan.png" mode="aspectFit" style="width:41rpx;height:37rpx;">
         <span class="title_text">我的计划书</span>
@@ -495,6 +495,7 @@ export default {
       detail: {},
       planId: '',
       disabled: false,
+      productId: undefined,
     }
   },
   watch: {
@@ -514,6 +515,7 @@ export default {
       this.form.supplier_id = parseInt(params.management_id)
       this.form.item_id = parseInt(params.item_id)
       this.disabled = true
+      this.productId = params.item_id
       this.getTemplate()
     }
 
@@ -729,10 +731,13 @@ export default {
     nextStep () {
       let params = this.checkFields()
       if (params) {
-        console.log(params)
         this.toPage({
           url: '/pages/plan_module/create_info/main',
-          data: { params, insurance_type: this.insuranceType },
+          data: {
+            productId: this.productId,
+            params,
+            insurance_type: this.insuranceType
+          },
         })
       }
     },
